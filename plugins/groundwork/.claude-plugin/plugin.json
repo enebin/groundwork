@@ -7,11 +7,20 @@
   },
   "license": "MIT",
   "keywords": [
-    "workflow",
-    "onboarding",
+    "claude-code",
+    "claude-code-plugin",
+    "codex",
+    "codex-plugin",
+    "ai-agents",
+    "coding-agent",
+    "agentic-coding",
+    "ai-code-review",
     "code-review",
-    "ui-qa",
-    "issue-tracking"
+    "developer-workflow",
+    "onboarding",
+    "issue-tracking",
+    "ui-testing",
+    "skills"
   ],
   "skills": "./skills/"
 }

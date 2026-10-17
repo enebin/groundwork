@@ -1,12 +1,31 @@
-# groundwork
+<p align="center">
+  <img src="assets/hero.svg" alt="groundwork — choose how your repository works, once. A plugin for Claude Code and Codex." width="100%">
+</p>
 
-Decide once how a repository works, then let the agent run it that way.
+<p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
+  <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
+  <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
+  <img alt="Version 0.1.0" src="https://img.shields.io/badge/version-0.1.0-6E6C66">
+</p>
 
-`/groundwork:onboarding` asks seven questions: language, issue tracker, workflow, branches, verification, architecture, and review. Each answer is a **bundle**: a named set of rules and skills that work together, shown with its pros and cons and a recommended option for your repository. Your answers go into `GROUNDWORK.md`, and the chosen rules go into your own `AGENTS.md` and `ARCHITECTURE.md`. Every other groundwork skill reads that file, so the same plugin behaves correctly in every repository.
+**groundwork** is a Claude Code and Codex plugin that sets up how an AI coding agent works in your repository — issue tracking, workflow, branches, verification, architecture, and AI code review — and then runs that workflow for you.
+
+`/groundwork:onboarding` asks eight questions. Each answer is a **bundle**: a named set of rules and skills that work together, shown with its pros, cons, token cost, and a recommended option for your repository. Your answers go into `GROUNDWORK.md`, and the chosen rules go into your own `AGENTS.md` and `ARCHITECTURE.md`. Every other groundwork skill reads that file, so the same plugin behaves correctly in every repository.
 
 It is built for starting a new project. An existing repository gets the same questions, with recommendations taken from what it already has.
 
-Works in Claude Code and Codex. Both tools share one set of skills; only the manifests differ.
+<p align="center">
+  <img src="assets/onboarding.svg" alt="Onboarding in an empty repository: every step with its recommended bundle and token cost, before the first question." width="100%">
+</p>
+
+## How it works
+
+<p align="center">
+  <img src="assets/how-it-works.svg" alt="Onboarding writes GROUNDWORK.md, AGENTS.md, and ARCHITECTURE.md; every groundwork skill and reviewer agent follows them." width="100%">
+</p>
+
+Both tools share one set of skills; only the manifests differ.
 
 ## Install
 

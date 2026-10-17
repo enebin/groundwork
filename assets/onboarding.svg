@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="t d">
+  <title id="t">/groundwork:onboarding</title>
+  <desc id="d">Onboarding in an empty repository: it asks what you are building, then shows every step with a recommended choice and its token cost before asking anything else.</desc>
+  <style>
+    .win{fill:#FFFFFF;stroke:#E2DFD7}.bar{fill:#F3F1EB}.ink{fill:#1F1E1B}.mute{fill:#7A776F}.acc{fill:#2F6B5A}.you{fill:#8A5A1F}.warn{fill:#9A4E12}.rule{stroke:#E8E5DD}.sel{fill:#EAF3EF}
+    @media (prefers-color-scheme: dark){
+      .win{fill:#1B1B19;stroke:#33312C}.bar{fill:#24231F}.ink{fill:#ECE9E2}.mute{fill:#98958D}.acc{fill:#8CC7B3}.you{fill:#E2B27A}.warn{fill:#F0A867}.rule{stroke:#33312C}.sel{fill:#1F2D28}
+    }
+    text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:17px}
+  </style>
+  <rect class="win" x="1" y="1" width="1198" height="718" rx="14"/>
+  <path class="bar" d="M15 1h1170a14 14 0 0 1 14 14v31H1V15A14 14 0 0 1 15 1z"/>
+  <circle cx="28" cy="24" r="7" fill="#FF5F57"/><circle cx="52" cy="24" r="7" fill="#FEBC2E"/><circle cx="76" cy="24" r="7" fill="#28C840"/>
+  <text class="mute" x="600" y="29" text-anchor="middle" font-size="14">habit-tracker — claude</text>
+
+  <text class="you" x="40" y="90">&gt; /groundwork:onboarding</text>
+  <text class="ink" x="40" y="128">This repository is empty. What are you building?</text>
+  <text class="you" x="40" y="160">&gt; An iOS habit tracker in SwiftUI</text>
+  <text class="ink" x="40" y="204">Here is the whole route, filled in for this repository.</text>
+
+  <g>
+    <text class="mute" x="56" y="246">Step</text><text class="mute" x="130" y="246">Decides</text><text class="mute" x="350" y="246">Recommended</text><text class="mute" x="760" y="246">Token cost</text>
+    <line class="rule" x1="56" y1="258" x2="900" y2="258"/>
+    <text class="ink" x="56" y="286">1</text><text class="ink" x="130" y="286">Language</text><text class="acc" x="350" y="286">yours · artifacts in English</text><text class="mute" x="760" y="286">—</text>
+    <text class="ink" x="56" y="314">2</text><text class="ink" x="130" y="314">Issue tracker</text><text class="acc" x="350" y="314">local files</text><text class="ink" x="760" y="314">Low</text>
+    <text class="ink" x="56" y="342">3</text><text class="ink" x="130" y="342">Workflow</text><text class="acc" x="350" y="342">step-loop</text><text class="ink" x="760" y="342">High</text>
+    <text class="ink" x="56" y="370">4</text><text class="ink" x="130" y="370">Branches</text><text class="acc" x="350" y="370">develop + release</text><text class="mute" x="760" y="370">—</text>
+    <text class="ink" x="56" y="398">5</text><text class="ink" x="130" y="398">Verification</text><text class="acc" x="350" y="398">evidence</text><text class="ink" x="760" y="398">Medium</text>
+    <text class="ink" x="56" y="426">6</text><text class="ink" x="130" y="426">Architecture</text><text class="acc" x="350" y="426">unidirectional</text><text class="ink" x="760" y="426">High</text>
+    <text class="ink" x="56" y="454">7</text><text class="ink" x="130" y="454">Review</text><text class="acc" x="350" y="454">app</text><text class="ink" x="760" y="454">High</text>
+    <text class="ink" x="56" y="482">8</text><text class="ink" x="130" y="482">Anything else</text><text class="acc" x="350" y="482">nothing</text><text class="mute" x="760" y="482">—</text>
+  </g>
+
+  <rect class="sel" x="40" y="512" width="520" height="34" rx="6"/>
+  <text class="acc" x="56" y="535">❯ Decide one by one (Recommended)</text>
+  <text class="ink" x="56" y="573">  Use all recommendations</text>
+
+  <text class="warn" x="40" y="626">⚠ What you choose here becomes how this repository works.</text>
+  <text class="mute" x="40" y="654">  You can change it later, but people rarely change something once it is set.</text>
+  <text class="mute" x="40" y="682">  The recommendations are guesses from what I could see.</text>
+</svg>

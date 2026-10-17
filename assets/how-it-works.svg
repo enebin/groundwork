@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="t d">
+  <title id="t">How groundwork works</title>
+  <desc id="d">Onboarding records your choices in GROUNDWORK.md and writes the chosen rules into AGENTS.md and ARCHITECTURE.md. Every groundwork skill reads them, in every repository.</desc>
+  <style>
+    .bg{fill:#FAF9F5}.card{fill:#FFFFFF;stroke:#E2DFD7}.ink{fill:#1F1E1B}.mute{fill:#6E6C66}.acc{fill:#2F6B5A}.chip{fill:#EAF3EF}.arrow{stroke:#9C988F;fill:none}.head{fill:#9C988F}
+    @media (prefers-color-scheme: dark){
+      .bg{fill:#151513}.card{fill:#1F1E1B;stroke:#35332E}.ink{fill:#F3F1EB}.mute{fill:#A29F97}.acc{fill:#8CC7B3}.chip{fill:#1F2D28}.arrow{stroke:#77746C}.head{fill:#77746C}
+    }
+    text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  </style>
+  <rect class="bg" width="1200" height="430" rx="20"/>
+
+  <text class="mute" x="60" y="60" font-size="14" font-weight="600" letter-spacing="1.5">1 · CHOOSE ONCE</text>
+  <text class="mute" x="440" y="60" font-size="14" font-weight="600" letter-spacing="1.5">2 · WRITTEN TO YOUR REPO</text>
+  <text class="mute" x="820" y="60" font-size="14" font-weight="600" letter-spacing="1.5">3 · EVERY SKILL FOLLOWS IT</text>
+
+  <rect class="card" x="60" y="84" width="320" height="270" rx="12"/>
+  <text class="acc mono" x="84" y="124" font-size="18" font-weight="600">/groundwork:onboarding</text>
+  <g class="ink" font-size="16">
+    <text x="84" y="166">8 questions</text>
+    <text x="84" y="198">Pre-packaged bundles</text>
+    <text x="84" y="230">A recommended pick each time</text>
+    <text x="84" y="262">Pros, cons, token cost</text>
+    <text x="84" y="294">Nothing written until you approve</text>
+  </g>
+  <text class="mute" x="84" y="330" font-size="14">New project or existing repository</text>
+
+  <path class="arrow" d="M392 219h36" stroke-width="2"/><path class="head" d="M428 213l10 6-10 6z"/>
+
+  <g font-size="15">
+    <rect class="card" x="440" y="84" width="340" height="80" rx="12"/>
+    <text class="ink mono" x="464" y="118" font-size="17" font-weight="600">GROUNDWORK.md</text>
+    <text class="mute" x="464" y="144">your choices and repo-specific checks</text>
+    <rect class="card" x="440" y="179" width="340" height="80" rx="12"/>
+    <text class="ink mono" x="464" y="213" font-size="17" font-weight="600">AGENTS.md</text>
+    <text class="mute" x="464" y="239">the verification rules you picked</text>
+    <rect class="card" x="440" y="274" width="340" height="80" rx="12"/>
+    <text class="ink mono" x="464" y="308" font-size="17" font-weight="600">ARCHITECTURE.md</text>
+    <text class="mute" x="464" y="334">the architecture contract you picked</text>
+  </g>
+
+  <path class="arrow" d="M792 219h18" stroke-width="2"/><path class="head" d="M810 213l10 6-10 6z"/>
+
+  <g class="mono" font-size="15">
+    <rect class="chip" x="820" y="84" width="150" height="36" rx="18"/><text class="acc" x="845" y="108">plan</text>
+    <rect class="chip" x="980" y="84" width="160" height="36" rx="18"/><text class="acc" x="1005" y="108">step</text>
+    <rect class="chip" x="820" y="130" width="150" height="36" rx="18"/><text class="acc" x="845" y="154">review</text>
+    <rect class="chip" x="980" y="130" width="160" height="36" rx="18"/><text class="acc" x="1005" y="154">ux-review</text>
+    <rect class="chip" x="820" y="176" width="150" height="36" rx="18"/><text class="acc" x="845" y="200">ui-qa</text>
+    <rect class="chip" x="980" y="176" width="160" height="36" rx="18"/><text class="acc" x="1005" y="200">boarding</text>
+    <rect class="chip" x="820" y="222" width="150" height="36" rx="18"/><text class="acc" x="845" y="246">takeoff</text>
+    <rect class="chip" x="980" y="222" width="160" height="36" rx="18"/><text class="acc" x="1005" y="246">autoland</text>
+    <rect class="chip" x="820" y="268" width="150" height="36" rx="18"/><text class="acc" x="845" y="292">release</text>
+    <rect class="chip" x="980" y="268" width="160" height="36" rx="18"/><text class="acc" x="1005" y="292">+7 more</text>
+  </g>
+  <text class="mute" x="820" y="340" font-size="14">7 reviewer agents run in parallel</text>
+
+  <text class="mute" x="60" y="398" font-size="15">Commit GROUNDWORK.md, and teammates get the same workflow by installing the plugin. No onboarding needed.</text>
+</svg>

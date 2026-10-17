@@ -16,7 +16,22 @@
       },
       "source": "./plugins/groundwork",
       "category": "development",
-      "tags": ["workflow", "onboarding", "code-review", "ui-qa"]
+      "tags": [
+        "claude-code",
+        "claude-code-plugin",
+        "codex",
+        "codex-plugin",
+        "ai-agents",
+        "coding-agent",
+        "agentic-coding",
+        "ai-code-review",
+        "code-review",
+        "developer-workflow",
+        "onboarding",
+        "issue-tracking",
+        "ui-testing",
+        "skills"
+      ]
     }
   ]
 }
