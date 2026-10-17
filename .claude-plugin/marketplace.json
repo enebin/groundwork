@@ -1,0 +1,22 @@
+{
+  "name": "groundwork",
+  "metadata": {
+    "description": "Groundwork: choose how a repository works, then run it."
+  },
+  "owner": {
+    "name": "Kai Lee"
+  },
+  "plugins": [
+    {
+      "name": "groundwork",
+      "description": "Onboarding with recommended bundles, plus planning, step loops, parallel review, UX review, UI QA, and release skills driven by GROUNDWORK.md.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Kai Lee"
+      },
+      "source": "./plugins/groundwork",
+      "category": "development",
+      "tags": ["workflow", "onboarding", "code-review", "ui-qa"]
+    }
+  ]
+}

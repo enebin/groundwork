@@ -1,0 +1,30 @@
+{
+  "name": "groundwork",
+  "version": "0.1.0",
+  "interface": {
+    "displayName": "Groundwork",
+    "shortDescription": "Set up how a repository works, then run it",
+    "longDescription": "Onboarding asks how this repository should work — tracker, workflow, branches, verification, architecture, review — as bundles with a recommended choice each time, and writes GROUNDWORK.md. The workflow, review, and QA skills then read that file in every repository.",
+    "developerName": "Kai Lee",
+    "category": "Engineering",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use groundwork onboarding to set up this repository."
+    ]
+  },
+  "description": "Set up how a repository works once, then run planning, step loops, review, and QA from GROUNDWORK.md.",
+  "author": {
+    "name": "Kai Lee"
+  },
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "onboarding",
+    "code-review",
+    "ui-qa",
+    "issue-tracking"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "groundwork",
+  "interface": {
+    "displayName": "Groundwork"
+  },
+  "plugins": [
+    {
+      "name": "groundwork",
+      "source": {
+        "source": "local",
+        "path": "./plugins/groundwork"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Engineering"
+    }
+  ]
+}
