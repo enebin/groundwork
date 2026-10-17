@@ -16,8 +16,8 @@ Talk to the user in the language they are using. This skill writes nothing until
 Every question follows these rules.
 
 - Put the recommended option first, mark it "(Recommended)", and give one line on why it is recommended **for this repository**.
-- Show pros, cons, and token cost for every bundle, taken from the catalog. Token cost is a relative level (Low / Medium / High / Very high) with what drives it, not a measured number; say so once. Keep the rules inside a bundle folded; show them only when the user asks.
-- Use `AskUserQuestion` when available, with each option's pros/cons in its `preview`. It allows four options; when a step has more, show the full catalog table as text first, then offer the recommended option, the two most relevant alternatives, and let the user name any other bundle through "Other". Without `AskUserQuestion` (for example in Codex), ask in plain text with numbered options.
+- Before each choice, show the step's bundles as one table with exactly these columns: `Bundle | Pros | Cons | Token cost`. The recommended bundle is the first row and is marked "(Recommended)". Condense each catalog entry to one short line per cell; give the full lists only when the user asks. Token cost is the catalog's relative level (Low / Medium / High / Very high), compared within this step; say once that it is an estimate, not a measurement. Keep the rules inside a bundle folded; show them only when the user asks.
+- Use `AskUserQuestion` when available, with the same three items (pros, cons, token cost) in each option's `preview`. It allows four options; when a step has more, show the full catalog table as text first, then offer the recommended option, the two most relevant alternatives, and let the user name any other bundle through "Other". Without `AskUserQuestion` (for example in Codex), ask in plain text with numbered options.
 - Never invent a bundle, rule, or pro/con that the catalog does not contain.
 
 ## 1. Scan the repository
@@ -106,7 +106,7 @@ Bundles from `catalog/architecture/`, filtered to the project's stack. `minimal-
 - An existing architecture document: "Follow the existing document (Recommended)". Name the bundle it resembles, if any, and do not overwrite it.
 - Otherwise: the bundle the catalog marks for this stack (Recommended), the other stack-matching bundles, and `none`.
 
-Show each bundle's flow, example, pros, cons, and failure modes before asking.
+Show the comparison table first. When the user picks or asks about a bundle, show its flow, example, and failure modes.
 
 ### Step 7 — Review
 

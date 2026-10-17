@@ -16,7 +16,7 @@
 It is built for starting a new project. An existing repository gets the same questions, with recommendations taken from what it already has.
 
 <p align="center">
-  <img src="assets/onboarding.svg" alt="Onboarding in an empty repository: every step with its recommended bundle and token cost, before the first question." width="100%">
+  <img src="assets/onboarding.svg" alt="Onboarding step 3 of 8: workflow bundles compared by pros, cons, and token cost, with the recommended bundle first." width="100%">
 </p>
 
 ## How it works
