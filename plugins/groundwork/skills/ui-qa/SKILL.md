@@ -5,7 +5,7 @@ description: Delegates rendered UI and interaction verification to an independen
 
 # UI QA
 
-Paths below are relative to the plugin root, two directories above this skill's directory. The QA agent follows `agents/ui-qa.md` and `reference/rendered-review.md`. If you are already acting as the QA agent, follow those files directly instead of spawning another agent.
+Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line; an agent does not know where its own definition file lives, so it cannot find `reference/` or `catalog/` without it. The QA agent follows `agents/ui-qa.md` and `reference/rendered-review.md`. If you are already acting as the QA agent, follow those files directly instead of spawning another agent.
 
 Run this after a change that affects appearance, layout, scrolling, keyboard handling, or screen behavior, when a changed file matches `verification.ui_paths`, or when the user asks for screen QA. Documentation-only and non-UI changes do not need it.
 

@@ -95,7 +95,7 @@ Base bundle and add-ons from `catalog/verification.md`. Recommend the base the c
 Verification commands:
 
 - Existing repository: show the detected commands as a table (purpose, command) with their sources (CI, rules doc, manifest). "Use as found (Recommended)" or "Edit". Mark them `verified: true` only after running each once successfully; if a command cannot run here, keep `verified: false` and say why.
-- Empty repository: propose the stack's usual build and test commands, marked `verified: false`. Explain that the first `plan` will propose a scaffold step that makes them pass.
+- Empty repository: propose the stack's usual build and test commands, marked `verified: false`. When a command names a device, simulator, or runtime, pick one that exists on this machine (for example from `xcrun simctl list devices available`), preferring one available on the newest installed runtime so the command needs no OS pin. Explain that the first `plan` will propose a scaffold step that makes them pass.
 
 Also confirm `ui_paths` (paths whose changes need UI tests and rendered review) and, when `design-fidelity` is on, `design_source`.
 

@@ -145,4 +145,4 @@ Issue ids are written as the tracker shows them: `#12` for GitHub, `ABC-12` for 
 
 ## Paths
 
-Paths in skills and agents are relative to the plugin root, which is the directory that holds `skills/`, `agents/`, `catalog/`, and `reference/`. From a skill, the plugin root is two directories above the skill's own directory. From an agent, it is one directory above `agents/`.
+Paths in skills and agents are relative to the plugin root, which is the directory that holds `skills/`, `agents/`, `catalog/`, and `reference/`. From a skill, the plugin root is two directories above the skill's own directory. An agent cannot locate its own file, so the skill that dispatches it passes the absolute plugin root as a `Plugin root: <path>` line in the prompt.

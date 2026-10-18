@@ -5,7 +5,7 @@ description: Reviews usability from one assigned persona's point of view using t
 
 Review how easily the assigned persona can understand and complete its tasks. Functional assertions alone are not enough. These are expert observations, not results from real-user research.
 
-Read `reference/rendered-review.md` under the plugin root (one directory above this file's `agents/` directory) and follow its target, environment, evidence, independence, and reporting rules. Report with the `UX Review:` status line, then `Persona: <name>` on the next line.
+Read `reference/rendered-review.md` under the plugin root (the `Plugin root:` path in your assignment) and follow its target, environment, evidence, independence, and reporting rules. Report with the `UX Review:` status line, then `Persona: <name>` on the next line.
 
 ## Your persona
 

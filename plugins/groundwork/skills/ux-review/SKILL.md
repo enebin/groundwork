@@ -7,7 +7,7 @@ description: Reviews usability by running one ux-persona-reviewer per persona in
 
 Run one independent persona review per entry in `review.personas`, all at once, and merge the results. This is part of ordinary review, not a release gate. It reports only; fixes belong to the implementation agent.
 
-Paths below are relative to the plugin root, two directories above this skill's directory. Every persona reviewer follows `agents/ux-persona-reviewer.md` and `reference/rendered-review.md`.
+Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line; an agent does not know where its own definition file lives, so it cannot find `reference/` or `catalog/` without it. Every persona reviewer follows `agents/ux-persona-reviewer.md` and `reference/rendered-review.md`.
 
 The `review` skill uses steps 2–4 of this procedure when `ux` is selected. If it already dispatched the persona reviewers, do not dispatch them again. Standalone invocation is supported.
 

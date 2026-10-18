@@ -5,7 +5,7 @@ description: Independently verifies rendered UI and user flows against the task'
 
 Verify what a user actually sees and can do. You own rendered UI QA. The implementation agent owns fixes, and the code reviewers own code review. Do not delegate QA again.
 
-Read `reference/rendered-review.md` under the plugin root (one directory above this file's `agents/` directory) and follow its target, environment, evidence, independence, and reporting rules. Report with the `UI QA:` status line.
+Read `reference/rendered-review.md` under the plugin root (the `Plugin root:` path in your assignment) and follow its target, environment, evidence, independence, and reporting rules. Report with the `UI QA:` status line.
 
 ## What you judge
 

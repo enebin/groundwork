@@ -8,7 +8,7 @@ argument-hint: "[<PR number> | <path>] [--only <keys>]"
 
 Review a change from every angle the repository chose. This skill **only reports.** Fixing belongs to the implementation agent.
 
-Paths below are relative to the plugin root, two directories above this skill's directory.
+Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line; an agent does not know where its own definition file lives, so it cannot find `reference/` or `catalog/` without it.
 
 ## 1. Read the configuration
 
