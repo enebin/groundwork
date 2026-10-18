@@ -110,12 +110,12 @@ Show the comparison table first. When the user picks or asks about a bundle, sho
 
 ### Step 7 — Review
 
-Bundles from `catalog/review.md`. Recommend by `project.kind`: `app` for apps, `sdk` for libraries, `product` for services with sign-in, personal data, or several user roles, `light` for tools. Drop `architecture` when step 6 chose `none`, and say why.
+Bundles from `catalog/review.md`. Recommend by `project.kind`: `app` for apps, `sdk` for libraries, `service` for backends and APIs without screens, `product` for products with screens plus sign-in, personal data, or several user roles (add `dx` when it also exposes a public API), `light` for tools (add `dx` for a command-line tool other people run). Drop `architecture` when step 6 chose `none`, and say why.
 
 Ask only the follow-ups the chosen bundle triggers (see the catalog), each with a recommendation:
 
 - Release QA, when the project has screens: off (Recommended) or on, from the Release QA section of `catalog/review.md`, in the same table. Warn plainly that it has very high token and time cost (10 to 20 minutes per screen per agent in testing). Only when on: the design source, if not set in step 5.
-- `ux` in the bundle, or release QA on: personas. Recommend one persona drawn from the step 2 answer; the user can add more.
+- `ux` or `dx` in the bundle, or release QA on: personas, each with a `kind` (`user` for `ux` and release QA, `developer` for `dx`). Recommend one persona per selected reviewer, drawn from the step 2 answer; the user can add more.
 - Flight or quick workflow: review trigger.
 - Mode: `normal` (Recommended), from the Modes section of `catalog/review.md`, shown in the same Bundle | Pros | Cons | Token cost table. Say that it can be overridden per run with `--mode`, so the default should fit everyday work.
 - Skeptic policy: the bundle's default (Recommended). Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.

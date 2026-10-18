@@ -4,13 +4,14 @@ Token cost levels are relative estimates within this step, not measurements.
 
 Onboarding shows these bundles as one choice. It writes the bundle id to `review.bundle`, the reviewer list to `review.reviewers`, and the skeptic policy to `review.skeptic`. After onboarding, `review.reviewers` is the source of truth; the user may add or drop reviewers by hand.
 
-These reviewers read code and run on every change. `ux` judges usability from the code: it traces each persona's tasks through screens and state without launching the app. The agents that exercise the running app (`ui-qa`, `ux-persona-reviewer`) are not part of any bundle: they run only in release QA, which is a separate opt-in choice below. Screens are checked on every change by UI tests instead.
+These reviewers read code and run on every change. `ux` judges end-user experience from the code: it traces each `user` persona's tasks through screens and state without launching the app. `dx` does the same for `developer` personas through a library API, an HTTP or RPC API, or a command-line tool. The agents that exercise the running app (`ui-qa`, `ux-persona-reviewer`) are not part of any bundle: they run only in release QA, which is a separate opt-in choice below. Screens are checked on every change by UI tests instead.
 
 | Bundle | Reviewers | Skeptic |
 |---|---|---|
 | `app` | architecture, code-quality, ux | blocking |
 | `sdk` | architecture, code-quality, dx | blocking |
-| `product` | architecture, code-quality, security, writing, ux | all |
+| `service` | architecture, code-quality, security, dx | blocking |
+| `product` | architecture, code-quality, security, writing, ux (+ dx when it exposes a public API) | all |
 | `light` | code-quality | blocking |
 
 `architecture` is dropped from any bundle when `architecture.bundle` is `none`, because the reviewer has no standard to judge against.
@@ -39,7 +40,7 @@ Recommended when: `project.kind` is `app`.
 
 ## sdk
 
-Summary: For a library other developers build on. Adds a DX reviewer who reads the change as a library user would: naming, customization reach, compatibility, docs.
+Summary: For a library other developers build on. Adds a DX reviewer who traces developer tasks through the public API: call sites, customization reach, compatibility, docs.
 
 Reviewers: architecture, code-quality, dx. Skeptic: blocking.
 
@@ -53,11 +54,27 @@ Token cost: Medium — three code-reading reviewers each round.
 
 Recommended when: `project.kind` is `library`.
 
+## service
+
+Summary: For a backend whose users are other programs: an HTTP or RPC API, a worker, or a CLI. No screens, so no `ux`; a DX reviewer traces client developers' tasks through the API instead.
+
+Reviewers: architecture, code-quality, security, dx. Skeptic: blocking.
+
+Pros:
+- Status codes, error shapes, pagination, retries, and schema drift are checked on every change, alongside authorization.
+
+Cons:
+- No end-user review; add `ux` by hand if the service also renders pages.
+
+Token cost: Medium — four code-reading reviewers each round.
+
+Recommended when: `project.kind` is `service` with no screens of its own.
+
 ## product
 
 Summary: For a product with real users and real data. Adds security and user-facing writing review, and verifies every non-nit finding.
 
-Reviewers: architecture, code-quality, security, writing, ux. Skeptic: all.
+Reviewers: architecture, code-quality, security, writing, ux, and dx when the product also exposes a public API. Skeptic: all.
 
 Pros:
 - Authorization, data isolation, personal data, and copy accuracy are checked on every change.
@@ -83,7 +100,7 @@ Cons:
 
 Token cost: Low — one code reviewer and a skeptic pass on blocking findings only.
 
-Recommended when: scripts, tools, prototypes, or solo projects where speed matters more than coverage.
+Recommended when: scripts, tools, prototypes, or solo projects where speed matters more than coverage. For a command-line tool other people run, add `dx`.
 
 ## Release QA
 
@@ -109,11 +126,11 @@ When on, onboarding also asks for the design source, and for personas if no bund
 
 Onboarding asks only the questions the chosen bundles trigger.
 
-### Personas (when `ux` is in `review.reviewers`, or release QA is on)
+### Personas (when `ux` or `dx` is in `review.reviewers`, or release QA is on)
 
-Ask: "Who uses this product? Name each kind of user and the main thing they come to do."
+Ask: "Who uses this? Name each kind of user and the main thing they come to do." Ask about end users when `ux` is selected, and about developers who build on the code (app developers importing the library, API clients, CLI users) when `dx` is selected.
 
-Write each answer to `review.personas` as `name` and `goal`. `ux` traces every persona's tasks through the code on each change; in release QA, one `ux-persona-reviewer` per persona also checks the running app. When a persona has several tasks, write them under `## Persona: <name>` in the `GROUNDWORK.md` body. Suggest one or two personas from `project.summary`; let the user edit them.
+Write each answer to `review.personas` as `name`, `goal`, and `kind` (`user` or `developer`). `ux` traces every `user` persona's tasks through the code on each change, and `dx` every `developer` persona's; in release QA, one `ux-persona-reviewer` per `user` persona also checks the running app. When a persona has several tasks, write them under `## Persona: <name>` in the `GROUNDWORK.md` body. Suggest one or two personas from `project.summary`; let the user edit them.
 
 ### Design source (when release QA is on, or the `design-fidelity` add-on is chosen)
 

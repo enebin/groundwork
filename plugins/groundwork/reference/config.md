@@ -75,6 +75,7 @@ review:
   personas:
     - name: "Habit tracker user"
       goal: "Record today's habits in a few taps"
+      kind: user                         # user (end user of the product) | developer (builds on its API, library, or CLI); default user
 
 mode: normal                             # eco | normal | sport — how much review and UI QA a change gets (see Modes)
 ---
@@ -100,8 +101,8 @@ Optional. Skills read only the section that applies to them.
 | `code-quality` | `code-quality-reviewer` | Correctness, readability, cost, tests |
 | `security` | `security-reviewer` | Authorization, data isolation, personal data, untrusted input |
 | `writing` | `writing-reviewer` | User-facing copy, terminology, accuracy against behavior |
-| `dx` | `dx-reviewer` | Public API usability for library users |
-| `ux` | `ux-flow-reviewer` | Whether each persona can finish its tasks, traced through the code |
+| `dx` | `dx-reviewer` | Developer experience of a library API, HTTP or RPC API, or command-line tool, traced through `developer` personas' tasks |
+| `ux` | `ux-flow-reviewer` | Whether each `user` persona can finish its tasks in the app, traced through the code |
 
 All of these read code and run on every change. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run only in release QA (see Release QA), or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
 
@@ -113,7 +114,8 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 |---|---|---|
 | `app` | architecture, code-quality, ux | blocking |
 | `sdk` | architecture, code-quality, dx | blocking |
-| `product` | architecture, code-quality, security, writing, ux | all |
+| `service` | architecture, code-quality, security, dx | blocking |
+| `product` | architecture, code-quality, security, writing, ux (+ dx when it exposes a public API) | all |
 | `light` | code-quality | blocking |
 
 `review.reviewers` is the source of truth after onboarding. The bundle name records where the list came from. `architecture` is dropped from any bundle when `architecture.bundle` is `none`, because the reviewer has no standard to judge against.

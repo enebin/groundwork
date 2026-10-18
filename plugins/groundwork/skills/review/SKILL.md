@@ -40,8 +40,8 @@ For each selected key, decide whether the change gives it anything to judge. Rec
 
 - `architecture`, `code-quality`, `security`: apply to any code change.
 - `writing`: applies when user-facing copy changed, or behavior changed in a way that makes existing wording wrong.
-- `dx`: applies when a public symbol, extension point, example, or developer documentation changed.
-- `ux`: applies when the change touches a screen, navigation path, state, or action on the way to a persona task, including backend changes that alter what a screen shows or allows. Needs at least one entry in `review.personas`. One `ux-flow-reviewer` covers every persona; it reads code and never launches the app.
+- `dx`: applies when a public surface changed: a library's public symbols or extension points, an HTTP or RPC endpoint or its schema, a command-line command, flag, or output, or developer documentation for any of them.
+- `ux`: applies when the change touches a screen, navigation path, state, or action on the way to a persona task, including backend changes that alter what a screen shows or allows. Needs at least one `user` persona in `review.personas` (a persona without `kind` is a `user`). One `ux-flow-reviewer` covers every `user` persona; it reads code and never launches the app.
 - `ui-qa` and `ux-persona-reviewer` exercise the running app and are never dispatched here. They run in release QA (`/groundwork:ui-qa --full`, `/groundwork:ux-review --full`) or when the user calls them directly.
 
 In path mode, every selected reviewer whose area the path contains applies.
