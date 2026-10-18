@@ -1,11 +1,14 @@
 ---
 name: ui-qa
-description: Delegates rendered UI and interaction verification to an independent ui-qa agent after UI changes or when the user asks for screen QA. Uses the task's design source and actual app evidence; does not replace code review.
+description: Delegates rendered UI and interaction verification to an independent ui-qa agent after UI changes or when the user asks for screen QA. Checks only what automated UI tests do not cover, scoped by the mode; --full runs release QA over every screen. Does not replace code review.
+argument-hint: "[--full] [--mode eco|normal|sport]"
 ---
 
 # UI QA
 
 Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line; an agent does not know where its own definition file lives, so it cannot find `reference/` or `catalog/` without it. The QA agent follows `agents/ui-qa.md` and `reference/rendered-review.md`. If you are already acting as the QA agent, follow those files directly instead of spawning another agent.
+
+In `eco`, this skill is not run for ordinary changes; the implementing skill marks ledger rows `stale` instead. `--full` runs in every mode.
 
 Run this after a change that affects appearance, layout, scrolling, keyboard handling, or screen behavior, when a changed file matches `verification.ui_paths`, or when the user asks for screen QA. Documentation-only and non-UI changes do not need it.
 
@@ -19,7 +22,8 @@ Prepare a short assignment with:
 
 - The absolute worktree path, the relevant diff and files, and the current build state.
 - The user's requirements and the design source (`verification.design_source` or the one the task names), including available local references.
-- Affected screens, the required states and actions, and any launch mode from the UI QA notes.
+- The check list, built from the ledger (`verification.ui_coverage`) and the mode (Modes in `reference/config.md`): the changed screens (plus related screens in `sport`), their rows without an automated test, and the appearance conditions the mode requires. With `--full`, every row without an automated test, `stale` rows first. Rows that do not exist yet are for QA to write.
+- Any launch mode from the UI QA notes.
 - The device, simulator, emulator, or browser context reserved for QA, and for web the isolated database, ports, and server configuration (required when `verification.addons` contains `isolated-e2e`).
 - UI test results already produced for this build, with the commit and dirty state they came from, so QA reuses them instead of rerunning. Run each UI test once per build.
 - An output directory outside tracked source, and any execution constraints.

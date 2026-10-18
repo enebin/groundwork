@@ -1,6 +1,7 @@
 ---
 name: ux-review
-description: Reviews usability by running one ux-persona-reviewer per persona in GROUNDWORK.md, concurrently, and merging their browser or device observations and screenshot evidence. Part of ordinary review; reports only.
+description: Reviews usability by running one ux-persona-reviewer per persona in GROUNDWORK.md, concurrently, and merging their browser or device observations and screenshot evidence. Scoped by the mode; --full reviews every persona task for release QA. Reports only.
+argument-hint: "[--full] [--mode eco|normal|sport]"
 ---
 
 # UX Review
@@ -19,7 +20,7 @@ Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for
 
 Establish the assigned worktree and current source, the task requirements, the affected screens and flows, design references, and known build and test evidence with provenance.
 
-For each persona, decide whether the change affects any of its tasks. Backend changes can affect flows too.
+For each persona, decide whether the change affects any of its tasks before launching anything. Backend changes can affect flows too. The mode sets the scope (Modes in `reference/config.md`): `normal` covers only the touched tasks, `sport` every task the change touches including through related screens, and `--full` every task. `eco` runs no UX review.
 
 - If no persona is affected, report `UX Review: NOT APPLICABLE` with a concrete reason and stop.
 - If only some personas are affected, still dispatch the others with the scope evidence so they can report NOT APPLICABLE rather than invent checks.

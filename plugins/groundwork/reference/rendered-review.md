@@ -6,7 +6,7 @@ The shared procedure for reviewers that exercise the running product: `ui-qa` an
 
 ## Before you start
 
-Read `GROUNDWORK.md` at the repository root. Take `docs.rules`, `docs.architecture` (if set), `project.kind`, `project.stack`, and `verification` (`ui_tests`, `ui_paths`, `design_source`, `addons`) from its frontmatter, and the `## UI QA notes` section from its body. UI QA notes hold everything project-specific: how to build and launch the app, sample data and backends, launch flags or modes, test fixtures, and screen-specific checks. If launching needs a value that neither the notes nor the assignment supplies, report it as a blocker instead of guessing.
+Read `GROUNDWORK.md` at the repository root. Take `docs.rules`, `docs.architecture` (if set), `project.kind`, `project.stack`, and `verification` (`ui_tests`, `ui_paths`, `design_source`, `addons`, `ui_coverage`) from its frontmatter, and the `## UI QA notes` section from its body. UI QA notes hold everything project-specific: how to build and launch the app, sample data and backends, launch flags or modes, test fixtures, and screen-specific checks. If launching needs a value that neither the notes nor the assignment supplies, report it as a blocker instead of guessing.
 
 Read the parts of the rules and architecture documents that describe the affected screens. Use product overviews for context, not as proof that a historical limitation still exists.
 
@@ -33,9 +33,11 @@ If safe isolated interaction cannot be established, mark the affected checks BLO
 
 ## Exercise and inspect
 
-State the required checks before running them. Choose them from the changed behavior and the assignment, not by retesting every feature.
+Your checks are the assignment's list: the ledger rows, screens, and appearance conditions the caller selected for the mode (Modes in `reference/config.md`). State them before running them. Add a check only when the changed code directly puts it at risk, and give that reason in the report. With `--full` (release QA), check every ledger row without an automated test, `stale` rows first.
 
-Typical checks, used only when the change affects them:
+Do not re-check what a passing automated UI test in the supplied results already covers.
+
+When a new or changed screen has no ledger rows yet, write them from these typical checks, keeping only those the change affects:
 
 - **Layout at rest.** The first and last items, headers, footers, banners, and input bars do not overlap or clip once scrolling stops. Content passing behind a translucent bar during a deliberate scroll differs from an item staying hidden at rest.
 - **Insets and keyboards.** Safe areas and system bars, the keyboard shown and hidden, interactive dismissal, and reaching the newest or last item.
@@ -53,15 +55,19 @@ Run each UI test once per build. When the caller supplies UI test results (for e
 
 ### Evidence
 
-Open every screenshot you rely on and inspect it yourself, including the screenshot attachments of the relevant UI tests. Passing element-existence assertions or a successful build do not establish visual correctness. Use the available UI tools for interactions no test covers.
+Open every screenshot you rely on and inspect it yourself. Prefer the screenshots the UI tests already attached. Take a new one only for a row that needs it: one per row and condition, and settle animations and transitions first so you do not retake it. Passing element-existence assertions or a successful build do not establish visual correctness. Use the available UI tools for interactions no test covers.
 
 When a design source supplies geometry, colors, or tokens, read the actual values and compare matching elements. Do not infer exact spacing or colors from pixels. A screenshot can still prove a visible overlap without exact measurements; state that limit. If exact matching is required and the values are unavailable, the check stays unverified.
 
 If a relevant regression has no automated coverage, describe the missing test for the implementation agent.
 
+## Coverage ledger
+
+`ui-qa` maintains `verification.ui_coverage` as `reference/config.md` describes. Create the file with its header row if it does not exist. After checking, update the rows you checked and add rows for new or changed screens. For each row you checked that a UI test could cover, propose the test in the report: name, steps, and assertion. `ux-persona-reviewer` does not edit the ledger.
+
 ## Independence
 
-Do not modify application, test, project, configuration, design, or agent files. Build products, temporary files, logs, screenshots, traces, and reports go outside tracked source. Generated project files may be produced only as the UI QA notes instruct. Do not commit or push. Do not delegate the review again or invoke the dispatcher that launched you.
+Do not modify application, test, project, configuration, design, or agent files. The one exception is the coverage ledger, which only `ui-qa` edits. Build products, temporary files, logs, screenshots, traces, and reports go outside tracked source. Generated project files may be produced only as the UI QA notes instruct. Do not commit or push. Do not delegate the review again or invoke the dispatcher that launched you.
 
 Do not disable assertions, skip a failing required check, or substitute a different backend or dataset to obtain a pass. Distinguish a product defect from a broken test setup or an environment failure, and keep the evidence of the failure.
 

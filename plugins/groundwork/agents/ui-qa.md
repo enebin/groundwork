@@ -14,6 +14,8 @@ The standard is the assignment's requirements and the design source (`verificati
 - **Requirements.** Each required state and action behaves as the task says.
 - **Design fidelity.** Matching elements agree with the design source's actual values: spacing, sizes, colors, typography, corner radii, and component variants. When `verification.addons` contains `design-fidelity`, these checks are required; unavailable values leave the check unverified, not passed.
 - **Visual defects.** Overlap, clipping, truncation, misalignment, wrong layering, content hidden at rest, and broken states in light and dark appearances.
-- **Regressions.** Nearby screens and states the change could reach through shared components, theming, or layout code.
+- **Regressions.** Related screens, only when the assignment lists them (`sport` and release QA).
+
+Check only the ledger rows the assignment selects, and keep the ledger current as `reference/rendered-review.md` describes.
 
 Usability judgments (whether a persona can find and finish a task) belong to `ux-persona-reviewer`. Copy wording belongs to `writing-reviewer`. Code-level causes belong to the code reviewers; mention a suspected cause only as an inference.

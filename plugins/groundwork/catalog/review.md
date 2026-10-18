@@ -131,29 +131,28 @@ Ask: "Should review run every time an implementation is finished, or only when y
 
 ## Modes
 
-Asked for every bundle. A mode changes how often the configured reviewers and checks run, never which model runs them. Overridable per run with `--mode`. The exact rules are in Modes in `reference/config.md`.
+Asked for every bundle. A mode sets how much review and UI QA a change gets, never which model runs it. Overridable per run with `--mode`. Every mode ends with release QA over every screen. The exact rules are in Modes in `reference/config.md`.
 
 ### eco
 
-Summary: one review round; fixes are checked by tests only; rendered checks once at the end.
-Pros: cheapest loop that still reviews every change once.
-Cons: a fix can introduce a problem no reviewer sees.
-Token cost: Low — one review pass and one rendered pass per step.
-Recommended when: small fixes, experiments, or a repository where most steps are low-risk.
+Summary: one review round; no UI QA per change, changed screens marked `stale` for release QA.
+Pros: cheapest loop; rendered checks, the largest cost, are paid once per release.
+Cons: UI problems surface late, at release, when they are harder to trace.
+Token cost: Low — one code review pass per step, no rendered agents.
+Recommended when: small fixes, experiments, or work far from a release.
 
 ### normal
 
-Summary: up to three rounds; only reviewers with blocking findings look again; rendered checks when the UI changed.
-Pros: fixes are re-reviewed by the reviewer who raised the problem, without paying for the rest.
-Cons: a fix for one reviewer's finding is not re-checked by the others.
-Token cost: Medium — usually one full round plus a narrow second round.
+Summary: up to three rounds, re-reviewed only by reviewers with blocking findings; UI QA on changed screens, only what UI tests do not cover.
+Pros: every change is seen running, without re-checking what tests already prove.
+Cons: a problem on a screen the change reaches indirectly waits for release QA.
+Token cost: Medium — one review round plus narrow follow-ups; UI QA limited to uncovered rows.
 Recommended when: everyday work. Default.
 
 ### sport
 
-Summary: up to three rounds; every reviewer and every rendered check reruns each round; full suite every round.
-Pros: every fix is seen by every reviewer and the running app.
+Summary: up to three full rounds; UI QA on changed and related screens in light, dark, and largest text; full test suite every round.
+Pros: catches indirect UI breakage before it merges.
 Cons: slowest and most expensive; repeats checks that already passed.
-Token cost: High — every round costs as much as the first.
-Recommended when: payments, authentication, data migrations, or the step before a release.
-
+Token cost: High — every round costs as much as the first, and UI QA covers more screens.
+Recommended when: shared components or themes change, payments, authentication, or the step before a release.

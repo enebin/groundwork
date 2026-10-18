@@ -117,7 +117,7 @@ Ask only the follow-ups the chosen bundle triggers (see the catalog), each with 
 - `ux`: personas. Recommend one persona drawn from the step 2 answer; the user can add more.
 - `ui-qa`: design source, if not already set in step 5.
 - Flight or quick workflow: review trigger.
-- Mode: `normal` (Recommended), from the Modes section of `catalog/review.md`, shown in the same Bundle | Pros | Cons | Token cost table. Say that it can be overridden per run with `--mode`, so the default should fit everyday work.
+- Mode: `normal` (Recommended), from the Modes section of `catalog/review.md`, shown in the same Bundle | Pros | Cons | Token cost table. Say that it can be overridden per run with `--mode`, so the default should fit everyday work, and that every mode ends with release QA over every screen.
 - Skeptic policy: the bundle's default (Recommended). Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
 For an existing repository with its own reviewers or review rules, draft a `## Review focus: <key>` section for each chosen reviewer from them, show the drafts, and ask "Use the drafts (Recommended)" or "Edit".
@@ -147,6 +147,7 @@ Mandatory, also after "Use all recommendations". Show every file to create or ch
 - `docs.rules` (create `AGENTS.md` if absent) — the "Rules to write" block of each chosen verification bundle and add-on, and step 8 rules.
 - `docs.architecture` (create `ARCHITECTURE.md` if absent) — the `minimal-structure` rules first, then the chosen bundle's "Contract to write" (none for `none`). When following an existing document, add only the `minimal-structure` block.
 - `CLAUDE.md` — a one-line pointer to `AGENTS.md`, only if `CLAUDE.md` does not exist.
+- `verification.ui_coverage` (`docs/ui-coverage.md`) — the ledger's header row only, when `ui-qa` is in `review.reviewers`. UI QA fills it as screens are checked.
 - Local tracker setup from `catalog/trackers/local.md` (a self-ignoring `.gitignore` inside the issue directory, so no tracked file changes), when the tracker is local.
 
 Wrap every block groundwork writes into an existing document in `<!-- groundwork:begin <id> -->` and `<!-- groundwork:end <id> -->`, so a re-run replaces exactly that block and leaves the user's text alone. Never edit text outside these markers.

@@ -62,7 +62,7 @@ Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to 
 | 4 | Branches | develop + release, main only | develop + release |
 | 5 | Verification | evidence, ci-gate, test-first, basic; add-ons design-fidelity, api-contract, isolated-e2e, visual-regression | evidence |
 | 6 | Architecture | unidirectional, mvvm, layered-service, layered-web, none | depends on the stack |
-| 7 | Review | app, sdk, product, light | depends on the kind of project |
+| 7 | Review | app, sdk, product, light; mode eco, normal, sport | depends on the kind of project; normal |
 | 8 | Anything else | free text | nothing |
 
 Before the first question you see this whole table filled in for your repository, and can take every recommendation at once. Try not to: what you pick here tends to stay.
@@ -81,7 +81,7 @@ Every bundle, with its pros, cons, and the exact rules it writes, is in [`plugin
 | `review-and-fix`, `commit-push` | The quick workflow |
 | `review` | Run the chosen reviewers in parallel and merge their findings |
 | `ux-review` | Usability review, one agent per persona |
-| `ui-qa` | Check the running UI against the task and the design source |
+| `ui-qa` | Check the running UI, only what automated UI tests do not cover; `--full` for release QA |
 
 Reviewer agents: `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, `dx-reviewer`, `ux-persona-reviewer`, `ui-qa`. Each has a general checklist in the plugin and reads repository-specific checks from `## Review focus: <reviewer>` in `GROUNDWORK.md`.
 

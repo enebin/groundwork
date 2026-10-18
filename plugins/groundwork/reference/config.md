@@ -61,6 +61,7 @@ verification:
     targeted: "<command with {test} placeholder>"
     full: "<command>"
   design_source: null                    # path or URL of the design source, when design-fidelity is on
+  ui_coverage: docs/ui-coverage.md       # UI coverage ledger, committed; present when ui-qa is in review.reviewers
 
 architecture:
   bundle: unidirectional                 # unidirectional | mvvm | layered-service | layered-web | none
@@ -74,7 +75,7 @@ review:
     - name: "Habit tracker user"
       goal: "Record today's habits in a few taps"
 
-mode: normal                             # eco | normal | sport — how hard the review loop works (see Modes)
+mode: normal                             # eco | normal | sport — how much review and UI QA a change gets (see Modes)
 ---
 ```
 
@@ -119,16 +120,34 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 
 ### Modes
 
-`mode` sets how hard the review loop works. It never chooses a model. Reviewers, Skeptic policy, and verification rules stay as configured; the mode changes only how often and how many times they run. Any skill that runs a review loop accepts `--mode <mode>` to override it for that one run.
+`mode` sets how much review and rendered QA a change gets. It never chooses a model. Reviewers, the Skeptic policy, and verification rules stay as configured. Skills that run a review loop accept `--mode <mode>` for a single run.
 
-| | `eco` | `normal` | `sport` |
-|---|---|---|---|
-| Review rounds, at most | 1 | 3 | 3 |
-| Who reviews again from round 2 | — (fixes after round 1 are checked by verification only) | only reviewers that raised a confirmed 🔴/🟠 | every reviewer |
-| Rendered checks (`ui-qa`, `ux`) | once, at finish | each round where `ui_paths` changed | every round |
-| Full test suite | once, at finish | once, at finish | every round |
+| | `eco` | `normal` | `sport` | Release QA (every mode) |
+|---|---|---|---|---|
+| Review rounds, at most | 1 | 3 | 3 | — |
+| Who reviews again from round 2 | — | reviewers that raised a confirmed 🔴/🟠 | every reviewer | — |
+| Automated UI tests | changed screens | changed screens; full suite at finish | full suite every round | full suite |
+| UI QA: ledger rows checked | none; the changed screens' rows are marked `stale` | rows without an automated test, on changed screens | the same, on changed and related screens | every row without an automated test, `stale` first |
+| Appearance conditions | — | default; dark and largest text too when the change touches color, typography, or layout | light, dark, largest text | every condition the ledger lists |
+| UX personas | none | only personas whose tasks the change touches | every task the change touches | every task |
+| Done | verification passes, no confirmed 🔴/🟠; UI recorded as unverified | verification and UI QA pass, no confirmed 🔴/🟠 | as `normal` | a FAIL or BLOCKED stops the release |
 
-The done criteria do not change: verification passes, required rendered checks pass, and no confirmed 🔴/🟠 remains. In `eco`, a 🔴/🟠 left after the single round's fixes are verified is reported to the user rather than reviewed again.
+**Related screens** are screens that use a changed component, style, or theme value, and screens that navigate directly into or out of a changed screen.
+
+**Release QA** is `/groundwork:ui-qa --full`, plus `/groundwork:ux-review --full` when `ux` is in `review.reviewers`. Under `develop-release`, the `release` skill runs it before cutting a release. Under `main-only`, run it before tagging a version.
+
+In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
+
+### UI coverage ledger
+
+`verification.ui_coverage` is a committed Markdown table of what each screen needs checked:
+
+| Screen | Check | Automated test | Why QA must look | Last verified |
+|---|---|---|---|---|
+
+- UI QA checks only rows whose Automated test cell is empty. A row with a test is covered by that build's test result.
+- UI QA maintains the ledger: it adds rows for new or changed screens, fills Last verified (`<branch or commit>, PASS` or `FAIL`), and proposes a test in its report for any row that could be automated. When the implementation agent adds that test, it writes the test name into the row.
+- In `eco`, the implementing skill sets Last verified to `stale` on the changed screens' rows instead of running UI QA. Nothing else edits the ledger.
 
 ### Severity
 

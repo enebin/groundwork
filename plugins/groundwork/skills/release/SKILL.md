@@ -74,11 +74,12 @@ Sort each PR by what it means to users:
 
 ## 4. Pre-release checks
 
-Static checks only. Do not try to simulate production or run load tests; passing tests and builds are CI's job.
+Static checks, plus release QA. Do not try to simulate production or run load tests; passing tests and builds are CI's job.
 
 1. **Destructive migrations.** List migration files changed in `origin/<branches.production>..origin/<branches.integration>` (paths with `migration` or `migrate` in them, or the migration directory `docs.rules` names). Flag any that drop a table, column, constraint, or index; rename a table or column; change a column type; or add `NOT NULL` without a default. If `docs.rules` defines a migration policy such as expand-contract, check against it.
 2. **Deploy configuration.** Flag changes to deploy and runtime configuration: CI/CD workflows, container and infrastructure files, and example environment files. A missing environment variable can break the release.
 3. **Repository checks.** Apply the checks under `## Release checks` in `GROUNDWORK.md` and any release rules in `docs.rules`.
+4. **Release QA.** When `ui-qa` is in `review.reviewers`, run `/groundwork:ui-qa --full` on `origin/<branches.integration>`, and `/groundwork:ux-review --full` when `ux` is. Any `stale` ledger rows are checked first. A FAIL or BLOCKED stops the release: report it and do not create the branch or PR. This check runs in every mode.
 
 Print one line per check with ✅ or ⚠️ and, for ⚠️, the file and the pattern found.
 

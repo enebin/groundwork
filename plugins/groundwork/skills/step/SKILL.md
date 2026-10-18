@@ -49,13 +49,13 @@ Skip this section if `--implemented` is given; the caller has already done it.
 
 ## 4. Loop
 
-The mode is `--mode` if given, otherwise `mode` in `GROUNDWORK.md`. It sets the round limit and what reruns; see Modes in `reference/config.md`. Log the mode in round 1.
+The mode is `--mode` if given, otherwise `mode` in `GROUNDWORK.md`. It sets the round limit, what reruns, and the UI QA scope; see Modes in `reference/config.md`. Log the mode in round 1.
 
 Repeat for round `r = 1` up to the mode's limit:
 
 1. **Verify.** Run the `verification.commands` the change affects. Verification failures do not count as a round. A design step skips this.
    - When the change touches `verification.ui_paths`, run only the UI tests that cover the changed screens with `verification.ui_tests.targeted`. The full suite runs once in step 5.
-   - `sport` runs the full suite every round. `eco` skips rendered checks here and runs them once in step 5.
+   - `sport` runs the full suite every round. Rendered checks follow the mode: `eco` runs no UI QA or UX review and sets the changed screens' ledger rows (`verification.ui_coverage`) to `stale`; `normal` covers the changed screens; `sport` covers changed and related screens. Pass the mode to `/groundwork:ui-qa` and `/groundwork:ux-review`.
    - When the change touches `verification.ui_paths`, invoke `/groundwork:ui-qa` if `ui-qa` is in `review.reviewers`, and `/groundwork:ux-review` if `ux` is. Pass each one the UI test result bundle path, the commit, and the dirty state of that run so they do not rerun the same tests. Do not drive the same simulator or browser while they run. On failure, fix the root cause and send the affected checks back on a fresh build. Missing required rendered evidence is reported as blocked/unverified, not as a pass.
    - In round 2 or later, skip UI tests and rendered checks when the fixes since the last PASS touch nothing under `verification.ui_paths`. Log them as `not rerun — no UI change since round <r>`.
    - Add-ons in `verification.addons` add checks here. `design-fidelity`: re-measure the changed screens against `verification.design_source`. `api-contract`, `visual-regression`, and any other add-on: run its check. For each, follow the rules for that add-on in `docs.rules`.
@@ -80,7 +80,7 @@ If the last allowed round ends with confirmed 🔴/🟠 still open, stop and ask
 
 ## 5. Finish
 
-In `eco`, when the step changed anything under `verification.ui_paths`, run the rendered checks from step 4 once here, before the full suite. A FAIL sends you back to fix and verify; it does not start another review round.
+In `eco`, list in the closing comment the screens left UI-unverified (marked `stale`). Release QA checks them first.
 
 1. If the step changed anything under `verification.ui_paths`, run `verification.ui_tests.full` once. A failure sends you back to step 4 and counts as a verification failure, not a round.
 2. Design step: show the user the document and the review result, and stop until they approve it. Their requested changes go back to step 4.
