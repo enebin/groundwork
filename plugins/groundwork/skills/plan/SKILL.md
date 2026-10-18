@@ -36,7 +36,7 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 - Size a step so one review loop can cover it: one PR a reviewer can read in one sitting.
 - When `docs.architecture` is set and the job changes structure, the first step updates `docs.architecture` and its sub-documents.
 - `design-first`: the first step is always a design step that changes `docs.architecture` or adds a design note. Its done criteria include explicit user approval of the document. Every later step depends on it.
-- If any `verification.commands` entry still has `verified: false`, the repository has no working code yet. Propose a first "scaffold" step whose done criteria are: every `verification.commands` entry passes, and each is flipped to `verified: true` in `GROUNDWORK.md`. Under `design-first` it comes right after the design step.
+- If any `verification.commands` entry still has `verified: false`, the repository has no working code yet. Propose a first "scaffold" step whose done criteria are: every `verification.commands` entry passes, and each is flipped to `verified: true` in `GROUNDWORK.md`. When the repository has no commits, the scaffold step also makes the first commit on `branches.production` and creates `branches.integration` from it, because no work branch can start before that. Under `design-first` it comes right after the design step.
 - Order steps by dependency and write each step's dependencies down.
 - Do not add steps for work nobody asked for. Ask when the requirement leaves a choice open.
 - When the user moves something to a later scope while answering, set it aside as a **needs-planning issue**. Only record what the user moved out. Do not add your own ideas.

@@ -29,7 +29,7 @@ project:
 
 docs:
   rules: AGENTS.md                       # working rules; groundwork writes chosen rule sets here
-  architecture: ARCHITECTURE.md          # absent when architecture.bundle is none
+  architecture: ARCHITECTURE.md          # always present; holds minimal-structure, plus the bundle contract unless the bundle is none
 
 tracker:
   type: local                            # local | github | linear | jira

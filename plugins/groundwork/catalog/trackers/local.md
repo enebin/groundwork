@@ -137,7 +137,7 @@ There is no closing syntax. Add `Issue: <id>` to the PR body for reference. Afte
 
 1. **Detect.** Choose local when no tracker is detected, or when the user asks for it.
 2. **Ask.** "Should the issue files be committed to the repository so others can see them?" Default: No.
-3. **Prepare the directory.** Create `$MAIN/<tracker.path>`. When `shared: false`, add the path to `$MAIN/.git/info/exclude`. This keeps the files out of git without a tracked `.gitignore` change and covers every worktree.
+3. **Prepare the directory.** Create `$MAIN/<tracker.path>`. When `shared: false`, write a file named `.gitignore` containing the single line `*` inside that directory. Git then ignores the directory and that file itself, so no tracked file changes, and every worktree sees the same ignored files. Agent harnesses usually refuse writes inside `.git/`, so never use `.git/info/exclude`.
 4. **Verify.** Create nothing. Check that `$DIR` is writable and that `git check-ignore "$DIR/probe.md"` reports it ignored when `shared: false`.
 5. **Record.** `tracker: {type: local, path: <path>, shared: <bool>}`.
 

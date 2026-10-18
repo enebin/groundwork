@@ -7,7 +7,7 @@ argument-hint: "[--recommended]"
 
 Set up groundwork for this repository. The main audience is someone starting a new project; an existing repository gets the same questions with recommendations taken from what is already there.
 
-`reference/config.md` under the plugin root defines `GROUNDWORK.md`. The catalog under `catalog/` holds every bundle, its pros and cons, and the text to write when it is chosen. Read both before asking anything. The plugin root is two directories above this skill's directory.
+`reference/config.md` under the plugin root defines `GROUNDWORK.md`. The catalog under `catalog/` holds every bundle, its pros and cons, and the text to write when it is chosen. Read `reference/config.md` first. Read a catalog file when its step comes up, not all at the start: the catalog is long, and loading it all up front costs tokens on every later turn. The plugin root is two directories above this skill's directory.
 
 Talk to the user in the language they are using. This skill writes nothing until the user approves the final preview. Plan mode: gather everything read-only, write the plan, and continue after approval.
 
@@ -16,7 +16,7 @@ Talk to the user in the language they are using. This skill writes nothing until
 Every question follows these rules.
 
 - Put the recommended option first, mark it "(Recommended)", and give one line on why it is recommended **for this repository**.
-- Before each choice, show the step's bundles as one table with exactly these columns: `Bundle | Pros | Cons | Token cost`. The recommended bundle is the first row and is marked "(Recommended)". Condense each catalog entry to one short line per cell; give the full lists only when the user asks. Token cost is the catalog's relative level (Low / Medium / High / Very high), compared within this step; say once that it is an estimate, not a measurement. Keep the rules inside a bundle folded; show them only when the user asks.
+- Before each choice, show the step's bundles as one table with exactly these columns: `Bundle | Pros | Cons | Token cost`. The recommended bundle is the first row and is marked "(Recommended)". Each cell holds the bundle's single strongest point in about twelve words or fewer, not a list; give the full lists only when the user asks. A step whose choice does not change token use (such as branches) may drop the Token cost column. Token cost is the catalog's relative level (Low / Medium / High / Very high), compared within this step; say once that it is an estimate, not a measurement. Keep the rules inside a bundle folded; show them only when the user asks.
 - Use `AskUserQuestion` when available, with the same three items (pros, cons, token cost) in each option's `preview`. It allows four options; when a step has more, show the full catalog table as text first, then offer the recommended option, the two most relevant alternatives, and let the user name any other bundle through "Other". Without `AskUserQuestion` (for example in Codex), ask in plain text with numbered options.
 - Never invent a bundle, rule, or pro/con that the catalog does not contain.
 
@@ -143,10 +143,10 @@ Place each item the user gives, and show where it goes:
 Mandatory, also after "Use all recommendations". Show every file to create or change with what goes into it:
 
 - `GROUNDWORK.md` — the full frontmatter and body.
-- `docs.rules` (create `AGENTS.md` if absent) — the "Rules to write" block of each chosen verification bundle and add-on, `minimal-structure`, and step 8 rules.
-- `docs.architecture` (create `ARCHITECTURE.md` if absent and a bundle was chosen) — the bundle's "Contract to write". Skip when following an existing document.
+- `docs.rules` (create `AGENTS.md` if absent) — the "Rules to write" block of each chosen verification bundle and add-on, and step 8 rules.
+- `docs.architecture` (create `ARCHITECTURE.md` if absent) — the `minimal-structure` rules first, then the chosen bundle's "Contract to write" (none for `none`). When following an existing document, add only the `minimal-structure` block.
 - `CLAUDE.md` — a one-line pointer to `AGENTS.md`, only if `CLAUDE.md` does not exist.
-- Local tracker setup from `catalog/trackers/local.md` (it ignores the issue directory through `.git/info/exclude`, so no tracked file changes), when the tracker is local.
+- Local tracker setup from `catalog/trackers/local.md` (a self-ignoring `.gitignore` inside the issue directory, so no tracked file changes), when the tracker is local.
 
 Wrap every block groundwork writes into an existing document in `<!-- groundwork:begin <id> -->` and `<!-- groundwork:end <id> -->`, so a re-run replaces exactly that block and leaves the user's text alone. Never edit text outside these markers.
 

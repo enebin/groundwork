@@ -30,7 +30,7 @@ In plan mode, do not refuse. Inspect with read-only tools, write the concrete pl
 - `STATE_FILE = $STATE_DIR/<KEY>.json`
 - `ISSUE_FILE = $STATE_DIR/<KEY>.issue.md`
 
-Create `STATE_DIR` if it does not exist. If `git check-ignore -q .groundwork/state/x` fails, append `.groundwork/state/` and `.groundwork/worktrees/` to `.git/info/exclude` so the state stays out of commits without touching tracked files.
+Create `STATE_DIR` if it does not exist. If `git check-ignore -q .groundwork/state/x` fails, write a `.gitignore` containing the single line `*` into `.groundwork/state/` and into `.groundwork/worktrees/`. Git then ignores each directory and that file itself, so no tracked file changes. Agent harnesses usually refuse writes inside `.git/`, so never use `.git/info/exclude`.
 
 ## 3. Run
 
