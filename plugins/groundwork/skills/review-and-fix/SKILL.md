@@ -37,7 +37,6 @@ Invoke `/groundwork:review` in local mode. It reviews the branch's commits, the 
 From the report, keep:
 
 - `[CONFIRMED]` findings at or above the threshold.
-- Failed rendered checks (`UI QA`, `UX Review`).
 - When the report says `SkepticReview: OFF`, the `[UNVERIFIED]` findings at or above the threshold, marked as unverified.
 
 Only problems in the change count. Pre-existing code outside the diff is out of scope. Skip 🟡 findings that are only about test code style.

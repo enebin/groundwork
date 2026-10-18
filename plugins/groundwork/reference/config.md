@@ -8,7 +8,7 @@ If a key a skill needs is missing, stop and name the key. Do not fall back to a 
 
 ## Compatibility
 
-The file is a public contract: other people's repositories hold it. Keys are only ever added. A key is never renamed or removed, and a value never changes meaning. When a breaking change is unavoidable, bump `groundwork` (the schema version) and teach `onboarding` to migrate the old shape. A skill that reads a `groundwork` version newer than it knows stops and asks the user to update the plugin.
+The file is a public contract: other people's repositories hold it. Before 1.0, a beta release may still change a value's meaning; the release notes say so, and `onboarding` migrates the file. Keys are only ever added. A key is never renamed or removed, and a value never changes meaning. When a breaking change is unavoidable, bump `groundwork` (the schema version) and teach `onboarding` to migrate the old shape. A skill that reads a `groundwork` version newer than it knows stops and asks the user to update the plugin.
 
 ## Shape
 
@@ -56,19 +56,20 @@ verification:
     - name: Build
       run: "<command>"
       verified: false                    # true once the command has passed in this repository
-  ui_paths: []                           # paths whose change requires UI tests and rendered review
+  ui_paths: []                           # paths whose change requires UI tests with screenshots
   ui_tests:
     targeted: "<command with {test} placeholder>"
     full: "<command>"
   design_source: null                    # path or URL of the design source, when design-fidelity is on
-  ui_coverage: docs/ui-coverage.md       # UI coverage ledger, committed; present when ui-qa is in review.reviewers
+  ui_coverage: docs/ui-coverage.md       # UI coverage ledger, committed; present when the project has screens
 
 architecture:
   bundle: unidirectional                 # unidirectional | mvvm | layered-service | layered-web | none
 
 review:
   bundle: app                            # app | sdk | product | light
-  reviewers: [architecture, code-quality, ux, ui-qa]
+  reviewers: [architecture, code-quality]
+  release_qa: false                      # true = ui-qa and ux personas check the running app before a release; very high token and time cost
   skeptic: blocking                      # blocking (🔴/🟠 only) | all (every non-nit finding)
   trigger: per-round                     # per-round | per-implementation | on-request
   personas:
@@ -100,10 +101,10 @@ Optional. Skills read only the section that applies to them.
 | `security` | `security-reviewer` | Authorization, data isolation, personal data, untrusted input |
 | `writing` | `writing-reviewer` | User-facing copy, terminology, accuracy against behavior |
 | `dx` | `dx-reviewer` | Public API usability for library users |
-| `ux` | `ux-persona-reviewer` | Usability, one agent per persona |
-| `ui-qa` | `ui-qa` | Rendered UI against requirements and the design source |
+| `ux` | `ux-persona-reviewer` | Usability, one agent per persona — release QA only |
+| `ui-qa` | `ui-qa` | Rendered UI against requirements and the design source — release QA only |
 
-`ux` and `ui-qa` exercise the running product. The rest read code.
+`ux` and `ui-qa` exercise the running product, which is slow and expensive. They never run as part of a change's review loop; they run in release QA when `review.release_qa` is true, or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly. The rest read code and run on every change.
 
 In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spawn a fresh subagent and tell it to read and follow `agents/<agent>.md` under the plugin root.
 
@@ -111,32 +112,28 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 
 | Bundle | Reviewers | Skeptic |
 |---|---|---|
-| `app` | architecture, code-quality, ux, ui-qa | blocking |
-| `sdk` | architecture, code-quality, dx, ui-qa (when the library has UI) | blocking |
-| `product` | architecture, code-quality, security, writing, ux | all |
+| `app` | architecture, code-quality | blocking |
+| `sdk` | architecture, code-quality, dx | blocking |
+| `product` | architecture, code-quality, security, writing | all |
 | `light` | code-quality | blocking |
 
 `review.reviewers` is the source of truth after onboarding. The bundle name records where the list came from. `architecture` is dropped from any bundle when `architecture.bundle` is `none`, because the reviewer has no standard to judge against.
 
 ### Modes
 
-`mode` sets how much review and rendered QA a change gets. It never chooses a model. Reviewers, the Skeptic policy, and verification rules stay as configured. Skills that run a review loop accept `--mode <mode>` for a single run.
+`mode` sets how hard the review loop works. It never chooses a model. Reviewers, the Skeptic policy, and verification rules stay as configured. Skills that run a review loop accept `--mode <mode>` for a single run.
 
-| | `eco` | `normal` | `sport` | Release QA (every mode) |
-|---|---|---|---|---|
-| Review rounds, at most | 1 | 3 | 3 | — |
-| Who reviews again from round 2 | — | reviewers that raised a confirmed 🔴/🟠 | every reviewer | — |
-| Automated UI tests | changed screens | changed screens; full suite at finish | full suite every round | full suite |
-| UI QA: ledger rows checked | none; the changed screens' rows are marked `stale` | rows without an automated test, on changed screens | the same, on changed and related screens | every row without an automated test, `stale` first |
-| Appearance conditions | — | default; dark and largest text too when the change touches color, typography, or layout | light, dark, largest text | every condition the ledger lists |
-| UX personas | none | only personas whose tasks the change touches | every task the change touches | every task |
-| Done | verification passes, no confirmed 🔴/🟠; UI recorded as unverified | verification and UI QA pass, no confirmed 🔴/🟠 | as `normal` | a FAIL or BLOCKED stops the release |
+| | `eco` | `normal` | `sport` |
+|---|---|---|---|
+| Review rounds, at most | 1 | 3 | 3 |
+| Who reviews again from round 2 | — (fixes are checked by verification only) | reviewers that raised a confirmed 🔴/🟠 | every reviewer |
+| UI tests | changed screens | changed screens; full suite at finish | full suite every round |
 
-**Related screens** are screens that use a changed component, style, or theme value, and screens that navigate directly into or out of a changed screen.
+In every mode, each changed screen needs a UI test that attaches a screenshot, and the implementing agent opens those screenshots before declaring done. In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
 
-**Release QA** is `/groundwork:ui-qa --full`, plus `/groundwork:ux-review --full` when `ux` is in `review.reviewers`. Under `develop-release`, the `release` skill runs it before cutting a release. Under `main-only`, run it before tagging a version.
+### Release QA
 
-In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
+When `review.release_qa` is true, release QA runs `/groundwork:ui-qa --full`, plus `/groundwork:ux-review --full` when `review.personas` is not empty. It checks the ledger rows that no automated test covers, `stale` rows first, and every persona task. A FAIL or BLOCKED stops the release. Under `develop-release`, the `release` skill runs it before cutting a release. Under `main-only`, run it before tagging a version. When `review.release_qa` is false, the ledger is the checklist for a human to go through before releasing.
 
 ### UI coverage ledger
 
@@ -145,9 +142,8 @@ In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the
 | Screen | Check | Automated test | Why QA must look | Last verified |
 |---|---|---|---|---|
 
-- UI QA checks only rows whose Automated test cell is empty. A row with a test is covered by that build's test result.
-- UI QA maintains the ledger: it adds rows for new or changed screens, fills Last verified (`<branch or commit>, PASS` or `FAIL`), and proposes a test in its report for any row that could be automated. When the implementation agent adds that test, it writes the test name into the row.
-- In `eco`, the implementing skill sets Last verified to `stale` on the changed screens' rows instead of running UI QA. Nothing else edits the ledger.
+- The implementing skill keeps it current. When it adds or changes a screen, it adds a row for each check, names the UI test that covers it, and for a check no test can make (visual polish, readability at large text, animation) fills "Why QA must look" instead. It sets Last verified to `stale` on the uncovered rows of every screen it changed.
+- Release QA checks only rows with no automated test, fills Last verified (`<branch or commit>, PASS` or `FAIL`), and proposes a test for any row that turns out to be automatable.
 
 ### Severity
 
@@ -158,7 +154,7 @@ Every reviewer uses the same scale.
 - 🟡 Minor: worth fixing; does not block merge.
 - Nit: taste only. No severity.
 
-Done means verification passed, required rendered review passed, and no confirmed 🔴/🟠 remains.
+Done means verification passed (including UI tests with screenshots for changed screens), and no confirmed 🔴/🟠 remains.
 
 ## Tracker operations
 

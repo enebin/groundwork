@@ -49,9 +49,9 @@ Load `STATE_FILE`, then:
    - Stage files one by one. Never stage `.env`, credential files, or other secrets.
    - If something in the plan is unclear, ask the user instead of guessing.
 5. **Verify.** Run the `verification.commands` the change affects. When the change touches `verification.ui_paths`, also run the UI tests that cover the changed screens with `verification.ui_tests.targeted`. Fix failures at the root cause before moving on.
-6. **Review**, as `review.trigger` says. Rendered checks are part of verification, not review: when the change touches `verification.ui_paths`, invoke `/groundwork:ui-qa` if `ui-qa` is in `review.reviewers` and `/groundwork:ux-review` if `ux` is, whatever the trigger, passing the mode. In `eco`, run neither and set the changed screens' ledger rows to `stale` (Modes in `reference/config.md`). Invoke `/groundwork:review` with `--only` set to the code reviewers in `review.reviewers` so rendered checks do not run twice.
-   - `per-round`: invoke `/groundwork:review` in local mode. Fix only the confirmed 🔴/🟠 and failed rendered checks, verify again, and review again. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`) if any remain, and ask the user how to proceed.
-   - `per-implementation`: invoke `/groundwork:review` in local mode once. Fix the confirmed 🔴/🟠 and failed rendered checks, and verify again.
+6. **Review**, as `review.trigger` says. Screens are covered in verify, not here: each changed screen needs a UI test with a screenshot that you open and check, and a ledger update, as in the `step` skill. QA and UX agents run only in release QA.
+   - `per-round`: invoke `/groundwork:review` in local mode. Fix only the confirmed 🔴/🟠, verify again, and review again. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`) if any remain, and ask the user how to proceed.
+   - `per-implementation`: invoke `/groundwork:review` in local mode once. Fix the confirmed 🔴/🟠, and verify again.
    - `on-request`: skip the review unless the user asked for one.
    - Ask the user before acting on trade-offs or high-impact UNVERIFIED findings. When the report says `SkepticReview: OFF`, show the user the `[UNVERIFIED]` 🔴/🟠 and ask which to fix. Leave 🟡 and nits for the summary.
 7. **Final UI run.** If the change touched `verification.ui_paths`, run `verification.ui_tests.full` once. A failure sends you back to step 5.

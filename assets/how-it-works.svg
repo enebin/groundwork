@@ -54,7 +54,7 @@
     <rect class="chip" x="820" y="268" width="150" height="36" rx="18"/><text class="acc" x="845" y="292">release</text>
     <rect class="chip" x="980" y="268" width="160" height="36" rx="18"/><text class="acc" x="1005" y="292">+7 more</text>
   </g>
-  <text class="mute" x="820" y="340" font-size="14">7 reviewer agents run in parallel</text>
+  <text class="mute" x="820" y="340" font-size="14">Code reviewers run in parallel on every change</text>
 
   <text class="mute" x="60" y="398" font-size="15">Commit GROUNDWORK.md, and teammates get the same workflow by installing the plugin. No onboarding needed.</text>
 </svg>

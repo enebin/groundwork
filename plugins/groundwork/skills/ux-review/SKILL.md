@@ -1,16 +1,16 @@
 ---
 name: ux-review
-description: Reviews usability by running one ux-persona-reviewer per persona in GROUNDWORK.md, concurrently, and merging their browser or device observations and screenshot evidence. Scoped by the mode; --full reviews every persona task for release QA. Reports only.
-argument-hint: "[--full] [--mode eco|normal|sport]"
+description: Reviews usability by running one ux-persona-reviewer per persona in GROUNDWORK.md, concurrently, and merging their browser or device observations and screenshot evidence. Runs in release QA when review.release_qa is on, or when the user asks. Very high token and time cost; not part of a change's review loop. Reports only.
+argument-hint: "[--full]"
 ---
 
 # UX Review
 
-Run one independent persona review per entry in `review.personas`, all at once, and merge the results. This is part of ordinary review, not a release gate. It reports only; fixes belong to the implementation agent.
+Run one independent persona review per entry in `review.personas`, all at once, and merge the results. It runs in release QA, or when the user asks for usability review; never on every change. It reports only; fixes belong to the implementation agent.
 
 Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line; an agent does not know where its own definition file lives, so it cannot find `reference/` or `catalog/` without it. Every persona reviewer follows `agents/ux-persona-reviewer.md` and `reference/rendered-review.md`.
 
-The `review` skill uses steps 2–4 of this procedure when `ux` is selected. If it already dispatched the persona reviewers, do not dispatch them again. Standalone invocation is supported.
+
 
 ## 1. Read the configuration
 
@@ -20,7 +20,7 @@ Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for
 
 Establish the assigned worktree and current source, the task requirements, the affected screens and flows, design references, and known build and test evidence with provenance.
 
-For each persona, decide whether the change affects any of its tasks before launching anything. Backend changes can affect flows too. The mode sets the scope (Modes in `reference/config.md`): `normal` covers only the touched tasks, `sport` every task the change touches including through related screens, and `--full` every task. `eco` runs no UX review.
+For each persona, decide whether the change affects any of its tasks before launching anything. Backend changes can affect flows too. With `--full`, every task of every persona is in scope.
 
 - If no persona is affected, report `UX Review: NOT APPLICABLE` with a concrete reason and stop.
 - If only some personas are affected, still dispatch the others with the scope evidence so they can report NOT APPLICABLE rather than invent checks.

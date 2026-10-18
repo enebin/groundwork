@@ -53,10 +53,10 @@ Recommended when: almost always. This is the default base bundle.
 - Unit tests never reach a real backend, network service, or production data. Replace I/O at its boundary with a test double.
 - Do not wait with sleeps. Await async calls directly, or poll for the expected state with a bounded wait helper.
 - While fixing, run only the tests that cover the change (`verification.ui_tests.targeted` for UI). Run the full suite (`verification.ui_tests.full` and every `verification.commands` entry) once before declaring the work done.
-- Run each UI test once per build. The implementer records the result path together with the commit and dirty state it was built from, and hands it to QA. QA reuses that result when the provenance matches the current tree and runs only what it does not cover. Neither side reruns a test the other already ran on the same build.
-- A test that checks a screen attaches a screenshot. Screenshots are the evidence for rendered review and design comparison. UI work is done only when the relevant screenshots have been inspected.
+- Every changed screen has a UI test that attaches a screenshot. UI work is done only when the implementer has opened those screenshots and checked them. Checks no test can make go into the UI coverage ledger with the reason.
+- Run each UI test once per build. Record the result path with the commit and dirty state it was built from, so later checks on the same build reuse it.
 - Keep compiler and type-checker warnings at zero. A new warning is a failure.
-- If any verification could not run (missing tool, no simulator, blocked QA), say which one and why in the work result. Report it as unverified. Never report it as passed.
+- If any verification could not run (missing tool, no simulator), say which one and why in the work result. Report it as unverified. Never report it as passed.
 ```
 
 ## ci-gate

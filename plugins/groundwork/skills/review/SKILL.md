@@ -41,8 +41,7 @@ For each selected key, decide whether the change gives it anything to judge. Rec
 - `architecture`, `code-quality`, `security`: apply to any code change.
 - `writing`: applies when user-facing copy changed, or behavior changed in a way that makes existing wording wrong.
 - `dx`: applies when a public symbol, extension point, example, or developer documentation changed.
-- `ux`: applies when a user flow of at least one persona is affected. Backend changes can affect flows too.
-- `ui-qa`: applies when a changed file matches `verification.ui_paths`, or the change affects appearance, layout, scrolling, keyboard handling, or screen behavior.
+- `ux`, `ui-qa`: never part of this skill. They exercise the running app and run only in release QA (`/groundwork:ui-qa --full`, `/groundwork:ux-review --full`) or when the user calls them directly. If `--only` names them, stop and point to those skills.
 
 In path mode, every selected reviewer whose area the path contains applies.
 
@@ -86,17 +85,6 @@ Severity:
 - 🟡 Minor: worth fixing; does not block merge
 ```
 
-### Rendered reviewers
-
-Rendered review needs a build of the target. In local and path modes, use the working tree. In PR mode, create a detached worktree at `HEAD_SHA` outside the repository (`git worktree add --detach <dir> $HEAD_SHA`) and build there; if that is not possible, report rendered coverage as BLOCKED.
-
-Before launching, establish isolated environments as `reference/rendered-review.md` requires: one device or browser context, artifact directory, and (for mutating web flows) database and server configuration per rendered reviewer. `ui-qa` and every persona reviewer each get their own. If isolation cannot be established for a reviewer, report its coverage as BLOCKED.
-
-- `ux`: follow `skills/ux-review/SKILL.md` steps 2–4 to dispatch one `ux-persona-reviewer` per persona. Do not spawn a separate UX coordinator, and do not dispatch personas twice.
-- `ui-qa`: prepare the assignment described in `skills/ui-qa/SKILL.md` and dispatch one `ui-qa` agent.
-
-Run code reviewers alongside them as capacity allows. If agent slots are limited, finish the code reviewers first, then launch the rendered set together.
-
 ## 6. Merge code findings
 
 - Merge findings that share a `file:line` or a root cause. Keep the highest supported severity and list every source reviewer.
@@ -135,4 +123,3 @@ Then, in this order:
 
 Leave REJECTED findings out.
 
-When `ux` or `ui-qa` was selected, add a separate **Rendered review** part after the code review. Give the `UX Review:` status merged as `skills/ux-review/SKILL.md` describes, and the `UI QA:` status, each with coverage, defects, absolute evidence paths, and blockers. Never prefix rendered results with `[CONFIRMED]` or `[UNVERIFIED]`, and never count them in the Skeptic Review line. A clean code review cannot turn missing or failed rendered coverage into a pass.
