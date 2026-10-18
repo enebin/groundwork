@@ -2,7 +2,7 @@
 name: "review-and-fix"
 description: Reviews the current branch's local changes with the repository's reviewers, fixes the confirmed findings at or above a severity threshold, verifies, then commits and pushes. Use for "review and fix", or as the first half of the quick workflow.
 allowed-tools: Bash, Read, Edit, Write, Grep, Glob, Skill, Agent, AskUserQuestion
-argument-hint: [critical | major | minor]
+argument-hint: [critical | major | minor] [--mode eco|normal|sport]
 ---
 
 Review the local changes on the current branch, fix what the review confirms, and commit and push the fixes.
@@ -64,7 +64,7 @@ For each item, read the file and the code around the finding, then fix it in the
 
 Run the `verification.commands` the fixes affect. When the fixes touch `verification.ui_paths`, also run the affected UI tests with `verification.ui_tests.targeted`. Do not move on until they pass. Fix failures at the root cause.
 
-If `review.trigger` is `per-round`, review again (step 2) and repeat until nothing at or above the threshold remains. Stop after round 3, or as soon as a round fixes nothing, and ask the user how to proceed.
+If `review.trigger` is `per-round`, review again (step 2) and repeat until nothing at or above the threshold remains. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`), or as soon as a round fixes nothing, and ask the user how to proceed.
 
 ## 6. Commit and push
 

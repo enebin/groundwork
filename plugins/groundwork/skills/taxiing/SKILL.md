@@ -2,7 +2,7 @@
 name: "taxiing"
 description: Flight stage 3. Implements the plan inside the issue's worktree, verifies and reviews it, and commits locally without pushing. Use for "taxi <id>", or after door-closing.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Agent, Skill, AskUserQuestion, TodoWrite
-argument-hint: <issue id> [--force]
+argument-hint: <issue id> [--force] [--mode eco|normal|sport]
 ---
 
 Stage 3 of the Flight sequence. Follow the plan in the worktree: write the code, verify it, review it, and commit. Never run `git push`, `gh pr create`, or any other remote side effect.
@@ -50,7 +50,7 @@ Load `STATE_FILE`, then:
    - If something in the plan is unclear, ask the user instead of guessing.
 5. **Verify.** Run the `verification.commands` the change affects. When the change touches `verification.ui_paths`, also run the UI tests that cover the changed screens with `verification.ui_tests.targeted`. Fix failures at the root cause before moving on.
 6. **Review**, as `review.trigger` says. Rendered checks are part of verification, not review: when the change touches `verification.ui_paths`, invoke `/groundwork:ui-qa` if `ui-qa` is in `review.reviewers` and `/groundwork:ux-review` if `ux` is, whatever the trigger. Invoke `/groundwork:review` with `--only` set to the code reviewers in `review.reviewers` so rendered checks do not run twice.
-   - `per-round`: invoke `/groundwork:review` in local mode. Fix only the confirmed 🔴/🟠 and failed rendered checks, verify again, and review again. Stop after round 3 if any remain, and ask the user how to proceed.
+   - `per-round`: invoke `/groundwork:review` in local mode. Fix only the confirmed 🔴/🟠 and failed rendered checks, verify again, and review again. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`) if any remain, and ask the user how to proceed.
    - `per-implementation`: invoke `/groundwork:review` in local mode once. Fix the confirmed 🔴/🟠 and failed rendered checks, and verify again.
    - `on-request`: skip the review unless the user asked for one.
    - Ask the user before acting on trade-offs or high-impact UNVERIFIED findings. When the report says `SkepticReview: OFF`, show the user the `[UNVERIFIED]` 🔴/🟠 and ask which to fix. Leave 🟡 and nits for the summary.

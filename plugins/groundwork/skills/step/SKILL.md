@@ -2,7 +2,7 @@
 name: "step"
 description: Runs one step sub-issue to completion. Implements it, then repeats verify → review → fix until the review leaves no confirmed 🔴/🟠, logging each round on the issue. Use for "run step <id>", "continue <id>", or when another skill hands over an implemented step.
 allowed-tools: Bash, Read, Edit, Write, Grep, Glob, Skill, Agent, AskUserQuestion
-argument-hint: <sub-issue id> [--implemented]
+argument-hint: <sub-issue id> [--implemented] [--mode eco|normal|sport]
 ---
 
 Drive one step to its done criteria.
@@ -49,14 +49,17 @@ Skip this section if `--implemented` is given; the caller has already done it.
 
 ## 4. Loop
 
-Repeat for round `r = 1, 2, 3`:
+The mode is `--mode` if given, otherwise `mode` in `GROUNDWORK.md`. It sets the round limit and what reruns; see Modes in `reference/config.md`. Log the mode in round 1.
+
+Repeat for round `r = 1` up to the mode's limit:
 
 1. **Verify.** Run the `verification.commands` the change affects. Verification failures do not count as a round. A design step skips this.
    - When the change touches `verification.ui_paths`, run only the UI tests that cover the changed screens with `verification.ui_tests.targeted`. The full suite runs once in step 5.
+   - `sport` runs the full suite every round. `eco` skips rendered checks here and runs them once in step 5.
    - When the change touches `verification.ui_paths`, invoke `/groundwork:ui-qa` if `ui-qa` is in `review.reviewers`, and `/groundwork:ux-review` if `ux` is. Pass each one the UI test result bundle path, the commit, and the dirty state of that run so they do not rerun the same tests. Do not drive the same simulator or browser while they run. On failure, fix the root cause and send the affected checks back on a fresh build. Missing required rendered evidence is reported as blocked/unverified, not as a pass.
    - In round 2 or later, skip UI tests and rendered checks when the fixes since the last PASS touch nothing under `verification.ui_paths`. Log them as `not rerun — no UI change since round <r>`.
    - Add-ons in `verification.addons` add checks here. `design-fidelity`: re-measure the changed screens against `verification.design_source`. `api-contract`, `visual-regression`, and any other add-on: run its check. For each, follow the rules for that add-on in `docs.rules`.
-2. **Review.** Invoke `/groundwork:review` in local mode with `--only` set to the code reviewers in `review.reviewers`; rendered checks already ran in verify. For a design step, the review covers the document.
+2. **Review.** Invoke `/groundwork:review` in local mode with `--only` set to the code reviewers in `review.reviewers`; rendered checks already ran in verify. From round 2 in `normal`, narrow `--only` to the reviewers that raised a confirmed 🔴/🟠 in the previous round. For a design step, the review covers the document.
 3. **Decide.**
    - A required rendered check is blocked and cannot be unblocked within the authorized scope → report the blocker and stop without marking the step complete. Do not spend rounds repeating unchanged blocked checks.
    - Verification passed, required rendered checks passed, and no confirmed 🔴/🟠 → go to step 5. Changes outside `verification.ui_paths` need no rendered checks.
@@ -73,9 +76,11 @@ Repeat for round `r = 1, 2, 3`:
 - Left: <🟡, nits, UNVERIFIED — one line each>
 ```
 
-If round 3 ends with confirmed 🔴/🟠 still open, stop and ask the user how to proceed.
+If the last allowed round ends with confirmed 🔴/🟠 still open, stop and ask the user how to proceed. In `eco`, fix the round-1 findings, verify, and then report anything you could not confirm as fixed instead of reviewing again.
 
 ## 5. Finish
+
+In `eco`, when the step changed anything under `verification.ui_paths`, run the rendered checks from step 4 once here, before the full suite. A FAIL sends you back to fix and verify; it does not start another review round.
 
 1. If the step changed anything under `verification.ui_paths`, run `verification.ui_tests.full` once. A failure sends you back to step 4 and counts as a verification failure, not a round.
 2. Design step: show the user the document and the review result, and stop until they approve it. Their requested changes go back to step 4.

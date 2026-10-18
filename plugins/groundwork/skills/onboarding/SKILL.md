@@ -51,7 +51,7 @@ Before the first choice, show every step at once with the recommendation already
 | 4 | Branches | <recommendation> |
 | 5 | Verification | <base> + <add-ons> |
 | 6 | Architecture | <recommendation> |
-| 7 | Review | <recommendation> |
+| 7 | Review | <recommendation>, mode `normal` |
 | 8 | Anything else | none |
 
 Then offer two choices: "Decide one by one (Recommended)" and "Use all recommendations". Say this with them, in the user's language:
@@ -117,6 +117,7 @@ Ask only the follow-ups the chosen bundle triggers (see the catalog), each with 
 - `ux`: personas. Recommend one persona drawn from the step 2 answer; the user can add more.
 - `ui-qa`: design source, if not already set in step 5.
 - Flight or quick workflow: review trigger.
+- Mode: `normal` (Recommended), from the Modes section of `catalog/review.md`, shown in the same Bundle | Pros | Cons | Token cost table. Say that it can be overridden per run with `--mode`, so the default should fit everyday work.
 - Skeptic policy: the bundle's default (Recommended). Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
 For an existing repository with its own reviewers or review rules, draft a `## Review focus: <key>` section for each chosen reviewer from them, show the drafts, and ask "Use the drafts (Recommended)" or "Edit".

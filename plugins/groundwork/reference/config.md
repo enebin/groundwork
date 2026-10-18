@@ -73,6 +73,8 @@ review:
   personas:
     - name: "Habit tracker user"
       goal: "Record today's habits in a few taps"
+
+mode: normal                             # eco | normal | sport — how hard the review loop works (see Modes)
 ---
 ```
 
@@ -114,6 +116,19 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 | `light` | code-quality | blocking |
 
 `review.reviewers` is the source of truth after onboarding. The bundle name records where the list came from. `architecture` is dropped from any bundle when `architecture.bundle` is `none`, because the reviewer has no standard to judge against.
+
+### Modes
+
+`mode` sets how hard the review loop works. It never chooses a model. Reviewers, Skeptic policy, and verification rules stay as configured; the mode changes only how often and how many times they run. Any skill that runs a review loop accepts `--mode <mode>` to override it for that one run.
+
+| | `eco` | `normal` | `sport` |
+|---|---|---|---|
+| Review rounds, at most | 1 | 3 | 3 |
+| Who reviews again from round 2 | — (fixes after round 1 are checked by verification only) | only reviewers that raised a confirmed 🔴/🟠 | every reviewer |
+| Rendered checks (`ui-qa`, `ux`) | once, at finish | each round where `ui_paths` changed | every round |
+| Full test suite | once, at finish | once, at finish | every round |
+
+The done criteria do not change: verification passes, required rendered checks pass, and no confirmed 🔴/🟠 remains. In `eco`, a 🔴/🟠 left after the single round's fixes are verified is reported to the user rather than reviewed again.
 
 ### Severity
 
