@@ -68,7 +68,7 @@ architecture:
 
 review:
   bundle: app                            # app | sdk | product | light
-  reviewers: [architecture, code-quality]
+  reviewers: [architecture, code-quality, ux]
   release_qa: false                      # true = ui-qa and ux personas check the running app before a release; very high token and time cost
   skeptic: blocking                      # blocking (🔴/🟠 only) | all (every non-nit finding)
   trigger: per-round                     # per-round | per-implementation | on-request
@@ -101,10 +101,9 @@ Optional. Skills read only the section that applies to them.
 | `security` | `security-reviewer` | Authorization, data isolation, personal data, untrusted input |
 | `writing` | `writing-reviewer` | User-facing copy, terminology, accuracy against behavior |
 | `dx` | `dx-reviewer` | Public API usability for library users |
-| `ux` | `ux-persona-reviewer` | Usability, one agent per persona — release QA only |
-| `ui-qa` | `ui-qa` | Rendered UI against requirements and the design source — release QA only |
+| `ux` | `ux-flow-reviewer` | Whether each persona can finish its tasks, traced through the code |
 
-`ux` and `ui-qa` exercise the running product, which is slow and expensive. They never run as part of a change's review loop; they run in release QA when `review.release_qa` is true, or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly. The rest read code and run on every change.
+All of these read code and run on every change. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run only in release QA (see Release QA), or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
 
 In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spawn a fresh subagent and tell it to read and follow `agents/<agent>.md` under the plugin root.
 
@@ -112,9 +111,9 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 
 | Bundle | Reviewers | Skeptic |
 |---|---|---|
-| `app` | architecture, code-quality | blocking |
+| `app` | architecture, code-quality, ux | blocking |
 | `sdk` | architecture, code-quality, dx | blocking |
-| `product` | architecture, code-quality, security, writing | all |
+| `product` | architecture, code-quality, security, writing, ux | all |
 | `light` | code-quality | blocking |
 
 `review.reviewers` is the source of truth after onboarding. The bundle name records where the list came from. `architecture` is dropped from any bundle when `architecture.bundle` is `none`, because the reviewer has no standard to judge against.
@@ -133,7 +132,7 @@ In every mode, each changed screen needs a UI test that attaches a screenshot, a
 
 ### Release QA
 
-When `review.release_qa` is true, release QA runs `/groundwork:ui-qa --full`, plus `/groundwork:ux-review --full` when `review.personas` is not empty. It checks the ledger rows that no automated test covers, `stale` rows first, and every persona task. A FAIL or BLOCKED stops the release. Under `develop-release`, the `release` skill runs it before cutting a release. Under `main-only`, run it before tagging a version. When `review.release_qa` is false, the ledger is the checklist for a human to go through before releasing.
+When `review.release_qa` is true, release QA runs `/groundwork:ui-qa --full`, plus `/groundwork:ux-review --full` (one `ux-persona-reviewer` per persona, on the running app) when `review.personas` is not empty. It checks the ledger rows that no automated test covers, `stale` rows first, and every persona task. A FAIL or BLOCKED stops the release. Under `develop-release`, the `release` skill runs it before cutting a release. Under `main-only`, run it before tagging a version. When `review.release_qa` is false, the ledger is the checklist for a human to go through before releasing.
 
 ### UI coverage ledger
 

@@ -39,6 +39,7 @@ Other reviewers own these. Do not report overlaps.
 - Correctness of the implementation, readability, cost, tests → `code-quality-reviewer`
 - Security of the API's inputs and outputs → `security-reviewer`
 - End-user copy shown by the library's UI → `writing-reviewer`
-- Rendered appearance and interaction → `ux-persona-reviewer` and `ui-qa`
+- Whether a persona can finish its tasks (steps, states, feedback, recovery) → `ux-flow-reviewer`
+- Rendered appearance and interaction → release QA (`ux-persona-reviewer`, `ui-qa`)
 
 Use the coordinator's scope, evidence, severity, and reporting contract. Do not edit files, commit, push, or run another reviewer or Skeptic Review.

@@ -32,6 +32,7 @@ Other reviewers own these. Do not report overlaps.
 - Code correctness → `code-quality-reviewer`
 - Whether private data is actually exposed → `security-reviewer`
 - API names, doc comments, and developer documentation of a library → `dx-reviewer`
-- Discoverability, layout, and whether text fits on screen → `ux-persona-reviewer` and `ui-qa`. Source inspection cannot establish fit.
+- Discoverability and task flow → `ux-flow-reviewer`
+- Layout and whether text fits on screen → release QA (`ux-persona-reviewer`, `ui-qa`). Source inspection cannot establish fit.
 
 Use the coordinator's scope, evidence, severity, and reporting contract. Do not modify source, tests, documentation, or inventories, commit, push, delegate, or run Skeptic Review.

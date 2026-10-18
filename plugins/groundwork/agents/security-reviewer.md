@@ -40,6 +40,7 @@ Other reviewers own these. Do not report overlaps.
 - Ordinary logic bugs, races without a security impact, performance, tests → `code-quality-reviewer`
 - User-facing copy, including privacy wording → `writing-reviewer`
 - Public API usability → `dx-reviewer`
-- Rendered appearance and interaction → `ux-persona-reviewer` and `ui-qa`
+- Whether a persona can finish its tasks (steps, states, feedback, recovery) → `ux-flow-reviewer`
+- Rendered appearance and interaction → release QA (`ux-persona-reviewer`, `ui-qa`)
 
 Use the coordinator's scope, evidence, severity, and reporting contract. Do not edit files, commit, push, or run another reviewer or Skeptic Review.

@@ -38,7 +38,8 @@ Other reviewers own these. Do not report overlaps.
 - Authorization, cross-tenant or cross-account data exposure, personal data, attack paths → `security-reviewer`
 - User-facing copy → `writing-reviewer`
 - Public API usability, customization reach, compatibility of public symbols, doc comments → `dx-reviewer`
-- Rendered appearance and interaction → `ux-persona-reviewer` and `ui-qa`. Do not infer visual correctness from source.
+- Whether a persona can finish its tasks (steps, states, feedback, recovery) → `ux-flow-reviewer`
+- Rendered appearance and interaction → release QA (`ux-persona-reviewer`, `ui-qa`). Do not infer visual correctness from source.
 
 If one problem is both a structural violation and a source of bugs, report it through the bug's failure scenario.
 

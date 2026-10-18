@@ -83,7 +83,7 @@ Every bundle, with its pros, cons, and the exact rules it writes, is in [`plugin
 | `ux-review` | Usability review, one agent per persona — release QA, opt-in |
 | `ui-qa` | Check the running app for what UI tests cannot assert — release QA, opt-in |
 
-Code reviewers, run on every change: `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, `dx-reviewer`. Each has a general checklist in the plugin and reads repository-specific checks from `## Review focus: <reviewer>` in `GROUNDWORK.md`.
+Code reviewers, run on every change: `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, `dx-reviewer`, and `ux-flow-reviewer`, which traces each persona's tasks through the code to find extra steps, missing states, and dead ends without launching the app. Each has a general checklist in the plugin and reads repository-specific checks from `## Review focus: <reviewer>` in `GROUNDWORK.md`.
 
 Screens are checked on every change by UI tests that attach screenshots. Agents that drive the running app (`ui-qa`, `ux-persona-reviewer`) are slow and expensive, so they run only in release QA, which is off unless you turn it on. The UI coverage ledger (`docs/ui-coverage.md`) lists what tests cannot check, as the release checklist.
 

@@ -4,13 +4,13 @@ Token cost levels are relative estimates within this step, not measurements.
 
 Onboarding shows these bundles as one choice. It writes the bundle id to `review.bundle`, the reviewer list to `review.reviewers`, and the skeptic policy to `review.skeptic`. After onboarding, `review.reviewers` is the source of truth; the user may add or drop reviewers by hand.
 
-These reviewers read code and run on every change. The agents that exercise the running app (`ui-qa`, `ux`) are not part of any bundle: they run only in release QA, which is a separate opt-in choice below. Screens are checked on every change by UI tests instead.
+These reviewers read code and run on every change. `ux` judges usability from the code: it traces each persona's tasks through screens and state without launching the app. The agents that exercise the running app (`ui-qa`, `ux-persona-reviewer`) are not part of any bundle: they run only in release QA, which is a separate opt-in choice below. Screens are checked on every change by UI tests instead.
 
 | Bundle | Reviewers | Skeptic |
 |---|---|---|
-| `app` | architecture, code-quality | blocking |
+| `app` | architecture, code-quality, ux | blocking |
 | `sdk` | architecture, code-quality, dx | blocking |
-| `product` | architecture, code-quality, security, writing | all |
+| `product` | architecture, code-quality, security, writing, ux | all |
 | `light` | code-quality | blocking |
 
 `architecture` is dropped from any bundle when `architecture.bundle` is `none`, because the reviewer has no standard to judge against.
@@ -23,17 +23,17 @@ Every bundle uses the same severity scale and the same done rule from `reference
 
 ## app
 
-Summary: For an application with screens. Code is reviewed for structure and correctness; screens are covered by UI tests on every change.
+Summary: For an application with screens. Code is reviewed for structure, correctness, and whether each persona can finish its tasks; screens are covered by UI tests on every change.
 
-Reviewers: architecture, code-quality. Skeptic: blocking.
+Reviewers: architecture, code-quality, ux. Skeptic: blocking.
 
 Pros:
-- Two independent angles on every change at a modest cost.
+- Usability problems that show in the code (extra steps, missing states, dead ends) are caught on every change, without launching the app.
 
 Cons:
-- Nobody judges usability or visual polish per change; that waits for release QA or a human.
+- Visual polish and on-screen readability are not judged per change; that waits for release QA or a human.
 
-Token cost: Medium — two code-reading reviewers each round.
+Token cost: Medium — three code-reading reviewers each round.
 
 Recommended when: `project.kind` is `app`.
 
@@ -57,7 +57,7 @@ Recommended when: `project.kind` is `library`.
 
 Summary: For a product with real users and real data. Adds security and user-facing writing review, and verifies every non-nit finding.
 
-Reviewers: architecture, code-quality, security, writing. Skeptic: all.
+Reviewers: architecture, code-quality, security, writing, ux. Skeptic: all.
 
 Pros:
 - Authorization, data isolation, personal data, and copy accuracy are checked on every change.
@@ -65,7 +65,7 @@ Pros:
 Cons:
 - The most expensive bundle; writing review often has nothing to do and reports not applicable.
 
-Token cost: High — four reviewers each round, and the skeptic pass verifies every non-nit finding.
+Token cost: High — five code-reading reviewers each round, and the skeptic pass verifies every non-nit finding.
 
 Recommended when: the product handles accounts, payments, organizations, or personal data.
 
@@ -103,17 +103,17 @@ Pros: an independent agent looks at every uncovered check and every persona task
 Cons: very slow. A single screen took 10 to 20 minutes per agent in testing, and every persona adds one more agent.
 Token cost: Very high — agents drive a simulator or browser step by step and read many screenshots.
 
-When on, onboarding also asks for personas and the design source.
+When on, onboarding also asks for the design source, and for personas if no bundle asked already.
 
 ## Follow-up questions
 
 Onboarding asks only the questions the chosen bundles trigger.
 
-### Personas (when release QA is on)
+### Personas (when `ux` is in `review.reviewers`, or release QA is on)
 
 Ask: "Who uses this product? Name each kind of user and the main thing they come to do."
 
-Write each answer to `review.personas` as `name` and `goal`. In release QA, one `ux-persona-reviewer` runs per persona. When a persona has several tasks, write them under `## Persona: <name>` in the `GROUNDWORK.md` body. Suggest one or two personas from `project.summary`; let the user edit them.
+Write each answer to `review.personas` as `name` and `goal`. `ux` traces every persona's tasks through the code on each change; in release QA, one `ux-persona-reviewer` per persona also checks the running app. When a persona has several tasks, write them under `## Persona: <name>` in the `GROUNDWORK.md` body. Suggest one or two personas from `project.summary`; let the user edit them.
 
 ### Design source (when release QA is on, or the `design-fidelity` add-on is chosen)
 

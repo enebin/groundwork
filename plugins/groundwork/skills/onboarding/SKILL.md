@@ -114,7 +114,8 @@ Bundles from `catalog/review.md`. Recommend by `project.kind`: `app` for apps, `
 
 Ask only the follow-ups the chosen bundle triggers (see the catalog), each with a recommendation:
 
-- Release QA, when the project has screens: off (Recommended) or on, from the Release QA section of `catalog/review.md`, in the same table. Warn plainly that it has very high token and time cost (10 to 20 minutes per screen per agent in testing). Only when on: personas (recommend one from the step 2 answer) and the design source, if not set in step 5.
+- Release QA, when the project has screens: off (Recommended) or on, from the Release QA section of `catalog/review.md`, in the same table. Warn plainly that it has very high token and time cost (10 to 20 minutes per screen per agent in testing). Only when on: the design source, if not set in step 5.
+- `ux` in the bundle, or release QA on: personas. Recommend one persona drawn from the step 2 answer; the user can add more.
 - Flight or quick workflow: review trigger.
 - Mode: `normal` (Recommended), from the Modes section of `catalog/review.md`, shown in the same Bundle | Pros | Cons | Token cost table. Say that it can be overridden per run with `--mode`, so the default should fit everyday work.
 - Skeptic policy: the bundle's default (Recommended). Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.

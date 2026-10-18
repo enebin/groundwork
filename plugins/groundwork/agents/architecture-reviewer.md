@@ -37,7 +37,8 @@ Other reviewers own these. Do not report overlaps.
 - Authorization, data isolation, personal data, attack paths → `security-reviewer`
 - User-facing copy → `writing-reviewer`
 - Whether a public API is easy to use, customization reach, compatibility of public symbols, doc comments → `dx-reviewer`
-- Rendered appearance and interaction → `ux-persona-reviewer` and `ui-qa`
+- Whether a persona can finish its tasks (steps, states, feedback, recovery) → `ux-flow-reviewer`
+- Rendered appearance and interaction → release QA (`ux-persona-reviewer`, `ui-qa`)
 
 For access levels, check only whether they match the documented rules. Whether the public shape is pleasant to use belongs to `dx-reviewer`. If a structural violation also causes a bug, explain the boundary violation and let the coordinator merge it with the bug.
 
