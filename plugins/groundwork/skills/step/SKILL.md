@@ -53,7 +53,7 @@ The mode is `--mode` if given, otherwise `mode` in `GROUNDWORK.md`. It sets the 
 
 Repeat for round `r = 1` up to the mode's limit:
 
-1. **Verify.** Run the `verification.commands` the change affects. Verification failures do not count as a round. A design step skips this.
+1. **Verify.** Run the `verification.commands` the change affects. Verification failures do not count as a round. A design step skips this. From round 2, the fixer has already verified its fixes; use its report and do not run them again.
    - When the change touches `verification.ui_paths`, run only the UI tests that cover the changed screens with `verification.ui_tests.targeted`. The full suite runs once in step 5.
    - `sport` runs the full suite every round.
    - Each changed screen needs a UI test that attaches a screenshot. Write or extend those tests with the code, then open the attached screenshots yourself and check that the screen renders as the task requires: nothing missing, overlapping, or clipped. Do not launch a separate QA or UX agent; those run only in release QA (`reference/config.md`).
@@ -67,6 +67,7 @@ Repeat for round `r = 1` up to the mode's limit:
    - Verification passed (including UI tests and your look at their screenshots for changed screens), and no confirmed 🔴/🟠 → go to step 5.
    - Otherwise fix only the confirmed 🔴/🟠. Leave 🟡, nits, and UNVERIFIED items for the log.
    - If the report has trade-offs or high-impact UNVERIFIED items, ask the user before acting on them.
+   - Hand the fixes to the `fixer` agent instead of making them yourself. By this point your context holds the whole implementation, and every fix, test run, and screenshot would be re-read on each later turn. In Claude Code, launch `groundwork:fixer`. In Codex, spawn a fresh subagent and tell it to read and follow `agents/fixer.md` under the plugin root. Give it a `Plugin root: <path>` line, the issue id, the branch, the mode, the round, the screens the step changes, and each finding to fix copied verbatim from the review report (title, location, evidence, suggestion), plus the user's answer for any finding they decided on. Do not edit files while it runs, and do not re-read its changes; its report is what you log. A finding it reports as not fixed stays open for the next round's decision, and a `BLOCKED` report is a blocked check. If delegation is unavailable, make the fixes yourself.
 4. **Log** the round with `comment`:
 
 ```markdown

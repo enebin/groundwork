@@ -106,6 +106,8 @@ Optional. Skills read only the section that applies to them.
 
 All of these read code and run on every change. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run only in release QA (see Release QA), or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
 
+The `fixer` agent is not a reviewer either: the `step` skill hands it each round's confirmed findings, so fixes and their test runs stay out of the step's own context.
+
 In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spawn a fresh subagent and tell it to read and follow `agents/<agent>.md` under the plugin root.
 
 ### Review bundles
@@ -130,7 +132,7 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 | Who reviews again from round 2 | — (fixes are checked by verification only) | reviewers that raised a confirmed 🔴/🟠 | every reviewer |
 | UI tests | changed screens | changed screens; full suite at finish | full suite every round |
 
-In every mode, each changed screen needs a UI test that attaches a screenshot, and the implementing agent opens those screenshots before declaring done. In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
+In every mode, each changed screen needs a UI test that attaches a screenshot, and the agent that changed the screen opens those screenshots before declaring done: the step itself while implementing, the `fixer` agent for review fixes. In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
 
 ### Release QA
 

@@ -87,6 +87,8 @@ Code reviewers, run on every change: `architecture-reviewer`, `code-quality-revi
 
 Screens are checked on every change by UI tests that attach screenshots. Agents that drive the running app (`ui-qa`, `ux-persona-reviewer`) are slow and expensive, so they run only in release QA, which is off unless you turn it on. The UI coverage ledger (`docs/ui-coverage.md`) lists what tests cannot check, as the release checklist.
 
+Review fixes go to the `fixer` agent. It starts from a fresh context, fixes the confirmed findings, and re-runs their tests, so after implementation the step's own context grows only by short reports.
+
 ## GROUNDWORK.md
 
 The contract is in [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md). Keys are only ever added, never renamed or removed. When the shape must change, the schema version goes up and onboarding migrates the file.
