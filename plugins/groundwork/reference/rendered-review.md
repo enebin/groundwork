@@ -1,6 +1,6 @@
 # Rendered review procedure
 
-The shared procedure for reviewers that exercise the running product: `ui-qa` and `ux-persona-reviewer`. They run in release QA (Release QA in `reference/config.md`) or when the user calls them directly, never on every change. Each agent's own file says what it judges. This file says how to establish the target, keep the environment safe, collect evidence, stay independent, and report.
+The shared procedure for reviewers that exercise the running product: `ui-qa` and `ux-persona-reviewer`. They run according to QA in `reference/config.md` or on explicit request. The selected QA bundle controls timing; the effective overall mode controls change-scoped coverage. Each agent's own file says what it judges. This file says how to establish the target, keep the environment safe, collect evidence, stay independent, and report.
 
 `ui-qa` judges the rendered UI against the task's requirements and the design source. `ux-persona-reviewer` judges how easily one persona understands and completes its tasks. Both inspect what a user actually sees; neither reviews code.
 
@@ -33,7 +33,7 @@ If safe isolated interaction cannot be established, mark the affected checks BLO
 
 ## Exercise and inspect
 
-Your checks are the assignment's list: the ledger rows, screens, and appearance conditions the caller selected. State them before running them. Add a check only when the changed code directly puts it at risk, and give that reason in the report. With `--full` (release QA), check every ledger row without an automated test, `stale` rows first.
+Your checks are the assignment's list: the ledger rows, screens, and appearance conditions the caller selected. State them before running them. Add a check only when the changed code directly puts it at risk, and give that reason in the report. With `--full`, check every ledger row without an automated test, `stale` rows first.
 
 Do not re-check what a passing automated UI test in the supplied results already covers.
 

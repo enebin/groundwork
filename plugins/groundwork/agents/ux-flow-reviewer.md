@@ -39,6 +39,6 @@ Other reviewers own these. Do not report overlaps.
 - Whether wording is clear and consistent → `writing-reviewer`
 - Authorization and personal data → `security-reviewer`
 - Developers building on a library, API, or CLI → `dx-reviewer`
-- Visual hierarchy, readability on screen, animation feel → release QA (`ux-persona-reviewer`, `ui-qa`). Code cannot establish them.
+- Visual hierarchy, readability on screen, animation feel → rendered QA under the QA policy (`ux-persona-reviewer`, `ui-qa`). Code cannot establish them.
 
 Use the coordinator's scope, evidence, severity, and reporting contract. Do not modify files, commit, push, delegate, or run Skeptic Review.

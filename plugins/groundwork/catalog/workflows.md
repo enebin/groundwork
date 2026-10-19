@@ -17,7 +17,7 @@ Onboarding shows these bundles as one choice and writes the id to `workflow.bund
 
 Summary: Split a job into sub-issues with `plan`, then run each one with `step`: implement, then verify → review → fix until no confirmed 🔴/🟠 remains, logging every round on the issue.
 
-Skills: `plan` → `step` (per sub-issue). `step` calls `review`, and `ui-qa` when `verification.ui_paths` changed.
+Skills: `plan` → `step` (per sub-issue). `step` calls `review`, then applies the separate QA policy after final verification.
 
 Fits:
 - Jobs that take several PRs and several sessions.
@@ -127,7 +127,7 @@ Fits:
 Does not fit:
 - Work that spans sessions; nothing records where you stopped.
 - Shared integration branches with strict review requirements.
-- Changes to UI that need rendered review, unless you also run `ui-qa` by hand.
+- Large UI changes that need more planning than the quick workflow provides; QA still follows its separate policy.
 
 Pros:
 - Lowest ceremony; the fix and its review land in minutes.
@@ -148,7 +148,7 @@ Recommended when: you work alone on small changes and want review without proces
 
 Summary: `step-loop`, but each step is built red → green → refactor. Before implementing, write a test for the step's behavior and watch it fail for the expected reason. Then make it pass with the smallest change, then clean up with the tests green.
 
-Skills: `plan` → `step`, with the red → green → refactor cycle inside the implement phase. Pairs with the `test-first` verification bundle.
+Skills: `plan` → `step`, with the red → green → refactor cycle inside the implement phase. Onboarding automatically installs the test-first implementation rules.
 
 Fits:
 - Logic with clear inputs and outputs: parsers, state machines, pricing, scheduling rules.

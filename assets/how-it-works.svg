@@ -34,7 +34,7 @@
     <text class="mute" x="464" y="144">your choices and repo-specific checks</text>
     <rect class="card" x="440" y="179" width="340" height="80" rx="12"/>
     <text class="ink mono" x="464" y="213" font-size="17" font-weight="600">AGENTS.md</text>
-    <text class="mute" x="464" y="239">the verification rules you picked</text>
+    <text class="mute" x="464" y="239">implementation, tests, and chosen rules</text>
     <rect class="card" x="440" y="274" width="340" height="80" rx="12"/>
     <text class="ink mono" x="464" y="308" font-size="17" font-weight="600">ARCHITECTURE.md</text>
     <text class="mute" x="464" y="334">the architecture contract you picked</text>

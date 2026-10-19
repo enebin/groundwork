@@ -1,6 +1,6 @@
 ---
 name: onboarding
-description: Sets up groundwork for the current repository. Walks the user through language, issue tracker, workflow, branches, verification, architecture, and review as pre-packaged bundles with a recommended choice each time, then writes GROUNDWORK.md and the chosen rules into the repository docs. Use when starting a new project, adopting groundwork in an existing repository, or changing earlier choices.
+description: Sets up groundwork for the current repository. Walks the user through language, issue tracker, workflow, deployment strategy, architecture, review, and QA as pre-packaged bundles with a recommended choice each time, then writes GROUNDWORK.md and the chosen rules into the repository docs. Use when starting a new project, adopting groundwork in an existing repository, or changing earlier choices.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, AskUserQuestion
 argument-hint: "[--recommended]"
 ---
@@ -16,7 +16,7 @@ Talk to the user in the language they are using. This skill writes nothing until
 Every question follows these rules.
 
 - Put the recommended option first, mark it "(Recommended)", and give one line on why it is recommended **for this repository**.
-- Before each choice, show the step's bundles as one table with exactly these columns: `Bundle | Pros | Cons | Token cost`. The recommended bundle is the first row and is marked "(Recommended)". Each cell holds the bundle's single strongest point in about twelve words or fewer, not a list; give the full lists only when the user asks. A step whose choice does not change token use (such as branches) may drop the Token cost column. Token cost is the catalog's relative level (Low / Medium / High / Very high), compared within this step; say once that it is an estimate, not a measurement. Keep the rules inside a bundle folded; show them only when the user asks.
+- Before each choice, show the step's bundles as one table with exactly these columns: `Bundle | Pros | Cons | Token cost`. The recommended bundle is the first row and is marked "(Recommended)". Each cell holds the bundle's single strongest point in about twelve words or fewer, not a list; give the full lists only when the user asks. A step whose choice does not change token use (such as deployment strategy) may drop the Token cost column. Token cost is the catalog's relative level (Low / Medium / High / Very high), compared within this step; say once that it is an estimate, not a measurement. Keep the rules inside a bundle folded; show them only when the user asks.
 - Use `AskUserQuestion` when available, with the same three items (pros, cons, token cost) in each option's `preview`. It allows four options; when a step has more, show the full catalog table as text first, then offer the recommended option, the two most relevant alternatives, and let the user name any other bundle through "Other". Without `AskUserQuestion` (for example in Codex), ask in plain text with numbered options.
 - Never invent a bundle, rule, or pro/con that the catalog does not contain.
 
@@ -48,17 +48,21 @@ Before the first choice, show every step at once with the recommendation already
 | 1 | Language | conversation: <current> / artifacts: English |
 | 2 | Issue tracker | <recommendation> |
 | 3 | Workflow | <recommendation> |
-| 4 | Branches | <recommendation> |
-| 5 | Verification | <base> + <add-ons> |
-| 6 | Architecture | <recommendation> |
-| 7 | Review | <recommendation>, mode `normal` |
+| 4 | Deployment strategy | <recommendation> |
+| 5 | Architecture | <recommendation> |
+| 6 | Review | <recommendation> |
+| 7 | QA | <recommendation, or not applicable> |
 | 8 | Anything else | none |
+
+Below the route, show the overall effort setting: `eco / normal (Recommended) / sport`. Explain it as one control for implementation verification, review, and applicable QA together, like a reasoning-effort setting, with `--mode` available per run. It does not select a model. Reuse an existing `mode` on re-runs. Explain the trade-offs from Modes in `reference/config.md`; offer a different default without making it a ninth numbered step.
+
+Tests are always part of implementation. Tell the user that build/test commands and applicable checks will be detected automatically and included in the final preview.
 
 Then offer two choices: "Decide one by one (Recommended)" and "Use all recommendations". Say this with them, in the user's language:
 
 > "Use all recommendations" picks the recommended option at every step and jumps to the final review. Still, I suggest going through each step and thinking about it yourself. What you choose here becomes the way this repository works. You can change it later, but people rarely change something once it is set. The recommendations are guesses from what I could see, and I do not know your situation.
 
-With `--recommended`, show the table and the warning, then go straight to step 8.
+With `--recommended`, show the table and the warning, apply the recommendations (including the QA compatibility mapping and overall mode), then go straight to step 8. In either recommendation shortcut, still perform automatic implementation setup and collect any missing launch, design-source, or persona facts required by the selected policies before the final preview; never invent them.
 
 ## 4. The steps
 
@@ -81,25 +85,14 @@ Bundles from `catalog/workflows.md`. Recommended: `step-loop` for a new project;
 
 Then, unless the bundle skips it (see the catalog), ask the autoland follow-up: "Merge automatically once CI passes?" — No (Recommended), with the catalog's reason.
 
-### Step 4 — Branches
+### Step 4 — Deployment strategy
 
 - `develop-release` (Recommended for a new project): work lands on `develop`; releases go through `release/x.y.z` into `main`.
 - `main-only`. Recommended instead when an existing repository has no `develop` branch.
 
 Then the merge style: recommend what the repository's merged PRs already use; `squash` for a new project.
 
-### Step 5 — Verification
-
-Base bundle and add-ons from `catalog/verification.md`. Recommend the base the catalog marks for this kind of project, and pre-select each add-on whose "Recommended when" matches the scan and the step 2 answer.
-
-Verification commands:
-
-- Existing repository: show the detected commands as a table (purpose, command) with their sources (CI, rules doc, manifest). "Use as found (Recommended)" or "Edit". Mark them `verified: true` only after running each once successfully; if a command cannot run here, keep `verified: false` and say why.
-- Empty repository: propose the stack's usual build and test commands, marked `verified: false`. When a command names a device, simulator, or runtime, pick one that exists on this machine (for example from `xcrun simctl list devices available`), preferring one available on the newest installed runtime so the command needs no OS pin. Explain that the first `plan` will propose a scaffold step that makes them pass.
-
-Also confirm `ui_paths` (paths whose changes need UI tests with screenshots) and, when `design-fidelity` is on, `design_source`.
-
-### Step 6 — Architecture
+### Step 5 — Architecture
 
 Bundles from `catalog/architecture/`, filtered to the project's stack. `minimal-structure` is part of every bundle and is not asked separately.
 
@@ -108,19 +101,23 @@ Bundles from `catalog/architecture/`, filtered to the project's stack. `minimal-
 
 Show the comparison table first. When the user picks or asks about a bundle, show its flow, example, and failure modes.
 
-### Step 7 — Review
+### Step 6 — Review
 
-Bundles from `catalog/review.md`. Recommend by `project.kind`: `app` for apps, `sdk` for libraries, `service` for backends and APIs without screens, `product` for products with screens plus sign-in, personal data, or several user roles (add `dx` when it also exposes a public API), `light` for tools (add `dx` for a command-line tool other people run). Drop `architecture` when step 6 chose `none`, and say why.
+Bundles from `catalog/review.md`. Recommend by `project.kind`: `app` for apps, `sdk` for libraries, `service` for backends and APIs without screens, `product` for products with screens plus sign-in, personal data, or several user roles (add `dx` when it also exposes a public API), `light` for tools (add `dx` for a command-line tool other people run). Drop `architecture` when step 5 chose `none`, and say why.
 
 Ask only the follow-ups the chosen bundle triggers (see the catalog), each with a recommendation:
 
-- Release QA, when the project has screens: off (Recommended) or on, from the Release QA section of `catalog/review.md`, in the same table. Warn plainly that it has very high token and time cost (10 to 20 minutes per screen per agent in testing). Only when on: the design source, if not set in step 5.
-- `ux` or `dx` in the bundle, or release QA on: personas, each with a `kind` (`user` for `ux` and release QA, `developer` for `dx`). Recommend one persona per selected reviewer, drawn from the step 2 answer; the user can add more.
+- `ux` or `dx` in the bundle: personas, each with a `kind` (`user` for `ux`, `developer` for `dx`). Recommend one persona per selected reviewer, drawn from the step 2 answer; the user can add more.
 - Flight or quick workflow: review trigger.
-- Mode: `normal` (Recommended), from the Modes section of `catalog/review.md`, shown in the same Bundle | Pros | Cons | Token cost table. Say that it can be overridden per run with `--mode`, so the default should fit everyday work.
 - Skeptic policy: the bundle's default (Recommended). Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
 For an existing repository with its own reviewers or review rules, draft a `## Review focus: <key>` section for each chosen reviewer from them, show the drafts, and ask "Use the drafts (Recommended)" or "Edit".
+
+### Step 7 — QA
+
+Read `catalog/qa.md`. Show its comparison table and platform/tool cost guidance, then ask for `manual` (Recommended initially), `release`, or `continuous`. For projects without screens, show not applicable and write manual without asking an irrelevant question. Existing `qa.bundle` is the recommendation on re-runs; migrate a legacy `review.release_qa` value as QA compatibility in `reference/config.md` specifies, showing the mapping in the final preview.
+
+Collect the catalog's applicable design-source, launch, and end-user-persona follow-ups. Keep these separate from code review. Set `review.release_qa` to the compatibility mirror, not as a second choice.
 
 ### Step 8 — Anything else
 
@@ -139,12 +136,24 @@ Place each item the user gives, and show where it goes:
 | A reviewer's standard | That reviewer's `## Review focus: <key>` |
 | Something groundwork cannot do | Nowhere. Say plainly that it cannot be done, and suggest an alternative if there is one. Do not write a rule that nothing will enforce. |
 
+## Automatic implementation setup
+
+Do this without a verification-bundle question. Read `reference/implementation.md` and detect the implementation settings it describes. Tests are mandatory in every workflow and mode.
+
+Verification commands:
+
+- Existing repository: detect build and test commands from CI, rules, and manifests, and show their sources in the final preview. Mark a command `verified: true` only after it runs successfully; otherwise keep false and explain why.
+- Empty repository: propose the stack's usual build/test commands as `verified: false`. For a command naming a device or runtime, use one actually available on this machine, preferring the newest installed runtime. The first scaffold step must make these commands pass.
+- Detect `verification.ui_paths`, targeted/full UI commands, and applicable add-ons. Retain existing settings on re-runs. Missing required commands remain an explicit scaffold task, not evidence of a pass.
+- If design-fidelity applies, collect a readable design source even when QA is manual. Keep it disabled if the source is unavailable and mark exact design matching unverified. Never silently remove a previously required design check; report the missing source as blocked and show it in the final preview.
+- Preserve legacy `verification.base` values and supplemental rules on re-runs. The default implementation block is written regardless of that value. Explain this rule upgrade in the preview.
+
 ## 5. Final review
 
 Mandatory, also after "Use all recommendations". Show every file to create or change with what goes into it:
 
-- `GROUNDWORK.md` — the full frontmatter and body.
-- `docs.rules` (create `AGENTS.md` if absent) — the "Rules to write" block of each chosen verification bundle and add-on, and step 8 rules.
+- `GROUNDWORK.md` — the full frontmatter and body, including automatic implementation settings, separate `qa.bundle`, and the overall `mode`.
+- `docs.rules` (create `AGENTS.md` if absent) — the mandatory block from `reference/implementation.md`, supplemental CI/test-first/add-on rules, and step 8 rules. For an existing managed evidence/basic block, show its replacement with the mandatory implementation block so contradictory run policies do not remain. Preserve CI gates and test-first requirements. Do not duplicate the old evidence block inside a new supplemental block.
 - `docs.architecture` (create `ARCHITECTURE.md` if absent) — the `minimal-structure` rules first, then the chosen bundle's "Contract to write" (none for `none`). When following an existing document, add only the `minimal-structure` block.
 - `CLAUDE.md` — a one-line pointer to `AGENTS.md`, only if `CLAUDE.md` does not exist.
 - `verification.ui_coverage` (`docs/ui-coverage.md`) — the ledger's header row only, when the project has screens. The implementing skills fill it as screens are built.

@@ -2,7 +2,7 @@
 name: "takeoff"
 description: Flight stage 4. Rebases the issue branch on the integration branch, pushes it, and opens a PR. The only Flight stage with remote side effects. Use for "takeoff <id>", or after taxiing.
 allowed-tools: Bash, Read, Skill, AskUserQuestion, TodoWrite
-argument-hint: <issue id> [--force]
+argument-hint: <issue id> [--force] [--mode eco|normal|sport]
 ---
 
 Stage 4 of the Flight sequence. Rebase on the integration branch, push, and open a PR. Only this stage, `autoland`, and `release` touch the remote. On success, delete the issue's state files.
@@ -23,7 +23,7 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 1. Arguments
 
-Split `--force` out of the arguments. The first remaining token is `<ISSUE>`. If it is empty, show the usage and stop.
+Split `--force` and `--mode <eco|normal|sport>` out of the arguments. Validate the mode and resolve it against the configured overall mode. The first remaining token is `<ISSUE>`. If it is empty, show the usage and stop. Forward the effective mode when chaining taxiing.
 
 ## 2. State files
 
@@ -39,7 +39,7 @@ Load `STATE_FILE`, then run each earlier stage whose `done_at` is `null`, or eve
 
 1. `/groundwork:boarding <ISSUE> [--force]`
 2. `/groundwork:door-closing <ISSUE> [--force]`
-3. `/groundwork:taxiing <ISSUE> [--force]`
+3. `/groundwork:taxiing <ISSUE> [--force] --mode <effective-mode>`
 
 The chain never runs `landing`.
 
@@ -50,7 +50,7 @@ The chain never runs `landing`.
 3. **Enter the worktree.** `cd` to `worktree_path`. If it is missing, tell the user and stop.
 4. **Clean tree.** If `git status` shows uncommitted changes, tell the user and stop.
 5. **Rebase.** `git fetch origin <branches.integration> && git rebase origin/<branches.integration>`. On a conflict, do not resolve it. Leave the rebase in progress, tell the user which files conflict and that they can finish with `git rebase --continue` or back out with `git rebase --abort`, and stop.
-6. **Re-verify.** If the rebase brought in new commits, run the `verification.commands` the change affects again. On failure, stop and report.
+6. **Re-verify.** If the rebase brought in new commits, run the `verification.commands` the change affects again. Recheck affected UI tests and screenshots, and invalidate any earlier rendered QA whose checked behavior changed. For continuous QA, rerun the affected after-implementation QA gate from `reference/config.md` on the rebased candidate with the effective mode before pushing. On FAIL or BLOCKED, stop and report. If QA updates the ledger, include it in a local commit under the existing workflow permissions before pushing; do not leave a dirty candidate.
 7. **Push.**
    - First push: `git push -u origin <branch>`.
    - The branch already exists on the remote and the rebase rewrote its history: ask the user, then `git push --force-with-lease origin <branch>`. Never plain `--force`.

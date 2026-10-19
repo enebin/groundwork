@@ -16,7 +16,7 @@
   <text class="you" x="40" y="90">&gt; /groundwork:onboarding</text>
   <text class="ink" x="40" y="128">This repository is empty. What are you building?</text>
   <text class="you" x="40" y="160">&gt; An iOS habit tracker in SwiftUI</text>
-  <text class="ink" x="40" y="204">Here is the whole route, filled in for this repository.</text>
+  <text class="ink" x="40" y="204">Here is the route. Overall effort: normal (change per run).</text>
 
   <g>
     <text class="mute" x="56" y="246">Step</text><text class="mute" x="130" y="246">Decides</text><text class="mute" x="350" y="246">Recommended</text>
@@ -24,10 +24,10 @@
     <text class="ink" x="56" y="286">1</text><text class="ink" x="130" y="286">Language</text><text class="acc" x="350" y="286">yours · artifacts in English</text>
     <text class="ink" x="56" y="314">2</text><text class="ink" x="130" y="314">Issue tracker</text><text class="acc" x="350" y="314">local files</text>
     <text class="ink" x="56" y="342">3</text><text class="ink" x="130" y="342">Workflow</text><text class="acc" x="350" y="342">step-loop</text>
-    <text class="ink" x="56" y="370">4</text><text class="ink" x="130" y="370">Branches</text><text class="acc" x="350" y="370">develop + release</text>
-    <text class="ink" x="56" y="398">5</text><text class="ink" x="130" y="398">Verification</text><text class="acc" x="350" y="398">evidence</text>
-    <text class="ink" x="56" y="426">6</text><text class="ink" x="130" y="426">Architecture</text><text class="acc" x="350" y="426">unidirectional</text>
-    <text class="ink" x="56" y="454">7</text><text class="ink" x="130" y="454">Review</text><text class="acc" x="350" y="454">app</text>
+    <text class="ink" x="56" y="370">4</text><text class="ink" x="130" y="370">Deployment strategy</text><text class="acc" x="350" y="370">develop + release</text>
+    <text class="ink" x="56" y="398">5</text><text class="ink" x="130" y="398">Architecture</text><text class="acc" x="350" y="398">unidirectional</text>
+    <text class="ink" x="56" y="426">6</text><text class="ink" x="130" y="426">Review</text><text class="acc" x="350" y="426">app</text>
+    <text class="ink" x="56" y="454">7</text><text class="ink" x="130" y="454">QA</text><text class="acc" x="350" y="454">manual</text>
     <text class="ink" x="56" y="482">8</text><text class="ink" x="130" y="482">Anything else</text><text class="acc" x="350" y="482">nothing</text>
   </g>
 
