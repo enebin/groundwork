@@ -68,6 +68,6 @@ Other reviewers own these. Do not report overlaps.
 - Authentication, authorization, and data exposure through the API → `security-reviewer`
 - End-user copy shown by the product's UI → `writing-reviewer`
 - Whether an end user can finish their tasks in the app → `ux-flow-reviewer`
-- Rendered appearance and interaction → release QA (`ux-persona-reviewer`, `ui-qa`)
+- Rendered appearance and interaction → rendered QA under the QA policy (`ux-persona-reviewer`, `ui-qa`)
 
 Use the coordinator's scope, evidence, severity, and reporting contract. Do not edit files, commit, push, or run another reviewer or Skeptic Review.

@@ -1,14 +1,14 @@
 ---
 name: ui-qa
-description: Release QA for screens. An independent agent launches the app and checks only the UI coverage ledger rows that no automated UI test covers. Runs before a release when review.release_qa is on, or when the user asks. Very high token and time cost; not part of a change's review loop.
-argument-hint: "[--full | <screen>...]"
+description: Checks uncovered rendered UI with an independent agent. Runs when the separate QA policy triggers or on request. Scope follows the overall effort mode or explicit screens/full selection; time and token usage depend on tools and coverage.
+argument-hint: "[--full | <screen>...] [--mode eco|normal|sport]"
 ---
 
 # UI QA
 
 Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line; an agent does not know where its own definition file lives, so it cannot find `reference/` or `catalog/` without it. The QA agent follows `agents/ui-qa.md` and `reference/rendered-review.md`. If you are already acting as the QA agent, follow those files directly instead of spawning another agent.
 
-Run this only for release QA (`--full`, Release QA in `reference/config.md`) or when the user asks for screen QA, optionally naming screens. Never run it on every change: in testing one screen took 10 to 20 minutes. Tell the user that before starting when they call it directly.
+Run when the QA policy in `reference/config.md` triggers, or on explicit request. Resolve `--mode` or the configured overall mode. Named screens select those screens; `--full` selects every uncovered ledger row. Without an explicit selection, eco and normal use affected screens and sport uses the full ledger. With no affected rows, report UI QA: NOT APPLICABLE and explain why. Before starting, state the scope and the platform/tool cost guidance from `catalog/qa.md`; do not promise fixed minutes or a platform multiplier. A named screen or `--full` is an explicit scope override.
 
 ## 1. Read the configuration
 
@@ -20,8 +20,8 @@ Prepare a short assignment with:
 
 - The absolute worktree path, the relevant diff and files, and the current build state.
 - The user's requirements and the design source (`verification.design_source` or the one the task names), including available local references.
-- The check list from the ledger (`verification.ui_coverage`): every row with no automated test, `stale` rows first, or only the named screens' rows. Rows with a passing automated test are not checked.
-- Any launch mode from the UI QA notes.
+- The check list from the ledger (`verification.ui_coverage`): the selected rows with no automated test, `stale` rows first, following the scope resolved above. Rows with a passing automated test are not checked.
+- The effective overall effort mode and the exact selected rows; any launch mode from the UI QA notes.
 - The device, simulator, emulator, or browser context reserved for QA, and for web the isolated database, ports, and server configuration (required when `verification.addons` contains `isolated-e2e`).
 - UI test results already produced for this build, with the commit and dirty state they came from, so QA reuses them instead of rerunning. Run each UI test once per build.
 - An output directory outside tracked source, and any execution constraints.

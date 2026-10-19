@@ -50,7 +50,7 @@ branches:
   merge: squash                          # squash | merge | rebase — how PRs land on the integration branch
 
 verification:
-  base: evidence                         # evidence | ci-gate | test-first | basic
+  base: evidence                         # automatic implementation policy; legacy values: evidence | ci-gate | test-first | basic
   addons: []                             # design-fidelity | api-contract | isolated-e2e | visual-regression
   commands:
     - name: Build
@@ -69,7 +69,7 @@ architecture:
 review:
   bundle: app                            # app | sdk | product | light
   reviewers: [architecture, code-quality, ux]
-  release_qa: false                      # true = ui-qa and ux personas check the running app before a release; very high token and time cost
+  release_qa: false                      # compatibility mirror: qa.bundle != manual; used only when qa is absent
   skeptic: blocking                      # blocking (🔴/🟠 only) | all (every non-nit finding)
   trigger: per-round                     # per-round | per-implementation | on-request
   personas:
@@ -77,7 +77,10 @@ review:
       goal: "Record today's habits in a few taps"
       kind: user                         # user (end user of the product) | developer (builds on its API, library, or CLI); default user
 
-mode: normal                             # eco | normal | sport — how much review and UI QA a change gets (see Modes)
+qa:
+  bundle: manual                         # manual | release | continuous — when rendered QA runs
+
+mode: normal                             # eco | normal | sport — overall effort for verification, review, and applicable QA
 ---
 ```
 
@@ -104,7 +107,7 @@ Optional. Skills read only the section that applies to them.
 | `dx` | `dx-reviewer` | Developer experience of a library API, HTTP or RPC API, or command-line tool, traced through `developer` personas' tasks |
 | `ux` | `ux-flow-reviewer` | Whether each `user` persona can finish its tasks in the app, traced through the code |
 
-All of these read code and run on every change. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run only in release QA (see Release QA), or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
+All of these read code and run on every change. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run according to the separate QA policy below, or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
 
 The `fixer` agent is not a reviewer either: the `step` skill hands it each round's confirmed findings, so fixes and their test runs stay out of the step's own context.
 
@@ -124,19 +127,38 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 
 ### Modes
 
-`mode` sets how hard the review loop works. It never chooses a model. Reviewers, the Skeptic policy, and verification rules stay as configured. Skills that run a review loop accept `--mode <mode>` for a single run.
+`mode` is an overall effort preset for implementation verification, review, and applicable rendered QA, like a reasoning-effort setting. It never chooses a model. Reviewers, the Skeptic policy, mandatory implementation rules, and the chosen QA trigger stay as configured. Implementation and QA skills accept `--mode <mode>` for one run and forward the resolved value to nested skills and agents. Validate eco, normal, or sport; absent an override, use the configured `mode`. The default is normal. Users can edit individual policies later instead of using the preset.
 
 | | `eco` | `normal` | `sport` |
 |---|---|---|---|
 | Review rounds, at most | 1 | 3 | 3 |
 | Who reviews again from round 2 | — (fixes are checked by verification only) | reviewers that raised a confirmed 🔴/🟠 | every reviewer |
-| UI tests | changed screens | changed screens; full suite at finish | full suite every round |
+| UI tests | changed screens; full suite at finish | changed screens; full suite at finish | full suite every round |
+| Change-scoped rendered QA, when triggered | changed screens, UI QA only | changed screens and affected user-persona tasks | all uncovered screens and all user-persona tasks |
 
 In every mode, each changed screen needs a UI test that attaches a screenshot, and the agent that changed the screen opens those screenshots before declaring done: the step itself while implementing, the `fixer` agent for review fixes. In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
 
-### Release QA
+### Default implementation policy
 
-When `review.release_qa` is true, release QA runs `/groundwork:ui-qa --full`, plus `/groundwork:ux-review --full` (one `ux-persona-reviewer` per persona, on the running app) when `review.personas` is not empty. It checks the ledger rows that no automated test covers, `stale` rows first, and every persona task. A FAIL or BLOCKED stops the release. Under `develop-release`, the `release` skill runs it before cutting a release. Under `main-only`, run it before tagging a version. When `review.release_qa` is false, the ledger is the checklist for a human to go through before releasing.
+Onboarding writes `reference/implementation.md` into `docs.rules` for every project. Tests, build/test execution, UI screenshot inspection, and honest reporting of blocked checks are implementation requirements, not a QA-strength choice. The `verification` keys continue to describe commands and supplemental rules. CI gates and test-first rules remain additional requirements when configured.
+
+### QA
+
+`qa.bundle` is a separate onboarding choice; its bundles and cost guidance are in `catalog/qa.md`.
+
+| Bundle | After implementation | Before release |
+|---|---|---|
+| manual | only on request | human checklist; agent QA only on request |
+| release | only on request | full rendered QA |
+| continuous | rendered QA, scope from effective mode | full rendered QA |
+
+**Compatibility:** when the entire `qa` mapping is absent in a schema-1 file, explicitly report the legacy mapping: `review.release_qa: false` means manual, true means release. If that legacy key is also absent, stop. A present but missing/unknown `qa.bundle` is an error, not a legacy fallback. Onboarding writes the mapping as `qa.bundle`, preserves the old key as a mirror (false for manual, true otherwise), and explains it in the final preview. No schema bump is needed for this additive key. Existing files keep their old trigger until migrated.
+
+**After implementation:** only continuous runs automatically. For step workflows, run once after the final verification and code-review fixes, before completion; Flight runs it in taxiing, and quick runs it in review-and-fix even when code review has no findings. Use `/groundwork:ui-qa <changed screens> --mode <effective-mode>` and, except in eco, `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
+
+**Before release:** release and continuous run `/groundwork:ui-qa --full --mode <effective-mode>`, plus `/groundwork:ux-review --full --mode <effective-mode>` when at least one user persona exists. Explicit `--full` keeps all uncovered checks and all user tasks in scope in every mode; eco does not remove this release gate. Use the exact release candidate (the integration head for develop-release, production head for main-only). The release skill runs the gate before creating a release branch or PR. For main-only, the workflow creating a version tag must run this gate before tagging, since the release-branch skill is not applicable. Manual shows the uncovered ledger rows as the human checklist.
+
+**Results and fixes:** select rows with no automated test, stale rows first, and skip checks already proven by matching automated results. A FAIL or BLOCKED stops implementation completion or release, depending on the trigger. The implementation agent fixes defects, adds regression coverage where possible, re-verifies, and returns the affected checks to QA on the new build. UI QA can update the ledger; commit that update only as the calling workflow allows. Never carry PASS across new edits that affect a checked behavior. Keep QA repair/recheck attempts within the effective mode's round limit; if still failing, or if a blocker cannot be resolved within scope, report and stop without marking done, tagging, pushing, or creating a release PR. Respect existing workflow permissions for all such actions.
 
 ### UI coverage ledger
 

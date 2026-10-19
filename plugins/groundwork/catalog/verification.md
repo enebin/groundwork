@@ -1,8 +1,8 @@
-# Verification bundles
+# Verification rule reference
 
 Token cost levels are relative estimates within this step, not measurements.
 
-Onboarding asks for one base bundle (`verification.base`) and any number of add-ons (`verification.addons`). Each chosen entry appends its "Rules to write" block to `docs.rules`, under a `## Verification` heading, in `language.artifacts`. The blocks below are the English source; onboarding translates them when `language.artifacts` is not `en` and keeps commands, paths, and code identifiers as they are.
+Verification is no longer an onboarding choice. `reference/implementation.md` supplies mandatory implementation and test rules. This catalog preserves the existing `verification.base` and `verification.addons` values and their supplemental rule blocks for compatibility and manual customization. Onboarding derives applicable settings, presents them in the final preview, and writes supplemental rules to `docs.rules` in `language.artifacts`. Keep commands, paths, and code identifiers unchanged when translating.
 
 ## Commands come from the repository, not from this catalog
 

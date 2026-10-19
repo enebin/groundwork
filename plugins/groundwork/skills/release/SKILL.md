@@ -1,8 +1,8 @@
 ---
 name: "release"
 description: Cuts a release/<version> branch from the integration branch and opens a release PR into the production branch, with release notes and pre-release checks. Use for "release <version>" when `branches.strategy` is develop-release.
-allowed-tools: Bash, Read, Grep, Glob, AskUserQuestion
-argument-hint: <version, e.g. 1.4.0>
+allowed-tools: Bash, Read, Grep, Glob, Skill, Agent, AskUserQuestion
+argument-hint: <version, e.g. 1.4.0> [--mode eco|normal|sport]
 ---
 
 Collect what has merged into the integration branch since the last release, cut `release/<version>`, and open a PR into the production branch.
@@ -21,7 +21,7 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 1. Preflight
 
-1. **Version.** The argument is required and must match `^\d+\.\d+\.\d+$`. Otherwise ask the user to call `/groundwork:release <x.y.z>` and stop.
+1. **Version and effort.** Parse optional `--mode <eco|normal|sport>` separately, validate it, and otherwise use the configured overall mode. Forward the effective mode to both QA skills. The remaining version argument is required and must match `^\d+\.\d+\.\d+$`. Otherwise ask the user to call `/groundwork:release <x.y.z>` and stop.
 2. **GitHub CLI.** Run `gh auth status`. If it is not authenticated or lacks permission, stop and tell the user to run `gh auth login` themselves. Never run `gh auth login` or `gh auth switch`.
 3. **Clean tree.** If `git status --porcelain` is not empty, tell the user and stop, so unrelated changes cannot ride along.
 4. **Fetch.** `git fetch origin <branches.production> <branches.integration> --tags`.
@@ -79,13 +79,13 @@ Static checks, plus release QA. Do not try to simulate production or run load te
 1. **Destructive migrations.** List migration files changed in `origin/<branches.production>..origin/<branches.integration>` (paths with `migration` or `migrate` in them, or the migration directory `docs.rules` names). Flag any that drop a table, column, constraint, or index; rename a table or column; change a column type; or add `NOT NULL` without a default. If `docs.rules` defines a migration policy such as expand-contract, check against it.
 2. **Deploy configuration.** Flag changes to deploy and runtime configuration: CI/CD workflows, container and infrastructure files, and example environment files. A missing environment variable can break the release.
 3. **Repository checks.** Apply the checks under `## Release checks` in `GROUNDWORK.md` and any release rules in `docs.rules`.
-4. **Release QA.** When `review.release_qa` is true, run `/groundwork:ui-qa --full` on `origin/<branches.integration>`, and `/groundwork:ux-review --full` when `review.personas` is not empty. `stale` ledger rows go first. A FAIL or BLOCKED stops the release: report it and do not create the branch or PR. When it is false, show the ledger rows with no automated test as the checklist for a human, and continue.
+4. **Release QA.** Resolve the QA bundle using QA in `reference/config.md`, including its explicit legacy mapping. For release or continuous, run the full before-release gate with the effective mode on the exact `origin/<branches.integration>` candidate. Select only user personas for UX QA. A FAIL or BLOCKED stops the release; do not create a branch or PR. For manual, show uncovered ledger rows as the human checklist. Pin the candidate SHA as `RELEASE_SHA`. QA may update only the coverage ledger in the working tree; keep those evidence-only edits for the final preview and release branch. Any product fix invalidates affected QA and requires fresh verification. Do not move the integration branch or treat unrelated dirty files as QA output.
 
 Print one line per check with ✅ or ⚠️ and, for ⚠️, the file and the pattern found.
 
 ## 5. Confirm
 
-Show the version, the release notes, and the check results, and ask with AskUserQuestion:
+Show the version, the release notes, the pinned release candidate, any QA ledger edits to commit on the release branch, and the check results, and ask with AskUserQuestion:
 
 - Proceed as is
 - Edit the notes (the user rewrites them)
@@ -95,8 +95,11 @@ If any check shows ⚠️, proceed only if the user explicitly chooses to. To ch
 
 ## 6. Branch and push
 
+Re-read the integration head and require it to match the pinned candidate. If it moved, refresh the candidate and required checks before proceeding. Create the release branch from `RELEASE_SHA`. If the only working-tree edits are the previewed QA ledger updates, stage that file and commit those evidence-only edits on the release branch before pushing. Never include unreviewed product changes. If the user stops, leave the ledger edits intact and report them.
+
 ```bash
-git checkout -b release/<version> origin/<branches.integration>
+git checkout -b release/<version> <RELEASE_SHA>
+# Commit the previewed QA ledger updates here, if any.
 git push -u origin release/<version>
 ```
 

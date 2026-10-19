@@ -1,12 +1,12 @@
 ---
 name: ux-review
-description: Reviews usability by running one ux-persona-reviewer per persona in GROUNDWORK.md, concurrently, and merging their browser or device observations and screenshot evidence. Runs in release QA when review.release_qa is on, or when the user asks. Very high token and time cost; not part of a change's review loop. Reports only.
-argument-hint: "[--full]"
+description: Reviews usability with one independent reviewer per selected end-user persona, merging observations and screenshot evidence. Runs under the separate QA policy or on request. Overall effort controls scope; reports only.
+argument-hint: "[--full] [--mode eco|normal|sport]"
 ---
 
 # UX Review
 
-Run one independent persona review per `user` persona in `review.personas`, all at once, and merge the results. It runs in release QA, or when the user asks for usability review; never on every change. It reports only; fixes belong to the implementation agent.
+Run one independent persona review per selected `user` persona in `review.personas`, and merge the results. It runs when the QA policy in `reference/config.md` triggers, or on request. It reports only; fixes belong to the implementation agent. Explain the platform/tool cost guidance from `catalog/qa.md` before launch. Developer personas are code-based DX review, not rendered UX QA.
 
 Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line; an agent does not know where its own definition file lives, so it cannot find `reference/` or `catalog/` without it. Every persona reviewer follows `agents/ux-persona-reviewer.md` and `reference/rendered-review.md`.
 
@@ -14,16 +14,16 @@ Paths below are relative to the plugin root, two directories above this skill's 
 
 ## 1. Read the configuration
 
-Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.personas` with at least one entry, the `## Persona: <name>` sections that exist, and the `## UI QA notes` section.
+Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.personas`; select only `kind: user` (legacy missing kind means user). With no user personas, report UX Review: NOT APPLICABLE and stop. Read the `## Persona: <name>` sections that exist, and the `## UI QA notes` section.
 
 ## 2. Establish the target and scope
 
 Establish the assigned worktree and current source, the task requirements, the affected screens and flows, design references, and known build and test evidence with provenance.
 
-For each persona, decide whether the change affects any of its tasks before launching anything. Backend changes can affect flows too. With `--full`, every task of every persona is in scope.
+For each persona, decide whether the change affects any of its tasks before launching anything. Backend changes can affect flows too. Resolve `--mode` or the configured overall mode. Without `--full`, select affected user personas/tasks in eco and normal, and every user persona/task in sport. An explicit usability request still runs in eco; automatic change QA in eco calls UI QA only. With `--full`, every task of every user persona is in scope in all modes.
 
 - If no persona is affected, report `UX Review: NOT APPLICABLE` with a concrete reason and stop.
-- If only some personas are affected, still dispatch the others with the scope evidence so they can report NOT APPLICABLE rather than invent checks.
+- Dispatch only selected personas. List the other user personas as NOT APPLICABLE with the scope reason; do not launch agents solely to report no work.
 
 ## 3. Prepare isolated environments
 
@@ -37,6 +37,7 @@ Launch every persona reviewer **at the same time, in one message**. In Claude Co
 
 Give each reviewer:
 
+- The effective overall effort mode and exact task scope.
 - Its persona: name, goal, and the full `## Persona: <name>` section if present.
 - The shared target, requirements, affected screens and flows, design references, and evidence with provenance.
 - Its own environment: device or browser context, URLs, test access, dataset, and artifact directory.

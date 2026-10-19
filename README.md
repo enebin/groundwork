@@ -9,9 +9,9 @@
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/version-0.1.0-6E6C66">
 </p>
 
-**groundwork** is a Claude Code and Codex plugin that sets up how an AI coding agent works in your repository — issue tracking, workflow, branches, verification, architecture, and AI code review — and then runs that workflow for you.
+**groundwork** is a Claude Code and Codex plugin that sets up how an AI coding agent works in your repository — issue tracking, workflow, deployment strategy, architecture, AI code review, and rendered QA — and then runs that workflow for you.
 
-`/groundwork:onboarding` asks eight questions. Each answer is a **bundle**: a named set of rules and skills that work together, shown with its pros, cons, token cost, and a recommended option for your repository. Your answers go into `GROUNDWORK.md`, and the chosen rules go into your own `AGENTS.md` and `ARCHITECTURE.md`. Every other groundwork skill reads that file, so the same plugin behaves correctly in every repository.
+`/groundwork:onboarding` asks eight questions. Each answer is a **bundle**: a named set of rules and skills that work together, shown with its pros, cons, token cost, and a recommended option for your repository. Your answers go into `GROUNDWORK.md`. Mandatory implementation and test rules go into your own `AGENTS.md`, alongside the chosen rules; architecture goes into `ARCHITECTURE.md`. Every other groundwork skill reads that file, so the same plugin behaves correctly in every repository.
 
 It is built for starting a new project. An existing repository gets the same questions, with recommendations taken from what it already has.
 
@@ -59,13 +59,17 @@ Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to 
 | 1 | Language | conversation / artifacts | yours / English (fewer tokens) |
 | 2 | Issue tracker | local files, GitHub Projects, Linear, Jira | local files |
 | 3 | Workflow | step-loop, design-first, tdd-loop, flight, quick, review-only | step-loop |
-| 4 | Branches | develop + release, main only | develop + release |
-| 5 | Verification | evidence, ci-gate, test-first, basic; add-ons design-fidelity, api-contract, isolated-e2e, visual-regression | evidence |
-| 6 | Architecture | unidirectional, mvvm, layered-service, layered-web, none | depends on the stack |
-| 7 | Review | app, sdk, service, product, light; mode eco, normal, sport; release QA on/off | depends on the kind of project; normal; release QA off |
+| 4 | Deployment strategy | develop + release, main only; merge style | develop + release |
+| 5 | Architecture | unidirectional, mvvm, layered-service, layered-web, none | depends on the stack |
+| 6 | Review | app, sdk, service, product, light; Skeptic policy | depends on the kind of project |
+| 7 | QA | manual, release, continuous | manual |
 | 8 | Anything else | free text | nothing |
 
 Before the first question you see this whole table filled in for your repository, and can take every recommendation at once. Try not to: what you pick here tends to stay.
+
+Tests are part of implementation, not an onboarding choice. Onboarding detects build/test commands and applicable checks, previews them, and writes the [default implementation rules](plugins/groundwork/reference/implementation.md) into `AGENTS.md`.
+
+`eco / normal / sport` is a separate overall effort preset, defaulting to `normal`. Like a reasoning-effort setting, it adjusts verification breadth, review repetition, and applicable QA scope together; it does not select a model. Override it per run with `--mode`. Users can edit individual settings later. The QA bundle still decides when rendered QA runs.
 
 Every bundle, with its pros, cons, and the exact rules it writes, is in [`plugins/groundwork/catalog/`](plugins/groundwork/catalog/).
 
@@ -80,12 +84,14 @@ Every bundle, with its pros, cons, and the exact rules it writes, is in [`plugin
 | `release`, `autoland` | Cut a release; merge automatically once CI passes |
 | `review-and-fix`, `commit-push` | The quick workflow |
 | `review` | Run the chosen reviewers in parallel and merge their findings |
-| `ux-review` | Usability review, one agent per persona — release QA, opt-in |
-| `ui-qa` | Check the running app for what UI tests cannot assert — release QA, opt-in |
+| `ux-review` | Usability review for selected end-user personas, under the QA policy or on request |
+| `ui-qa` | Check the running app for uncovered UI checks, under the QA policy or on request |
 
 Code reviewers, run on every change: `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, `dx-reviewer`, and `ux-flow-reviewer`. The last two trace personas' tasks through the code without launching anything: `ux-flow-reviewer` for end users of an app (extra steps, missing states, dead ends), `dx-reviewer` for developers building on a library, an HTTP or RPC API, or a CLI. Each has a general checklist in the plugin and reads repository-specific checks from `## Review focus: <reviewer>` in `GROUNDWORK.md`.
 
-Screens are checked on every change by UI tests that attach screenshots. Agents that drive the running app (`ui-qa`, `ux-persona-reviewer`) are slow and expensive, so they run only in release QA, which is off unless you turn it on. The UI coverage ledger (`docs/ui-coverage.md`) lists what tests cannot check, as the release checklist.
+Screens are checked on every change by UI tests that attach screenshots, which the implementer opens and inspects. Separate rendered QA is configured in [the QA step](plugins/groundwork/catalog/qa.md): only on request (`manual`, the default), before releases (`release`), or also after each implementation (`continuous`). The UI coverage ledger (`docs/ui-coverage.md`) lists what tests cannot check.
+
+Web tools can often locate page elements directly. iOS simulators and Android emulators may take longer because of builds, installation, startup, and the available UI tools. Screenshot-based web QA can also be slow. Actual time and token usage depend on coverage, personas, tools, and retries; there is no promised platform multiplier.
 
 Review fixes go to the `fixer` agent. It starts from a fresh context, fixes the confirmed findings, and re-runs their tests, so after implementation the step's own context grows only by short reports.
 

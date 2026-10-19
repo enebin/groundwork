@@ -53,7 +53,7 @@ List what you kept:
     <one-line summary>
 ```
 
-If the list is empty, tell the user and stop. Otherwise ask whether to fix them. Raise trade-offs and high-impact items from "Needs confirmation" separately; do not act on them without the user's answer.
+If the list is empty, report that no review fixes are needed and continue to step 5 without a fix confirmation. Otherwise ask whether to fix them. Raise trade-offs and high-impact items from "Needs confirmation" separately; do not act on them without the user's answer.
 
 ## 4. Fix
 
@@ -61,9 +61,11 @@ For each item, read the file and the code around the finding, then fix it in the
 
 ## 5. Verify
 
-Run the `verification.commands` the fixes affect. When the fixes touch `verification.ui_paths`, also run the affected UI tests with `verification.ui_tests.targeted`. Do not move on until they pass. Fix failures at the root cause.
+Resolve the effective overall mode from `--mode` or `mode` and follow Modes in `reference/config.md`. Verify the complete implementation, including a no-findings path: run affected tests while fixing and every `verification.commands` entry before completion. For changed `verification.ui_paths`, run affected UI tests and inspect their screenshots; run the full UI suite at finish, and in sport each round. Reuse only results matching the current build. Update the coverage ledger. Do not move on until required checks pass; fix failures at the root cause.
 
 If `review.trigger` is `per-round`, review again (step 2) and repeat until nothing at or above the threshold remains. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`), or as soon as a round fixes nothing, and ask the user how to proceed.
+
+After the final verification and review fixes, apply the after-implementation QA gate from `reference/config.md` when the resolved QA bundle is continuous. Pass the effective mode and the complete implementation diff, not just review fixes. Run this even with no review findings. FAIL or BLOCKED prevents completion and commit/push; follow the QA repair/recheck limit. If no review fixes or QA ledger edits were made, report the result and stop without committing or pushing. Otherwise include the verified ledger edits with the fixes.
 
 ## 6. Commit and push
 
@@ -71,4 +73,4 @@ If `review.trigger` is `per-round`, review again (step 2) and repeat until nothi
 2. Commit with the message format in `docs.rules`. If it defines none, use a short imperative subject such as `Address review findings (<threshold> and above)`. Never bypass hooks.
 3. If the branch tracks a remote branch, `git push`. Otherwise `git push -u origin <branch>`. If the push is rejected, report why and stop. Never force-push.
 
-If every item was skipped, tell the user and stop without committing.
+If every requested fix was skipped, tell the user and stop without committing. Do not claim a skipped blocking finding was resolved by passing QA.

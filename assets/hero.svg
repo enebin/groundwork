@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="t d">
   <title id="t">groundwork</title>
-  <desc id="d">A plugin for Claude Code and Codex. Seven layers of choices — language, issue tracker, workflow, branches, verification, architecture, review — lie under your repository.</desc>
+  <desc id="d">A plugin for Claude Code and Codex. Seven layers of choices — language, issue tracker, workflow, deployment strategy, architecture, review, QA — lie under your repository.</desc>
   <style>
     .bg{fill:#FAF9F5}.ink{fill:#1F1E1B}.mute{fill:#6E6C66}.acc{fill:#2F6B5A}
     .repo{fill:#1F1E1B}.repot{fill:#FAF9F5}
@@ -26,13 +26,13 @@
 
   <g font-size="15">
     <rect class="s1" x="620" y="120" width="530" height="32" rx="6"/>
-    <text class="lab" x="640" y="141">Review</text><text class="acc mono" x="1132" y="141" text-anchor="end" font-weight="600">app</text>
+    <text class="lab" x="640" y="141">QA</text><text class="acc mono" x="1132" y="141" text-anchor="end" font-weight="600">manual</text>
     <rect class="s2" x="620" y="158" width="530" height="32" rx="6"/>
-    <text class="lab" x="640" y="179">Architecture</text><text class="acc mono" x="1132" y="179" text-anchor="end" font-weight="600">unidirectional</text>
+    <text class="lab" x="640" y="179">Review</text><text class="acc mono" x="1132" y="179" text-anchor="end" font-weight="600">app</text>
     <rect class="s3" x="620" y="196" width="530" height="32" rx="6"/>
-    <text class="lab" x="640" y="217">Verification</text><text class="acc mono" x="1132" y="217" text-anchor="end" font-weight="600">evidence</text>
+    <text class="lab" x="640" y="217">Architecture</text><text class="acc mono" x="1132" y="217" text-anchor="end" font-weight="600">unidirectional</text>
     <rect class="s4" x="620" y="234" width="530" height="32" rx="6"/>
-    <text class="lab" x="640" y="255">Branches</text><text class="acc mono" x="1132" y="255" text-anchor="end" font-weight="600">develop + release</text>
+    <text class="lab" x="640" y="255">Deployment strategy</text><text class="acc mono" x="1132" y="255" text-anchor="end" font-weight="600">develop + release</text>
     <rect class="s5" x="620" y="272" width="530" height="32" rx="6"/>
     <text class="lab" x="640" y="293">Workflow</text><text class="acc mono" x="1132" y="293" text-anchor="end" font-weight="600">step-loop</text>
     <rect class="s6" x="620" y="310" width="530" height="32" rx="6"/>
