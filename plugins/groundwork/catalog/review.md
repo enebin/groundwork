@@ -116,13 +116,13 @@ Ask: "Who uses this? Name each kind of user and the main thing they come to do."
 
 Write each answer to `review.personas` as `name`, `goal`, and `kind` (`user` or `developer`). `ux` traces every `user` persona's tasks through the code on each change, and `dx` every `developer` persona's; when the QA policy calls for persona checks, one `ux-persona-reviewer` per selected `user` persona also checks the running app. When a persona has several tasks, write them under `## Persona: <name>` in the `GROUNDWORK.md` body. Suggest one or two personas from `project.summary`; let the user edit them.
 
-### Review trigger (only for `flight` and `quick`)
+### Review trigger (only for `quick`)
 
-`step-loop`, `design-first`, and `tdd-loop` always review every round (`review.trigger: per-round`). `review-only` always reviews on request (`on-request`). Only `flight` and `quick` ask:
+`step-loop`, `design-first`, and `tdd-loop` always review every round (`review.trigger: per-round`). `review-only` always reviews on request (`on-request`). Only `quick` asks:
 
 Ask: "Should review run every time an implementation is finished, or only when you ask?"
 
-- `per-implementation`: `flight` runs review in `takeoff` before pushing; `quick` runs `review-and-fix` after each implementation. Default.
+- `per-implementation`: `quick` runs `review-and-fix` after each implementation. Default.
 - `on-request`: review runs only when the user calls `review` or `review-and-fix`.
 
 ## Overall effort

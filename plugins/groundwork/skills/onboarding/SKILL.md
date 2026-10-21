@@ -27,7 +27,7 @@ Read-only. Record what you find; it decides the recommendations.
 - Files: build manifests (`Package.swift`, `*.xcodeproj`, `project.yml`, `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `build.gradle*`, ...), CI workflows, `AGENTS.md`, `CLAUDE.md`, an architecture document, a design reference.
 - Git: remotes, branches (`develop`?), whether there are any commits.
 - Existing agent setup: `.claude/skills`, `.claude/agents`, `.claude/commands`, `.agents/skills`, `.codex/`. Note each item that overlaps a groundwork skill or agent.
-- Existing `GROUNDWORK.md`: if present, this is a re-run. Its values become the recommendations, and the user only changes what they want. If its `groundwork` version is older than `reference/config.md`, migrate it as part of this run and say what changed.
+- Existing `GROUNDWORK.md`: if present, this is a re-run. Its values become the recommendations, and the user only changes what they want. If its `groundwork` version is older than `reference/config.md`, migrate it as part of this run and say what changed. A `workflow.bundle: flight` becomes `step-loop` with `workflow.worktree: true`, which keeps one worktree per issue; say so, and set `review.trigger` to `per-round`, as every step workflow uses.
 
 Tell the user in two or three lines what you found. For an empty repository, say plainly that it is empty and that the recommendations will come from the next answer.
 
@@ -83,7 +83,7 @@ Then follow the "Setup" section of `catalog/trackers/<type>.md`: detect, ask its
 
 Bundles from `catalog/workflows.md`. Recommended: `step-loop` for a new project; for an existing repository, the bundle matching the skills it already uses.
 
-Then, unless the bundle skips it (see the catalog), ask the autoland follow-up: "Merge automatically once CI passes?" — No (Recommended), with the catalog's reason.
+Then, unless the bundle skips it (see the catalog), ask the autoland follow-up: "Merge automatically once CI passes?" — No (Recommended), with the catalog's reason. For `step-loop`, `design-first`, and `tdd-loop`, also ask the worktree follow-up from the catalog: "Work on each issue in its own worktree?" — No (Recommended), with the catalog's reason.
 
 ### Step 4 — Deployment strategy
 
@@ -108,7 +108,7 @@ Bundles from `catalog/review.md`. Recommend by `project.kind`: `app` for apps, `
 Ask only the follow-ups the chosen bundle triggers (see the catalog), each with a recommendation:
 
 - `ux` or `dx` in the bundle: personas, each with a `kind` (`user` for `ux`, `developer` for `dx`). Recommend one persona per selected reviewer, drawn from the step 2 answer; the user can add more.
-- Flight or quick workflow: review trigger.
+- Quick workflow: review trigger.
 - Skeptic policy: the bundle's default (Recommended). Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
 For an existing repository with its own reviewers or review rules, draft a `## Review focus: <key>` section for each chosen reviewer from them, show the drafts, and ask "Use the drafts (Recommended)" or "Edit".
@@ -168,5 +168,5 @@ Write only after approval. Apply requested changes and show the preview again.
 ## 6. Finish
 
 - Report what was written, in a short list.
-- Say what to run next: `/groundwork:plan` for step-loop, design-first, or tdd-loop; `/groundwork:boarding <issue>` for flight; `/groundwork:review-and-fix` for quick; `/groundwork:review` for review-only.
+- Say what to run next: `/groundwork:plan` for step-loop, design-first, or tdd-loop; `/groundwork:review-and-fix` for quick; `/groundwork:review` for review-only.
 - Offer to commit the changes. Commit only if the user says yes.

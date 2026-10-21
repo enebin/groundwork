@@ -17,6 +17,8 @@ Every tracker action below is an operation from `reference/config.md` "Tracker o
 
 This skill invokes other skills as `/groundwork:<name>`. In Codex, invoke one by reading and following `skills/<name>/SKILL.md` under the plugin root.
 
+Run only when the user asked in so many words to merge or autoland, or when `takeoff` hands over because `workflow.autoland` is true. A vague request ("ship it", "upload this", "wrap it up") is not enough; ask first.
+
 In plan mode, do not refuse. Inspect with read-only tools, write the concrete plan (PR, checks, merge command, cleanup), and ask for approval. After approval, carry it out as planned.
 
 `workflow.bundle` `quick` and `review-only` do not use autoland. If the bundle is one of them, tell the user and stop.
