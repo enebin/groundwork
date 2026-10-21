@@ -1,6 +1,6 @@
 ---
 name: "commit-push"
-description: Commits the current branch's changes and pushes them to the remote without asking for confirmation, except in the warning cases. Use for "commit and push", or after review-and-fix in the quick workflow.
+description: Quick-workflow push. Commits the current branch's changes and pushes them as they are, with no rebase and no PR, without asking for confirmation except in the warning cases. Use when the user asks to "commit and push", or after review-and-fix in the quick workflow. Step workflows ship with takeoff instead.
 allowed-tools: Bash, Read, Grep, Glob, AskUserQuestion
 argument-hint: [commit message hint]
 ---
@@ -12,6 +12,10 @@ Commit the current branch's changes and push them. The argument, if any, is a hi
 Read `reference/config.md` under the plugin root (two directories above this skill's directory), then `GROUNDWORK.md` at the repository root as it says. Stop if the file is missing or a key this skill needs is missing.
 
 Talk to the user in `language.conversation`. Write the commit message in `language.artifacts`.
+
+Run only when the user asked in so many words to commit and push. A vague request ("ship it", "upload this", "wrap it up") is not enough; ask first.
+
+`commit-push` belongs to the `quick` workflow: it pushes the current branch as it is, with no rebase and no PR. When `workflow.bundle` is `step-loop`, `design-first`, or `tdd-loop`, point the user to `/groundwork:takeoff <id>`, which rebases, re-verifies, and opens the PR, and continue only if they still want a plain push.
 
 In plan mode, do not refuse. Inspect with read-only tools, write the concrete plan (files to stage, commit message, push command), and ask for approval. After approval, carry it out as planned.
 

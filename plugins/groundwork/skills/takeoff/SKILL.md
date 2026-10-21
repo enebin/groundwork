@@ -1,6 +1,6 @@
 ---
 name: "takeoff"
-description: Rebases an issue's branch on the integration branch, re-verifies, pushes it, and opens a PR. The step skill's way to ship once the user asks for a push. Use for "takeoff <id>", "push and open a PR for <id>", or after a step is done.
+description: Step-workflow push. Rebases an issue's branch on the integration branch, re-verifies, pushes it, and opens a PR, once the user asks for a push. Use for "takeoff <id>", "push and open a PR for <id>", or after a step is done.
 allowed-tools: Bash, Read, Skill, AskUserQuestion
 argument-hint: <issue id> [--mode eco|normal|sport]
 ---
@@ -16,6 +16,8 @@ Talk to the user in `language.conversation`. Write the PR title and body in `lan
 Every tracker action below is an operation from `reference/config.md` "Tracker operations". Perform it as `catalog/trackers/<tracker.type>.md` says. If the tracker or its CLI is not authorized, stop and tell the user the command to run. Do not log in or switch accounts yourself.
 
 This skill invokes other skills as `/groundwork:<name>`. In Codex, invoke one by reading and following `skills/<name>/SKILL.md` under the plugin root.
+
+Run only when the user asked in so many words to push or open a PR, or when `autoland` hands over after such a request. A vague request ("ship it", "upload this", "wrap it up") is not enough; ask first.
 
 In plan mode, do not refuse. Inspect with read-only tools, write the concrete plan (rebase target, push command, PR title and body), and ask for approval. After approval, carry it out as planned.
 
