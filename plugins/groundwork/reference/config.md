@@ -33,7 +33,7 @@ docs:
 
 tracker:
   type: local                            # local | github | linear | jira
-  # local:  path: .groundwork/issues     shared: false   (false = gitignored)
+  # local:  path: .groundwork/issues     shared: false   (false = gitignored)   keep: true   (false = delete an issue file once its PR merges)
   # github: owner: <owner>  repo: <repo>  project: <number>
   # linear: team: <key>  project: <name>
   # jira:   site: <host>  project: <key>  step_type: subtask | child
