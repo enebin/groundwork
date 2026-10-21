@@ -30,7 +30,10 @@ tracker:
   type: local
   path: .groundwork/issues   # relative to the main checkout
   shared: false              # false = ignored by git
+  keep: true                 # false = delete an issue file once its PR merges
 ```
+
+`keep` was added later. When it is absent, treat it as `true`.
 
 ## Where the files live
 
@@ -77,7 +80,7 @@ created: 2026-10-17T09:30:00Z
 
 ### read(id)
 
-1. Read `$DIR/<id>.md`. If it does not exist, stop and say so.
+1. Read `$DIR/<id>.md`. If it does not exist, stop and say so, with one exception: a missing id at or below the number in `$DIR/.last-id` was deleted after its PR merged, even if `keep` is `true` now. Treat it as `done`; this is how a later step learns that a step it depends on has merged.
 2. Parse the frontmatter for `title`, `state`, `parent`, `labels`. Split body and log, and the log into comments, as above.
 3. Children: every file in `$DIR` whose frontmatter has `parent: <id>`.
 
@@ -88,16 +91,19 @@ grep -l "^parent: <id>$" "$DIR"/L-*.md
 ### create(title, body, parent?, labels?)
 
 1. If `$DIR` does not exist, create it (see Setup for git ignore).
-2. Pick `n` = highest existing number + 1 (1 when empty).
+2. Pick `n` = the highest existing number or the number in `$DIR/.last-id`, whichever is larger, + 1 (1 when there is neither). `.last-id` keeps ids from being reused after `keep: false` deletes files.
 3. Create the file exclusively so two worktrees cannot take the same id. If the create fails because the file exists, add 1 and try again.
 
 ```bash
-n=$(( $(ls "$DIR" | sed -n 's/^L-\([0-9]*\)\.md$/\1/p' | sort -n | tail -1) + 1 ))
+top=$(ls "$DIR" | sed -n 's/^L-\([0-9]*\)\.md$/\1/p' | sort -n | tail -1)
+last=$(cat "$DIR/.last-id" 2>/dev/null)
+n=$(( (${top:-0} > ${last:-0} ? ${top:-0} : ${last:-0}) + 1 ))
 until (set -C; : > "$DIR/L-$n.md") 2>/dev/null; do n=$((n + 1)); done
 ```
 
-4. Write the frontmatter (`state: todo`, `parent` or `null`, `labels` or `[]`, `created` as UTC now), the body, a blank line, and `## Log`.
-5. Return `L-<n>`.
+4. Write `n` to `$DIR/.last-id` if it is larger than the number there.
+5. Write the frontmatter (`state: todo`, `parent` or `null`, `labels` or `[]`, `created` as UTC now), the body, a blank line, and `## Log`.
+6. Return `L-<n>`.
 
 ### link(child, parent)
 
@@ -133,13 +139,18 @@ The local tracker never changes state on its own. Skills always call `set_state`
 
 There is no closing syntax. Add `Issue: <id>` to the PR body for reference. After the PR merges, the skill that sees the merge (`landing`, `autoland`, or `step` when it confirms the merge) calls `set_state(<id>, done)`.
 
+## After the merge
+
+With `keep: false`, the skill that closed the issue after its PR merged first raises `$DIR/.last-id` to at least the id's number (a repository that used the tracker before `.last-id` existed has no such file yet), then deletes `$DIR/<id>.md`. If the issue had a parent and no file in `$DIR` still names that parent, raise `.last-id` for the parent too and delete its file. Delete nothing earlier: `takeoff` reads the issue and its round log to write the PR, and a later step reads its parent's "Decisions". With `keep: true`, delete nothing.
+
 ## Setup
 
 1. **Detect.** Choose local when no tracker is detected, or when the user asks for it.
 2. **Ask.** "Should the issue files be committed to the repository so others can see them?" Default: No.
+   Then ask: "Keep finished issues as files, or delete each one once its PR merges?" Options: keep (Recommended); delete (looking up past work gets slower or harder, because the decisions and review rounds go with the file). Kept files hold the decisions and review rounds, so a later session can see why the code is the way it is. Deleting keeps the folder small for people who do not want the files to pile up.
 3. **Prepare the directory.** Create `$MAIN/<tracker.path>`. When `shared: false`, write a file named `.gitignore` containing the single line `*` inside that directory. Git then ignores the directory and that file itself, so no tracked file changes, and every worktree sees the same ignored files. Agent harnesses usually refuse writes inside `.git/`, so never use `.git/info/exclude`.
 4. **Verify.** Create nothing. Check that `$DIR` is writable and that `git check-ignore "$DIR/probe.md"` reports it ignored when `shared: false`.
-5. **Record.** `tracker: {type: local, path: <path>, shared: <bool>}`.
+5. **Record.** `tracker: {type: local, path: <path>, shared: <bool>, keep: <bool>}`.
 
 With `shared: true`, the files live in the main checkout's working tree like any other file. groundwork never commits them on a work branch. The user decides when and where to commit them. This mode is untested.
 

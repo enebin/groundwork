@@ -1,8 +1,8 @@
 ---
 name: "step"
-description: Runs one step sub-issue, or a standalone issue, to completion. Implements it, then repeats verify → review → fix until the review leaves no confirmed 🔴/🟠, logging each round on the issue. Use for "run step <id>", "continue <id>", or when another skill hands over an implemented step.
+description: Runs one step sub-issue, or a standalone issue, to completion. Implements it, then repeats verify → review → fix until the review leaves no confirmed 🔴/🟠, logging each round on the issue. Use for "run step <id>", "continue <id>", a change request that has no issue yet ("fix X", "add Y"), which it files as a standalone issue first, or when another skill hands over an implemented step.
 allowed-tools: Bash, Read, Edit, Write, Grep, Glob, Skill, Agent, AskUserQuestion
-argument-hint: <sub-issue id> [--implemented] [--mode eco|normal|sport]
+argument-hint: <issue id | request> [--implemented] [--mode eco|normal|sport]
 ---
 
 Drive one step to its done criteria.
@@ -27,6 +27,7 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 1. Load context
 
+- If the argument is not an issue id in the tracker's form, it is a request. File it as one standalone issue: `create` it with no parent, using the "Sub-issue body" from `skills/plan/SKILL.md` filled from the request. With the `local` tracker, create it without asking. With any other tracker, the issue is visible to others, so show it and ask before creating. Hand the request to `/groundwork:plan` instead when it clearly needs more than one PR, when `workflow.bundle` is `design-first` (its design step and approval come first), when any `verification.commands` entry has `verified: false`, or when the repository has no commits; `plan` adds the design or scaffold step those cases need. After a `plan` hand-off, continue with the first step sub-issue it created; otherwise continue with the new standalone id. When the argument is only a number, ask which issue is meant instead of filing it.
 - `read` the issue with its comments, then `read` the parent issue it belongs to, if it has one.
 - Read `docs.rules`, `docs.architecture` (when set) and the documents it links that are in scope, and the code in scope.
 - If a step listed in "Depends on" is still open and its branch is not available, stop and say so.
@@ -45,7 +46,7 @@ When `workflow.worktree` is true, work in a worktree instead of switching the ma
 - The branch is checked out in the main checkout, for example after `/groundwork:rejoin`: git will not check out one branch in two places. If the main checkout has no uncommitted changes to tracked files, switch it to `branches.integration` first, then add the worktree as above. Otherwise tell the user and stop.
 - The worktree exists: reuse it.
 
-If `.git/info/exclude` in the main checkout does not list `.groundwork/worktrees/`, append it, so the worktrees do not show up as untracked files there. Then work inside `.groundwork/worktrees/<branch>` for the rest of the step. `/groundwork:rejoin` moves the branch back to the main checkout, and `/groundwork:landing` removes the worktree after the merge.
+If `.groundwork/worktrees/.gitignore` in the main checkout does not exist, write it with the single line `*`, so the worktrees do not show up as untracked files in the main checkout. Do not use `.git/info/exclude`; agent harnesses usually refuse writes inside `.git/`. Then work inside `.groundwork/worktrees/<branch>` for the rest of the step. `/groundwork:rejoin` moves the branch back to the main checkout, and `/groundwork:landing` removes the worktree after the merge.
 
 ## 3. Implement
 
