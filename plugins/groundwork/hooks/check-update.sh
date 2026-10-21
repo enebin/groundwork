@@ -19,7 +19,11 @@ mkdir -p "$cache" && touch "$stamp" || exit 0
 installed=$(read_version < "$CLAUDE_PLUGIN_ROOT/.claude-plugin/plugin.json")
 latest=$(curl -fsS --max-time 2 "$latest_url" 2>/dev/null | read_version)
 
-if [ -z "$installed" ] || [ -z "$latest" ] || [ "$latest" = "$installed" ]; then
+if [ -z "$installed" ] || [ -z "$latest" ]; then
+  exit 0
+fi
+# A dev build or a rolled-back main can leave the installed version ahead.
+if [ "$(printf '%s\n%s\n' "$installed" "$latest" | sort -V | tail -n 1)" = "$installed" ]; then
   exit 0
 fi
 if [ "$latest" = "$(cat "$notified" 2>/dev/null)" ]; then
