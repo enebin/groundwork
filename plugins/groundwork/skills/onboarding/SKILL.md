@@ -151,7 +151,16 @@ Verification commands:
 
 ## 5. Final review
 
-Mandatory, also after "Use all recommendations". Show every file to create or change with what goes into it:
+Mandatory, also after "Use all recommendations". Show a summary the user can read in a minute, not raw file contents:
+
+- One table of every choice: the step, what was chosen, and one line on what it means day to day. Include values the user did not pick directly, such as the overall `mode` and the Skeptic policy.
+- The detected verification commands, each with its source and whether it ran, plus anything blocked or unverified.
+- Each file to create or change, with one line on what it will hold. Name each rule block by its purpose, not its text.
+- Everything the steps above say to show in the final preview, such as migrations and replaced blocks.
+
+Show a file's full contents only when the user asks.
+
+Files to write:
 
 - `GROUNDWORK.md` — the full frontmatter and body, including automatic implementation settings, separate `qa.bundle`, and the overall `mode`.
 - `docs.rules` (create `AGENTS.md` if absent) — the mandatory block from `reference/implementation.md`, supplemental CI/test-first/add-on rules, and step 8 rules. For an existing managed evidence/basic block, show its replacement with the mandatory implementation block so contradictory run policies do not remain. Preserve CI gates and test-first requirements. Do not duplicate the old evidence block inside a new supplemental block.
