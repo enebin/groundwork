@@ -42,6 +42,7 @@ When `workflow.worktree` is true, work in a worktree instead of switching the ma
 
 - New branch: `git worktree add --no-track -b <branch> .groundwork/worktrees/<branch> <base>`.
 - The branch exists without a worktree: `git worktree add .groundwork/worktrees/<branch> <branch>`.
+- The branch is checked out in the main checkout, for example after `/groundwork:rejoin`: git will not check out one branch in two places. If the main checkout has no uncommitted changes to tracked files, switch it to `branches.integration` first, then add the worktree as above. Otherwise tell the user and stop.
 - The worktree exists: reuse it.
 
 If `.git/info/exclude` in the main checkout does not list `.groundwork/worktrees/`, append it, so the worktrees do not show up as untracked files there. Then work inside `.groundwork/worktrees/<branch>` for the rest of the step. `/groundwork:rejoin` moves the branch back to the main checkout, and `/groundwork:landing` removes the worktree after the merge.
