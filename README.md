@@ -9,11 +9,20 @@
   <img alt="Version 0.1.0" src="https://img.shields.io/badge/version-0.1.0-6E6C66">
 </p>
 
+<p align="center"><b>English</b> · <a href="README.ko.md">한국어</a></p>
+
 **groundwork** is a Claude Code and Codex plugin that sets up how an AI coding agent works in your repository — issue tracking, workflow, deployment strategy, architecture, AI code review, and rendered QA — and then runs that workflow for you.
 
 `/groundwork:onboarding` asks eight questions. Each answer is a **bundle**: a named set of rules and skills that work together, shown with its pros, cons, token cost, and a recommended option for your repository. Your answers go into `GROUNDWORK.md`. Mandatory implementation and test rules go into your own `AGENTS.md`, alongside the chosen rules; architecture goes into `ARCHITECTURE.md`. Every other groundwork skill reads that file, so the same plugin behaves correctly in every repository.
 
-It is built for starting a new project. An existing repository gets the same questions, with recommendations taken from what it already has.
+It is the perfect first plugin for whatever you just ran `git init` on:
+
+- the side project you'll definitely finish this time
+- the assignment due at 9 a.m.
+- the hackathon thing that's "just a prototype"
+- the trash repo nobody will ever see (it will end up in production)
+
+Install it before the first commit, and your repository starts life with rules, reviews, and QA instead of a file called `final_v2_REAL.py`. An existing repository gets the same questions, with recommendations taken from what it already has.
 
 Before the first question, onboarding shows the whole route with a recommendation for every step:
 
