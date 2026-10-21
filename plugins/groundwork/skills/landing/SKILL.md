@@ -1,11 +1,11 @@
 ---
 name: "landing"
-description: Flight post-merge stage. Confirms the PR is merged, removes the worktree, deletes the local branch, and updates the local integration branch. Use for "land <id>" after a PR merges.
+description: Cleans up after a PR merges. Confirms the merge, removes the issue's worktree if it has one, deletes the local branch, and updates the local integration branch. Use for "land <id>" after a PR merges.
 allowed-tools: Bash, Read, AskUserQuestion
 argument-hint: [issue id | branch]
 ---
 
-Clean up after a PR merges: remove the worktree, update the local integration branch, and delete the local work branch. `takeoff` never chains into this stage, because only the user knows when the PR merges. `autoland` runs it after its own merge.
+Clean up after a PR merges: remove the worktree if there is one, update the local integration branch, and delete the local work branch. `takeoff` never chains into this stage, because only the user knows when the PR merges. `autoland` runs it after its own merge.
 
 ## 0. Read the config
 
@@ -35,14 +35,13 @@ In plan mode, do not refuse. Inspect with read-only tools, write the concrete pl
    - `state` is not `MERGED`: tell the user the state and ask whether to remove the worktree anyway. Suggest `/groundwork:rejoin` if they want to keep the branch.
    - No PR: tell the user and ask whether to clean up the worktree only.
 3. **Remove the worktree.** Find the worktree for `<branch>` with `git worktree list --porcelain`.
-   - None: print `worktree not present, skipping` and go on. This is normal after `/groundwork:rejoin`.
+   - None: print `worktree not present, skipping` and go on. This is normal when `workflow.worktree` is false or after `/groundwork:rejoin`.
    - It has uncommitted changes: tell the user and stop.
    - Otherwise `git worktree remove <path>`. If it fails for another reason, such as a locked file, ask the user before adding `--force`.
 4. **Update the integration branch.** If the main checkout has uncommitted changes, tell the user and skip this step. Otherwise `git checkout <branches.integration> && git pull --ff-only origin <branches.integration>`. If the fast-forward fails, report it and stop.
 5. **Delete the local branch.** Try `git branch -d <branch>`. With `branches.merge` set to `squash` or `rebase`, this usually fails because the merged commits have new hashes. If it fails, show the user the PR state and ask before `git branch -D <branch>`.
 6. **Close the issue.** If `<ISSUE>` is known and the PR is merged, `set_state(<ISSUE>, done)`, unless the tracker document says the tracker does this on its own.
-7. **Leftover state.** If `<ISSUE>` is known, delete `$MAIN_REPO_ROOT/.groundwork/state/<KEY>.*` if any remain (`KEY` is `<ISSUE>` without a leading `#`). They are usually gone after `takeoff`.
-8. **Report** in one or two sentences: the merged PR URL, the removed worktree path, and the latest commit hash of `branches.integration`.
+7. **Report** in one or two sentences: the merged PR URL, the removed worktree path, and the latest commit hash of `branches.integration`.
 
 ## Rules
 

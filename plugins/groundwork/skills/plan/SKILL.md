@@ -13,7 +13,7 @@ Read `reference/config.md` under the plugin root (two directories above this ski
 
 `workflow.bundle` must be `step-loop`, `design-first`, or `tdd-loop`. Otherwise stop and point the user to the skill that serves their bundle:
 
-- `flight`: `/groundwork:boarding` and the stages after it
+- `flight`: removed. Tell the user to run `/groundwork:onboarding`, which migrates it to `step-loop` with `workflow.worktree: true`.
 - `quick`: `/groundwork:review-and-fix`, then `/groundwork:commit-push`
 - `review-only`: `/groundwork:review`
 

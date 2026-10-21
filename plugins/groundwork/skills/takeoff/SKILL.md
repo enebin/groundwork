@@ -1,11 +1,11 @@
 ---
 name: "takeoff"
-description: Flight stage 4. Rebases the issue branch on the integration branch, pushes it, and opens a PR. The only Flight stage with remote side effects. Use for "takeoff <id>", or after taxiing.
-allowed-tools: Bash, Read, Skill, AskUserQuestion, TodoWrite
-argument-hint: <issue id> [--force] [--mode eco|normal|sport]
+description: Rebases an issue's branch on the integration branch, re-verifies, pushes it, and opens a PR. The step skill's way to ship once the user asks for a push. Use for "takeoff <id>", "push and open a PR for <id>", or after a step is done.
+allowed-tools: Bash, Read, Skill, AskUserQuestion
+argument-hint: <issue id> [--mode eco|normal|sport]
 ---
 
-Stage 4 of the Flight sequence. Rebase on the integration branch, push, and open a PR. Only this stage, `autoland`, and `release` touch the remote. On success, delete the issue's state files.
+Rebase on the integration branch, push, and open a PR. Only this skill, `autoland`, and `release` touch the remote.
 
 ## 0. Read the config
 
@@ -23,66 +23,45 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 1. Arguments
 
-Split `--force` and `--mode <eco|normal|sport>` out of the arguments. Validate the mode and resolve it against the configured overall mode. The first remaining token is `<ISSUE>`. If it is empty, show the usage and stop. Forward the effective mode when chaining taxiing.
+Split `--mode <eco|normal|sport>` out of the arguments. Validate the mode and resolve it against the configured overall mode. The first remaining token is `<ISSUE>`. If it is empty, show the usage and stop.
 
-## 2. State files
+## 2. Run
 
-- `MAIN_REPO_ROOT = $(git rev-parse --path-format=absolute --git-common-dir | xargs dirname)`
-- `KEY` = `<ISSUE>` without a leading `#`.
-- `STATE_FILE = $MAIN_REPO_ROOT/.groundwork/state/<KEY>.json`
-- `ISSUE_FILE = $MAIN_REPO_ROOT/.groundwork/state/<KEY>.issue.md`
-- `PLAN_FILE = $MAIN_REPO_ROOT/.groundwork/state/<KEY>.plan.md`
-
-## 3. Chain
-
-Load `STATE_FILE`, then run each earlier stage whose `done_at` is `null`, or every one with `--force`. Print a one-line skip message for the others.
-
-1. `/groundwork:boarding <ISSUE> [--force]`
-2. `/groundwork:door-closing <ISSUE> [--force]`
-3. `/groundwork:taxiing <ISSUE> [--force] --mode <effective-mode>`
-
-The chain never runs `landing`.
-
-## 4. Run
-
-1. **Skip check.** If `stages.takeoff.done_at` is set and `--force` is absent, stop. This is rare, because a successful takeoff deletes the state file.
-2. **GitHub CLI.** Run `gh auth status`. If it is not authenticated or lacks permission for this repository, stop and tell the user to run `gh auth login` themselves. Never run `gh auth login` or `gh auth switch`.
-3. **Enter the worktree.** `cd` to `worktree_path`. If it is missing, tell the user and stop.
-4. **Clean tree.** If `git status` shows uncommitted changes, tell the user and stop.
-5. **Rebase.** `git fetch origin <branches.integration> && git rebase origin/<branches.integration>`. On a conflict, do not resolve it. Leave the rebase in progress, tell the user which files conflict and that they can finish with `git rebase --continue` or back out with `git rebase --abort`, and stop.
-6. **Re-verify.** If the rebase brought in new commits, run the `verification.commands` the change affects again. Recheck affected UI tests and screenshots, and invalidate any earlier rendered QA whose checked behavior changed. For continuous QA, rerun the affected after-implementation QA gate from `reference/config.md` on the rebased candidate with the effective mode before pushing. On FAIL or BLOCKED, stop and report. If QA updates the ledger, include it in a local commit under the existing workflow permissions before pushing; do not leave a dirty candidate.
-7. **Push.**
+1. **GitHub CLI.** Run `gh auth status`. If it is not authenticated or lacks permission for this repository, stop and tell the user to run `gh auth login` themselves. Never run `gh auth login` or `gh auth switch`.
+2. **Find the branch.** `<branch>` is `branch_name(<ISSUE>)`. If `git worktree list --porcelain` shows it checked out in a worktree, `cd` there. Otherwise it must be the current branch of the main checkout; if it is not, tell the user and stop.
+3. **Clean tree.** If `git status` shows uncommitted changes, tell the user and stop.
+4. **Rebase.** `git fetch origin <branches.integration> && git rebase origin/<branches.integration>`. On a conflict, do not resolve it. Leave the rebase in progress, tell the user which files conflict and that they can finish with `git rebase --continue` or back out with `git rebase --abort`, and stop.
+5. **Re-verify.** If the rebase brought in new commits, run the `verification.commands` the change affects again. Recheck affected UI tests and screenshots, and invalidate any earlier rendered QA whose checked behavior changed. For continuous QA, rerun the affected after-implementation QA gate from `reference/config.md` on the rebased candidate with the effective mode before pushing. On FAIL or BLOCKED, stop and report. If QA updates the ledger, include it in a local commit under the existing workflow permissions before pushing; do not leave a dirty candidate.
+6. **Push.**
    - First push: `git push -u origin <branch>`.
    - The branch already exists on the remote and the rebase rewrote its history: ask the user, then `git push --force-with-lease origin <branch>`. Never plain `--force`.
    - Never push to `branches.integration` or `branches.production`.
-8. **Manual checks.** From `PLAN_FILE`, `ISSUE_FILE`, and the commits, list one to five things the user can see for themselves: a screen, a button, a list, a status, a message, a user flow. If nothing is visible (refactoring, tests, infrastructure), write "No visible change to check". Mark guesses as guesses.
-9. **Open the PR.** `gh pr create --base <branches.integration> --head <branch>` with the body in a HEREDOC.
+7. **Manual checks.** From the issue, its round log, and the commits, list one to five things the user can see for themselves: a screen, a button, a list, a status, a message, a user flow. If nothing is visible (refactoring, tests, infrastructure), write "No visible change to check". Mark guesses as guesses.
+8. **Open the PR.** `gh pr create --base <branches.integration> --head <branch>` with the body in a HEREDOC. If a PR for the branch is already open, report its URL instead.
    - Title: the format in `docs.rules` if it defines one. Otherwise a short imperative summary followed by `(<ISSUE>)`.
    - Body:
 
      ```markdown
      ## Summary
-     - <goal from PLAN_FILE and commit summary, one to three lines>
+     - <the issue's goal and what the commits did, one to three lines>
 
      ## Changes
-     - <from the commits and the plan's files to change>
+     - <from the commits>
 
      ## Test plan
-     - [ ] <from the plan's verification section>
+     - [ ] <the verification the step ran>
 
      ## Manual checks
-     - <from step 8>
+     - <from step 7>
 
      <closing reference for ISSUE, in the syntax catalog/trackers/<tracker.type>.md gives>
      ```
 
-10. **Report** the PR URL and the manual checks.
-11. **Clean up state.** First set `stages.takeoff.done_at = <UTC ISO 8601>` and save, so a failure below does not rerun takeoff. Then `rm -f $STATE_FILE $ISSUE_FILE $PLAN_FILE`. If deletion fails, warn and keep going.
-12. **Next.** If `workflow.autoland` is true and this run was not started by `autoland`, continue with `/groundwork:autoland <ISSUE>`. Otherwise stop here and tell the user that `/groundwork:landing <ISSUE>` cleans up after the merge.
+9. **Report** the PR URL and the manual checks.
+10. **Next.** If `workflow.autoland` is true and this run was not started by `autoland`, continue with `/groundwork:autoland <ISSUE>`. Otherwise stop here and tell the user that `/groundwork:landing <ISSUE>` cleans up after the merge.
 
 ## Rules
 
-- No other Flight stage runs `git push` or `gh pr create`.
 - Do not resolve rebase conflicts automatically.
 - Force-push only with the user's approval, and only with `--force-with-lease`.
 - Never bypass hooks or branch protection.

@@ -27,15 +27,14 @@
 
   <text class="ink" x="56" y="268">design-first</text><text class="ink" x="250" y="268">Structure settled in a doc before code</text><text class="ink" x="640" y="268">Nothing ships until the design is approved</text><text class="hi" x="1040" y="268">High</text>
   <text class="ink" x="56" y="302">tdd-loop</text><text class="ink" x="250" y="302">Every behavior has a test seen failing</text><text class="ink" x="640" y="302">Slow for UI-heavy steps</text><text class="hi" x="1040" y="302">High</text>
-  <text class="ink" x="56" y="336">flight</text><text class="ink" x="250" y="336">Remote side effects only at takeoff</text><text class="ink" x="640" y="336">One worktree per issue to set up</text><text class="md" x="1040" y="336">Medium</text>
-  <text class="ink" x="56" y="370">quick</text><text class="ink" x="250" y="370">Fix and its review land in minutes</text><text class="ink" x="640" y="370">History lives only in commit messages</text><text class="lo" x="1040" y="370">Low</text>
-  <text class="ink" x="56" y="404">review-only</text><text class="ink" x="250" y="404">Keep your workflow; add reviewers</text><text class="ink" x="640" y="404">Nothing tracks whether findings get fixed</text><text class="lo" x="1040" y="404">Low</text>
+  <text class="ink" x="56" y="336">quick</text><text class="ink" x="250" y="336">Fix and its review land in minutes</text><text class="ink" x="640" y="336">History lives only in commit messages</text><text class="lo" x="1040" y="336">Low</text>
+  <text class="ink" x="56" y="370">review-only</text><text class="ink" x="250" y="370">Keep your workflow; add reviewers</text><text class="ink" x="640" y="370">Nothing tracks whether findings get fixed</text><text class="lo" x="1040" y="370">Low</text>
 
   <text class="mute" x="40" y="446" font-size="13">Token cost compares bundles within this step. It is an estimate, not a measurement.</text>
 
   <rect class="sel" x="40" y="474" width="420" height="34" rx="6"/>
   <text class="acc" x="56" y="497">❯ step-loop (Recommended)</text>
   <text class="ink" x="56" y="535">  design-first</text>
-  <text class="ink" x="56" y="567">  flight</text>
+  <text class="ink" x="56" y="567">  tdd-loop</text>
   <text class="mute" x="56" y="599">  Other — name any bundle above</text>
 </svg>

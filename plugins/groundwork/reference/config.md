@@ -39,8 +39,9 @@ tracker:
   # jira:   site: <host>  project: <key>  step_type: subtask | child
 
 workflow:
-  bundle: step-loop                      # step-loop | flight | design-first | quick | tdd-loop | review-only
+  bundle: step-loop                      # step-loop | design-first | quick | tdd-loop | review-only (flight: removed; onboarding migrates it)
   autoland: false                        # merge automatically once CI passes (not for quick / review-only)
+  worktree: false                        # true = step works in .groundwork/worktrees/<branch> (step-loop, design-first, tdd-loop)
 
 branches:
   strategy: develop-release              # develop-release | main-only
@@ -155,7 +156,7 @@ Onboarding writes `reference/implementation.md` into `docs.rules` for every proj
 
 **Compatibility:** when the entire `qa` mapping is absent in a schema-1 file, explicitly report the legacy mapping: `review.release_qa: false` means manual, true means release. If that legacy key is also absent, stop. A present but missing/unknown `qa.bundle` is an error, not a legacy fallback. Onboarding writes the mapping as `qa.bundle`, preserves the old key as a mirror (false for manual, true otherwise), and explains it in the final preview. No schema bump is needed for this additive key. Existing files keep their old trigger until migrated.
 
-**After implementation:** only continuous runs automatically. For step workflows, run once after the final verification and code-review fixes, before completion; Flight runs it in taxiing, and quick runs it in review-and-fix even when code review has no findings. Use `/groundwork:ui-qa <changed screens> --mode <effective-mode>` and, except in eco, `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
+**After implementation:** only continuous runs automatically. For step workflows, run once after the final verification and code-review fixes, before completion; quick runs it in review-and-fix even when code review has no findings. Use `/groundwork:ui-qa <changed screens> --mode <effective-mode>` and, except in eco, `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
 
 **Before release:** release and continuous run `/groundwork:ui-qa --full --mode <effective-mode>`, plus `/groundwork:ux-review --full --mode <effective-mode>` when at least one user persona exists. Explicit `--full` keeps all uncovered checks and all user tasks in scope in every mode; eco does not remove this release gate. Use the exact release candidate (the integration head for develop-release, production head for main-only). The release skill runs the gate before creating a release branch or PR. For main-only, the workflow creating a version tag must run this gate before tagging, since the release-branch skill is not applicable. Manual shows the uncovered ledger rows as the human checklist.
 

@@ -1,6 +1,6 @@
 ---
 name: "step"
-description: Runs one step sub-issue to completion. Implements it, then repeats verify → review → fix until the review leaves no confirmed 🔴/🟠, logging each round on the issue. Use for "run step <id>", "continue <id>", or when another skill hands over an implemented step.
+description: Runs one step sub-issue, or a standalone issue, to completion. Implements it, then repeats verify → review → fix until the review leaves no confirmed 🔴/🟠, logging each round on the issue. Use for "run step <id>", "continue <id>", or when another skill hands over an implemented step.
 allowed-tools: Bash, Read, Edit, Write, Grep, Glob, Skill, Agent, AskUserQuestion
 argument-hint: <sub-issue id> [--implemented] [--mode eco|normal|sport]
 ---
@@ -13,7 +13,7 @@ Read `reference/config.md` under the plugin root (two directories above this ski
 
 `workflow.bundle` must be `step-loop`, `design-first`, or `tdd-loop`. Otherwise stop and point the user to the skill that serves their bundle:
 
-- `flight`: `/groundwork:boarding` and the stages after it
+- `flight`: removed. Tell the user to run `/groundwork:onboarding`, which migrates it to `step-loop` with `workflow.worktree: true`.
 - `quick`: `/groundwork:review-and-fix`, then `/groundwork:commit-push`
 - `review-only`: `/groundwork:review`
 
@@ -27,7 +27,7 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 1. Load context
 
-- `read` the issue with its comments, then `read` the parent issue it belongs to.
+- `read` the issue with its comments, then `read` the parent issue it belongs to, if it has one.
 - Read `docs.rules`, `docs.architecture` (when set) and the documents it links that are in scope, and the code in scope.
 - If a step listed in "Depends on" is still open and its branch is not available, stop and say so.
 - Earlier round comments on the issue tell you where the last session stopped. Continue from there.
@@ -36,7 +36,15 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 2. Branch
 
-Never work on `branches.integration` or `branches.production`. Use `branch_name(id)`. Branch from `branches.integration` when every dependency is merged, otherwise from the dependency step's branch. Reuse the branch if it already exists.
+Never work on `branches.integration` or `branches.production`. Use `branch_name(id)`. Branch from `branches.integration` when every dependency is merged, otherwise from the dependency step's branch. Fetch the base first (`git fetch origin <branches.integration>`). Reuse the branch if it already exists.
+
+When `workflow.worktree` is true, work in a worktree instead of switching the main checkout. From the main checkout (`git rev-parse --path-format=absolute --git-common-dir | xargs dirname`):
+
+- New branch: `git worktree add --no-track -b <branch> .groundwork/worktrees/<branch> <base>`.
+- The branch exists without a worktree: `git worktree add .groundwork/worktrees/<branch> <branch>`.
+- The worktree exists: reuse it.
+
+If `.git/info/exclude` in the main checkout does not list `.groundwork/worktrees/`, append it, so the worktrees do not show up as untracked files there. Then work inside `.groundwork/worktrees/<branch>` for the rest of the step. `/groundwork:rejoin` moves the branch back to the main checkout, and `/groundwork:landing` removes the worktree after the merge.
 
 ## 3. Implement
 
@@ -87,8 +95,7 @@ If the last allowed round ends with confirmed 🔴/🟠 still open, stop and ask
 1. Run every `verification.commands` entry before completion. If the step changed anything under `verification.ui_paths`, run `verification.ui_tests.full` once (reuse current-build results). A failure sends you back to step 4 and counts as a verification failure, not a round. For a non-design step, then run the after-implementation QA gate from `reference/config.md` when the resolved QA bundle is continuous, passing the effective mode and the complete change scope. Do this even if code review had no findings. A FAIL or BLOCKED prevents completion; follow the QA repair/recheck limit before continuing below.
 2. Design step: show the user the document and the review result, and stop until they approve it. Their requested changes go back to step 4.
 3. Tick the satisfied "Done when" boxes in the issue body with `update_body`.
-4. If the step produced a decision that later steps need, append it to the parent's "Decisions" with `update_body`. Structural decisions go into `docs.architecture` or its sub-documents instead.
+4. If the step has a parent and produced a decision that later steps need, append it to the parent's "Decisions" with `update_body`. Structural decisions go into `docs.architecture` or its sub-documents instead.
 5. `comment` a closing note: what was done, anything left, the branch name.
-6. Commits and pushes happen only when the user asks. Offer a commit and a PR whose body includes `closes(id)`.
+6. Commits and pushes happen only when the user asks. Offer a commit, and for the push and PR, `/groundwork:takeoff <id>`.
 7. `set_state(id, done)`. With `ci-gate` in `verification.base`, the step is done only after the PR's CI passes. Once the user has asked for the push and PR, wait on the checks the way `/groundwork:autoland` does. Do not merge unless `workflow.autoland` is true. Until CI passes, leave the state `in_progress`.
-8. If `workflow.autoland` is true and the PR exists, offer to hand over to `/groundwork:autoland`.

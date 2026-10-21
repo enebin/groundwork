@@ -48,11 +48,11 @@
     <rect class="chip" x="820" y="130" width="150" height="36" rx="18"/><text class="acc" x="845" y="154">review</text>
     <rect class="chip" x="980" y="130" width="160" height="36" rx="18"/><text class="acc" x="1005" y="154">ux-review</text>
     <rect class="chip" x="820" y="176" width="150" height="36" rx="18"/><text class="acc" x="845" y="200">ui-qa</text>
-    <rect class="chip" x="980" y="176" width="160" height="36" rx="18"/><text class="acc" x="1005" y="200">boarding</text>
+    <rect class="chip" x="980" y="176" width="160" height="36" rx="18"/><text class="acc" x="1005" y="200">landing</text>
     <rect class="chip" x="820" y="222" width="150" height="36" rx="18"/><text class="acc" x="845" y="246">takeoff</text>
     <rect class="chip" x="980" y="222" width="160" height="36" rx="18"/><text class="acc" x="1005" y="246">autoland</text>
     <rect class="chip" x="820" y="268" width="150" height="36" rx="18"/><text class="acc" x="845" y="292">release</text>
-    <rect class="chip" x="980" y="268" width="160" height="36" rx="18"/><text class="acc" x="1005" y="292">+7 more</text>
+    <rect class="chip" x="980" y="268" width="160" height="36" rx="18"/><text class="acc" x="1005" y="292">+4 more</text>
   </g>
   <text class="mute" x="820" y="340" font-size="14">Code reviewers run in parallel on every change</text>
 

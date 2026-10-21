@@ -36,8 +36,7 @@ In plan mode, do not refuse. Inspect with read-only tools, write the concrete pl
 3. **Update the integration branch.** In the main checkout: `git fetch origin <branches.integration>`, `git checkout <branches.integration>`, `git pull --ff-only origin <branches.integration>`. If the main checkout has uncommitted changes or the fast-forward fails, tell the user and stop.
 4. **Remove the worktree.** `git worktree remove <path>`. If it fails for another reason, such as a locked file, ask the user before adding `--force`.
 5. **Rebase the branch.** `git checkout <branch>`, then `git rebase origin/<branches.integration>`. On a conflict, do not resolve it. Leave the rebase in progress, tell the user to resolve and run `git rebase --continue`, or `git rebase --abort`, and stop.
-6. **Leftover state.** If `<ISSUE>` is known, delete `$MAIN_REPO_ROOT/.groundwork/state/<KEY>.*` if any remain (`KEY` is `<ISSUE>` without a leading `#`).
-7. **Report** in one or two sentences: how many commits `<branch>` is ahead (`git rev-list --count origin/<branches.integration>..<branch>`), the HEAD hash, the removed worktree path, and that nothing was pushed.
+6. **Report** in one or two sentences: how many commits `<branch>` is ahead (`git rev-list --count origin/<branches.integration>..<branch>`), the HEAD hash, the removed worktree path, and that nothing was pushed.
 
 ## Rules
 
