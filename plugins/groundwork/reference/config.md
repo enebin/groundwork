@@ -169,7 +169,7 @@ Onboarding writes `reference/implementation.md` into `docs.rules` for every proj
 |---|---|---|---|---|
 
 - The implementing skill keeps it current. When it adds or changes a screen, it adds a row for each check, names the UI test that covers it, and for a check no test can make (visual polish, readability at large text, animation) fills "Why QA must look" instead. It sets Last verified to `stale` on the uncovered rows of every screen it changed.
-- A check may go to "Why QA must look" only when no UI test can make it, after considering all three ways: asserting a value (sizes, frames, visibility, text), launching with a different condition (dark appearance, largest text size, locale, an empty or error state), and attaching a screenshot that the implementer opens. The reason must say why each of the three fails. What remains is human judgment: whether wording reads naturally, whether a flow feels easy, how an animation feels. `code-quality-reviewer` checks each new or changed "Why QA must look" row and reports a row that a test could cover as 🟠.
+- When a check may go to "Why QA must look" is set by the rule on it in `reference/implementation.md`. `code-quality-reviewer` checks each new or changed "Why QA must look" row against it and reports a row that a test could cover as 🟠.
 - Release QA checks only rows with no automated test, fills Last verified (`<branch or commit>, PASS` or `FAIL`), and proposes a test for any row that turns out to be automatable.
 
 ### Severity

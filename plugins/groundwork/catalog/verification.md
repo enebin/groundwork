@@ -44,20 +44,7 @@ Recommended when: almost always. This is the default base bundle.
 
 ### Rules to write
 
-```markdown
-### Evidence
-
-- A type that holds or transitions state is not merged without tests. Test each input for the normal path, the ignored case, the failure case, and a completion that arrives late. Pure logic (formatters, resolvers, parsers) is tested the same way. Display-only views are exempt.
-- Write each test as Given / When / Then. Name tests in plain language that states the behavior.
-- Do not hard-code the same literal across several assertions. Define it once as a test constant or helper.
-- Unit tests never reach a real backend, network service, or production data. Replace I/O at its boundary with a test double.
-- Do not wait with sleeps. Await async calls directly, or poll for the expected state with a bounded wait helper.
-- While fixing, run only the tests that cover the change (`verification.ui_tests.targeted` for UI). Run the full suite (`verification.ui_tests.full` and every `verification.commands` entry) once before declaring the work done.
-- Every changed screen has a UI test that attaches a screenshot. UI work is done only when the implementer has opened those screenshots and checked them. Checks no test can make go into the UI coverage ledger with the reason. A check may go to "Why QA must look" only when no UI test can make it, after considering all three ways: asserting a value (sizes, frames, visibility, text), launching with a different condition (dark appearance, largest text size, locale, an empty or error state), and attaching a screenshot that the implementer opens. The reason must say why each of the three fails. What remains is human judgment: whether wording reads naturally, whether a flow feels easy, how an animation feels.
-- Run each UI test once per build. Record the result path with the commit and dirty state it was built from, so later checks on the same build reuse it.
-- Keep compiler and type-checker warnings at zero. A new warning is a failure.
-- If any verification could not run (missing tool, no simulator), say which one and why in the work result. Report it as unverified. Never report it as passed.
-```
+The mandatory block in `reference/implementation.md`. Onboarding writes that block for every project; there is no separate `evidence` block.
 
 ## ci-gate
 
@@ -79,7 +66,7 @@ Recommended when: the repository has CI that runs the full test suite, especiall
 
 ### Rules to write
 
-Write the `evidence` block first, then this one.
+Write the block from `reference/implementation.md` first, then this one.
 
 ```markdown
 ### CI gate
@@ -110,7 +97,7 @@ Recommended when: logic-heavy code, libraries, and bug-fix work; required with `
 
 ### Rules to write
 
-Write the `evidence` block first, then this one.
+Write the block from `reference/implementation.md` first, then this one.
 
 ```markdown
 ### Test first
