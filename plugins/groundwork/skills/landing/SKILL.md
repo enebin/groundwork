@@ -40,7 +40,7 @@ In plan mode, do not refuse. Inspect with read-only tools, write the concrete pl
    - Otherwise `git worktree remove <path>`. If it fails for another reason, such as a locked file, ask the user before adding `--force`.
 4. **Update the integration branch.** If the main checkout has uncommitted changes to tracked files (`git status --porcelain --untracked-files=no` is not empty; untracked files go along with a checkout and do not block it), tell the user and skip this step. Otherwise `git checkout <branches.integration> && git pull --ff-only origin <branches.integration>`. If the fast-forward fails, report it and stop.
 5. **Delete the local branch.** Try `git branch -d <branch>`. With `branches.merge` set to `squash` or `rebase`, this usually fails because the merged commits have new hashes. If it fails, show the user the PR state and ask before `git branch -D <branch>`.
-6. **Close the issue.** If `<ISSUE>` is known and the PR is merged, `set_state(<ISSUE>, done)`, unless the tracker document says the tracker does this on its own.
+6. **Close the issue.** If `<ISSUE>` is known and the PR is merged, `set_state(<ISSUE>, done)`, unless the tracker document says the tracker does this on its own. Then do what the tracker document's "After the merge" section says, if it has one.
 7. **Report** in one or two sentences: the merged PR URL, the removed worktree path, and the latest commit hash of `branches.integration`.
 
 ## Rules
