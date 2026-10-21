@@ -50,6 +50,8 @@ Then, in the repository you want to set up:
 /groundwork:onboarding
 ```
 
+In Claude Code, groundwork checks GitHub for a newer version at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
+
 Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to have review findings verified before you see them. Without it, reviews report `SkepticReview: OFF`.
 
 ## What onboarding asks
