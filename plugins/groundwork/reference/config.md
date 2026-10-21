@@ -39,8 +39,9 @@ tracker:
   # jira:   site: <host>  project: <key>  step_type: subtask | child
 
 workflow:
-  bundle: step-loop                      # step-loop | flight | design-first | quick | tdd-loop | review-only
+  bundle: step-loop                      # step-loop | design-first | quick | tdd-loop | review-only (flight: removed; onboarding migrates it)
   autoland: false                        # merge automatically once CI passes (not for quick / review-only)
+  worktree: false                        # true = step works in .groundwork/worktrees/<branch> (step-loop, design-first, tdd-loop)
 
 branches:
   strategy: develop-release              # develop-release | main-only
@@ -133,6 +134,7 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 |---|---|---|---|
 | Review rounds, at most | 1 | 3 | 3 |
 | Who reviews again from round 2 | — (fixes are checked by verification only) | reviewers that raised a confirmed 🔴/🟠 | every reviewer |
+| What round 2+ reviews | — | only the fixes since the last review | the whole change |
 | UI tests | changed screens; full suite at finish | changed screens; full suite at finish | full suite every round |
 | Change-scoped rendered QA, when triggered | changed screens, UI QA only | changed screens and affected user-persona tasks | all uncovered screens and all user-persona tasks |
 
@@ -154,7 +156,7 @@ Onboarding writes `reference/implementation.md` into `docs.rules` for every proj
 
 **Compatibility:** when the entire `qa` mapping is absent in a schema-1 file, explicitly report the legacy mapping: `review.release_qa: false` means manual, true means release. If that legacy key is also absent, stop. A present but missing/unknown `qa.bundle` is an error, not a legacy fallback. Onboarding writes the mapping as `qa.bundle`, preserves the old key as a mirror (false for manual, true otherwise), and explains it in the final preview. No schema bump is needed for this additive key. Existing files keep their old trigger until migrated.
 
-**After implementation:** only continuous runs automatically. For step workflows, run once after the final verification and code-review fixes, before completion; Flight runs it in taxiing, and quick runs it in review-and-fix even when code review has no findings. Use `/groundwork:ui-qa <changed screens> --mode <effective-mode>` and, except in eco, `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
+**After implementation:** only continuous runs automatically. For step workflows, run once after the final verification and code-review fixes, before completion; quick runs it in review-and-fix even when code review has no findings. Use `/groundwork:ui-qa <changed screens> --mode <effective-mode>` and, except in eco, `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
 
 **Before release:** release and continuous run `/groundwork:ui-qa --full --mode <effective-mode>`, plus `/groundwork:ux-review --full --mode <effective-mode>` when at least one user persona exists. Explicit `--full` keeps all uncovered checks and all user tasks in scope in every mode; eco does not remove this release gate. Use the exact release candidate (the integration head for develop-release, production head for main-only). The release skill runs the gate before creating a release branch or PR. For main-only, the workflow creating a version tag must run this gate before tagging, since the release-branch skill is not applicable. Manual shows the uncovered ledger rows as the human checklist.
 
@@ -167,8 +169,8 @@ Onboarding writes `reference/implementation.md` into `docs.rules` for every proj
 | Screen | Check | Automated test | Why QA must look | Last verified |
 |---|---|---|---|---|
 
-- The implementing skill keeps it current. When it adds or changes a screen, it adds a row for each check, names the UI test that covers it, and for a check no test can make (visual polish, readability at large text, animation) fills "Why QA must look" instead. It sets Last verified to `stale` on the uncovered rows of every screen it changed.
-- A check may go to "Why QA must look" only when no UI test can make it, after considering all three ways: asserting a value (sizes, frames, visibility, text), launching with a different condition (dark appearance, largest text size, locale, an empty or error state), and attaching a screenshot that the implementer opens. The reason must say why each of the three fails. What remains is human judgment: whether wording reads naturally, whether a flow feels easy, how an animation feels. `code-quality-reviewer` checks each new or changed "Why QA must look" row and reports a row that a test could cover as 🟠.
+- The implementing skill keeps it current. When it adds or changes a screen, it adds a row for each check, names the UI test that covers it, and for a check no test can make (whether wording reads naturally, how a flow or animation feels) fills "Why QA must look" instead. It sets Last verified to `stale` on the uncovered rows of every screen it changed.
+- When a check may go to "Why QA must look" is set by the rule on it in `reference/implementation.md`. `code-quality-reviewer` checks each new or changed "Why QA must look" row against it and reports a row that a test could cover as 🟠.
 - Release QA checks only rows with no automated test, fills Last verified (`<branch or commit>, PASS` or `FAIL`), and proposes a test for any row that turns out to be automatable.
 
 ### Severity

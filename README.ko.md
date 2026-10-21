@@ -69,7 +69,7 @@ Claude Code에서는 하루 최대 한 번 GitHub의 새 버전을 확인하고 
 |---|---|---|---|
 | 1 | 언어 | 대화 언어 / 산출물 언어 | 사용자 언어 / 영어 (토큰 절약) |
 | 2 | 이슈 트래커 | local files, GitHub Projects, Linear, Jira | local files |
-| 3 | 워크플로우 | step-loop, design-first, tdd-loop, flight, quick, review-only | step-loop |
+| 3 | 워크플로우 | step-loop, design-first, tdd-loop, quick, review-only; 이슈별 worktree | step-loop, worktree 없음 |
 | 4 | 배포 전략 | develop + release, main only; 머지 방식 | develop + release |
 | 5 | 아키텍처 | unidirectional, mvvm, layered-service, layered-web, none | 기술 스택에 따라 추천 |
 | 6 | 리뷰 | app, sdk, service, product, light; Skeptic 정책 | 프로젝트 성격에 따라 추천 |
@@ -91,7 +91,8 @@ Claude Code에서는 하루 최대 한 번 GitHub의 새 버전을 확인하고 
 | `onboarding` | `GROUNDWORK.md` 초기 설정 및 변경 |
 | `plan` | 큰 작업을 상위 이슈 하나와 세부 단계 이슈들로 쪼개기 |
 | `step` | 단계 하나 실행: 구현 후 확인된 🔴/🟠 이슈가 남지 않을 때까지 검증 → 리뷰 → 수정 반복 |
-| `boarding`, `door-closing`, `taxiing`, `takeoff`, `landing`, `rejoin` | 이슈를 하나씩 단계별로 밀고 나가는 flight 워크플로우 |
+| `takeoff` | 끝난 단계를 rebase하고 push한 뒤 PR 열기 |
+| `landing`, `rejoin` | 머지 후 정리, 또는 브랜치를 worktree 밖으로 옮기기 |
 | `release`, `autoland` | 릴리스 생성 및 CI 통과 시 자동 머지 |
 | `review-and-fix`, `commit-push` | 빠르게 치고 빠지는 quick 워크플로우 |
 | `review` | 선택한 리뷰어들을 병렬로 돌려 결과 취합 |

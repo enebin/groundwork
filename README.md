@@ -69,7 +69,7 @@ Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to 
 |---|---|---|---|
 | 1 | Language | conversation / artifacts | your language / English (saves tokens) |
 | 2 | Issue tracker | local files, GitHub Projects, Linear, Jira | local files |
-| 3 | Workflow | step-loop, design-first, tdd-loop, flight, quick, review-only | step-loop |
+| 3 | Workflow | step-loop, design-first, tdd-loop, quick, review-only; worktree per issue | step-loop, no worktree |
 | 4 | Release strategy | develop + release, main only; merge style | develop + release |
 | 5 | Architecture | unidirectional, mvvm, layered-service, layered-web, none | recommended based on stack |
 | 6 | Review | app, sdk, service, product, light; Skeptic policy | recommended based on project type |
@@ -91,7 +91,8 @@ You can browse the pros, cons, and exact rules written by each bundle in [`plugi
 | `onboarding` | Initialize or update `GROUNDWORK.md` |
 | `plan` | Break a large task into a parent issue and smaller step issues |
 | `step` | Run a single step: implement, then loop through verify → review → fix until no confirmed 🔴/🟠 issues remain |
-| `boarding`, `door-closing`, `taxiing`, `takeoff`, `landing`, `rejoin` | The flight workflow, moving through one issue at a time |
+| `takeoff` | Rebase, push, and open the PR for a finished step |
+| `landing`, `rejoin` | Clean up after a merge, or move a branch out of its worktree |
 | `release`, `autoland` | Cut a release and auto-merge once CI passes |
 | `review-and-fix`, `commit-push` | Fast, lightweight quick workflow |
 | `review` | Run selected reviewers in parallel and combine their findings |

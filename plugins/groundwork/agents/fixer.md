@@ -35,7 +35,9 @@ Fixer: DONE | PARTIAL | BLOCKED
 - Screens: <screenshot paths and what they showed / not applicable>
 - Ledger: <rows changed / unchanged>
 - Files changed: <paths>
-- Noticed, not fixed: <other problems, one line each> (or "none")
+- Noticed, not fixed: <severity> <other problem — the failure scenario, file:line>, one per line (or "none")
 ```
+
+Rate each noticed problem with the review severities (🔴 Critical, 🟠 Major, 🟡 Minor) in the review skill's reviewer prompt. Back a 🔴/🟠 with a concrete failure scenario: which input or state leads to what going wrong.
 
 Do not run reviewers or Skeptic Review, comment on the tracker, commit, push, or delegate.

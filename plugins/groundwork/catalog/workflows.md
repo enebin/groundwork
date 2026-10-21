@@ -6,8 +6,7 @@ Onboarding shows these bundles as one choice and writes the id to `workflow.bund
 
 | Id | Shape | Unit of work |
 |---|---|---|
-| `step-loop` | `plan` → `step` per sub-issue | One sub-issue, one PR |
-| `flight` | `boarding` → `door-closing` → `taxiing` → `takeoff` → `landing` | One issue, one worktree, one PR |
+| `step-loop` | `plan` → `step` per sub-issue → `takeoff` | One sub-issue, one PR |
 | `design-first` | `plan` with an approved design step first, then `step` | One sub-issue, one PR |
 | `quick` | implement → `review-and-fix` → `commit-push` | The current branch |
 | `tdd-loop` | `step-loop` where each step runs red → green → refactor | One sub-issue, one PR |
@@ -17,7 +16,7 @@ Onboarding shows these bundles as one choice and writes the id to `workflow.bund
 
 Summary: Split a job into sub-issues with `plan`, then run each one with `step`: implement, then verify → review → fix until no confirmed 🔴/🟠 remains, logging every round on the issue.
 
-Skills: `plan` → `step` (per sub-issue). `step` calls `review`, then applies the separate QA policy after final verification.
+Skills: `plan` → `step` (per sub-issue) → `takeoff` when the user asks for a push. `step` calls `review`, then applies the separate QA policy after final verification. `step` also runs a standalone issue that has no parent. After the merge, `landing` cleans up; `autoland` merges and cleans up by itself when it is on.
 
 Fits:
 - Jobs that take several PRs and several sessions.
@@ -42,47 +41,6 @@ Cons:
 Token cost: High — every step pays issue reads, implementation, a full verify, and up to 3 review rounds with all configured reviewers, plus a round log on the issue.
 
 Recommended when: the work is bigger than one PR and you want an agent to carry it across sessions. This is the default.
-
-## flight
-
-Summary: One issue flies through fixed stages. Each stage caches its output on disk, so rerunning a later stage skips the stages already done. Only `takeoff` touches the remote.
-
-Skills:
-- `boarding`: read the issue, write a requirement summary and the code it touches. No code or git changes.
-- `door-closing`: update the integration branch, create a worktree, write `plan.md`. No code changes.
-- `taxiing`: implement the plan in the worktree with intermediate commits. No push, no PR.
-- `takeoff`: rebase on the integration branch, push, open the PR. Runs review first when `review.trigger` is `per-implementation`.
-- `landing`: after the PR merges, remove the worktree, update the integration branch, delete the local branch. Always run by hand.
-- `rejoin`: leave the worktree and keep the branch as a local branch in the main checkout, rebased on the integration branch. For switching context without losing work.
-- `release`: open a release PR from the integration branch to the production branch (only with `branches.strategy: develop-release`).
-- `autoland`: after `takeoff`, wait for CI, merge when every check passes, then run `landing`. Only when `workflow.autoland` is `true`.
-
-Each later stage chains the earlier ones it still needs. Stage state lives under the main checkout, so every worktree sees it.
-
-Fits:
-- A steady stream of issue-sized tasks (one issue, one PR).
-- Repositories where several agents work in parallel worktrees.
-- Teams that want a hard line between local work and remote side effects.
-
-Does not fit:
-- Jobs that need several PRs. Use `step-loop` or `design-first`; flight has no parent/child split.
-- Repositories that cannot run in a second worktree (heavy per-checkout setup, local-only secrets).
-
-Pros:
-- Remote side effects happen in exactly one stage, so a mistake before `takeoff` stays local.
-- Stages are resumable; a crash in `taxiing` does not redo `boarding`.
-- Worktrees keep parallel tasks apart and leave the main checkout clean.
-- `rejoin` gives a way out of a worktree without pushing half-done work.
-
-Cons:
-- Each worktree needs its own dependency install, build cache, and IDE index.
-- Five stage names to learn; the metaphor helps some people and confuses others.
-- Review happens once, at the end, unless the user runs it more often; there is no round log on the issue.
-- Rebase conflicts at `takeoff` stop the flow and need a human.
-
-Token cost: Medium — review runs once per implementation (at `takeoff`) instead of every round; resumed stages re-read cached files instead of redoing work.
-
-Recommended when: most work items are single-PR issues and you run more than one task at a time.
 
 ## design-first
 
@@ -203,7 +161,7 @@ Recommended when: you want reviewers, not an implementer.
 
 ## Follow-up: autoland
 
-Asked after the workflow choice, for `step-loop`, `flight`, `design-first`, and `tdd-loop`. Writes `workflow.autoland`.
+Asked after the workflow choice, for `step-loop`, `design-first`, and `tdd-loop`. Writes `workflow.autoland`.
 
 Skipped for `quick` (it pushes to the current branch and opens no PR) and `review-only` (the plugin opens no PR). Both get `autoland: false`.
 
@@ -218,3 +176,15 @@ When `true`, autoland follows these rules:
 - Re-read the PR right before merging. If it is closed, a draft, aimed at another base, or its head commit changed, stop.
 - Merge with `branches.merge` and pin the head commit. Never use admin overrides, never bypass branch protection or required reviews, never force-push.
 - Then run `landing`, and list the visible changes the user should check by hand.
+
+## Follow-up: worktree
+
+Asked after the workflow choice, for `step-loop`, `design-first`, and `tdd-loop`. Writes `workflow.worktree`. `quick` and `review-only` get `false`.
+
+Question: "Work on each issue in its own worktree?"
+
+Default: **No.**
+
+When `true`, `step` creates `.groundwork/worktrees/<branch>` for the issue and works there, so several steps can run in parallel without touching the main checkout. `rejoin` moves a branch back to the main checkout, and `landing` removes the worktree after the merge.
+
+Reason for the default: each worktree needs its own dependency install, build cache, and editor index. Some tools, such as editors and agent apps that start each session in its own worktree, already isolate parallel work. Turn it on when you run several steps at once and your tools do not isolate them.
