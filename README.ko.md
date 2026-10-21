@@ -69,10 +69,10 @@ Claude Code에서는 하루 최대 한 번 GitHub의 새 버전을 확인하고 
 |---|---|---|---|
 | 1 | 언어 | 대화 언어 / 산출물 언어 | 사용자 언어 / 영어 (토큰 절약) |
 | 2 | 이슈 트래커 | local files, GitHub Projects, Linear, Jira | local files |
-| 3 | 워크플로우 | step-loop, design-first, tdd-loop, quick, review-only; 이슈별 worktree | step-loop, worktree 없음 |
+| 3 | 워크플로우 | step-loop, design-first, tdd-loop, quick, review-only; 이슈별 worktree | step-loop, 이슈별 worktree |
 | 4 | 배포 전략 | develop + release, main only; 머지 방식 | develop + release |
 | 5 | 아키텍처 | unidirectional, mvvm, layered-service, layered-web, none | 기술 스택에 따라 추천 |
-| 6 | 리뷰 | app, sdk, service, product, light; Skeptic 정책 | 프로젝트 성격에 따라 추천 |
+| 6 | 리뷰 | app, sdk, service, product, light | 프로젝트 성격에 따라 추천 |
 | 7 | QA | manual, release, continuous | manual |
 | 8 | 추가 규칙 | 자유 입력 | 없음 |
 

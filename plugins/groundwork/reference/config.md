@@ -41,7 +41,7 @@ tracker:
 workflow:
   bundle: step-loop                      # step-loop | design-first | quick | tdd-loop | review-only (flight: removed; onboarding migrates it)
   autoland: false                        # merge automatically once CI passes (not for quick / review-only)
-  worktree: false                        # true = step works in .groundwork/worktrees/<branch> (step-loop, design-first, tdd-loop)
+  worktree: true                         # true = step works in .groundwork/worktrees/<branch> (step-loop, design-first, tdd-loop)
 
 branches:
   strategy: develop-release              # develop-release | main-only

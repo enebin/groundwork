@@ -183,8 +183,8 @@ Asked after the workflow choice, for `step-loop`, `design-first`, and `tdd-loop`
 
 Question: "Work on each issue in its own worktree?"
 
-Default: **No.**
+Default: **Yes.**
 
 When `true`, `step` creates `.groundwork/worktrees/<branch>` for the issue and works there, so several steps can run in parallel without touching the main checkout. `rejoin` moves a branch back to the main checkout, and `landing` removes the worktree after the merge.
 
-Reason for the default: each worktree needs its own dependency install, build cache, and editor index. Some tools, such as editors and agent apps that start each session in its own worktree, already isolate parallel work. Turn it on when you run several steps at once and your tools do not isolate them.
+Reason for the default: the main checkout stays clean, and steps can run in parallel without touching each other. The cost is a dependency install, build cache, and editor index per worktree. Turn it off when your tools, such as editors and agent apps that start each session in its own worktree, already isolate parallel work.
