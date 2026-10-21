@@ -1,7 +1,7 @@
 ---
 name: review
 description: Reviews a change with the reviewers listed in GROUNDWORK.md, in parallel. Merges code findings, verifies them with Skeptic Review, and reports rendered UX and UI QA results separately. Reports only; does not modify code.
-argument-hint: "[<PR number> | <path>] [--only <keys>]"
+argument-hint: "[<PR number> | <path>] [--only <keys>] [--since <tree> --fixes <file>]"
 ---
 
 # Review
@@ -22,6 +22,7 @@ Split the arguments on whitespace.
 
 - `--only <key,...>` narrows the run to those reviewer keys from `reference/config.md`. Stop and say so if a key is unknown. Without it, run every key in `review.reviewers`.
 - `architecture` never runs when `architecture.bundle` is `none`; if `--only` names it, stop and say there is no standard to judge against. `ux` needs at least one entry in `review.personas`.
+- `--since <tree> --fixes <file>` makes a **follow-up review** in local mode: only what changed since the working-tree snapshot `<tree>`, judged against the findings listed in `<file>` as fixed since then. Both flags go together. Stop and say so if either is given without the other, or with PR or path mode.
 - If the first remaining token is a number, use **PR mode**. If it is a path, use **path mode**. With none, use **local mode**. Reject anything else, or an ambiguous target.
 
 ## 3. Decide what to review
@@ -29,6 +30,7 @@ Split the arguments on whitespace.
 Each mode pins its refs and sets `DIFF_CMD` (how to see the change) and `READ_HINT` (how to read file contents). Track the file list with status, including deletions and renames (`--name-status`).
 
 - **Local mode.** Resolve `origin/<branches.integration>`, falling back to the local `<branches.integration>`; stop if neither exists. Record the base ref and SHA, `HEAD`, dirty state, and `BASE=$(git merge-base <base-ref> HEAD)`. `DIFF_CMD = git diff $BASE --`, which includes uncommitted changes. Add untracked files from `git ls-files --others --exclude-standard`, even when the tracked diff is empty. Do not open local databases, backups, credentials, or generated artifacts just because they are untracked. `READ_HINT` is "read files from the working tree".
+  - Follow-up review: take a snapshot of the working tree with `T=$(mktemp -u); GIT_INDEX_FILE=$T git add -A && GIT_INDEX_FILE=$T git write-tree; rm -f $T`, which records untracked files too and leaves the real index alone. `DIFF_CMD = git diff <since> <snapshot> --`, and the file list comes from the same diff.
 - **PR mode.** Before any authenticated host command, follow the repository's and user's rules on which account to use. Read the PR's base branch and head without checking it out (for example `gh pr view <N> --json baseRefName,baseRefOid,headRefOid`). Fetch only the refs you need (`git fetch origin <base> pull/<N>/head`), then pin `HEAD_SHA` and `BASE=$(git merge-base origin/<base> $HEAD_SHA)`. Use the PR's actual target branch even when it differs from `branches.integration`. `DIFF_CMD = git diff $BASE $HEAD_SHA`. `READ_HINT` is "read with `git show $HEAD_SHA:<path>`". Do not touch the working tree. If the head cannot be inspected, report the coverage as blocked instead of substituting local files.
 - **Path mode.** Review every tracked and untracked file under the path, as whole files, with no diff. Pre-existing defects in that path are in scope; label the report as a whole-path review. Reject a missing or empty path; never expand to the whole repository. `READ_HINT` is "read files from the working tree".
 
@@ -52,7 +54,7 @@ Launch every applicable reviewer **at the same time, in one message**. In Claude
 
 ### Code reviewers
 
-Do not paste the diff into the prompt; reviewers read it with `DIFF_CMD`. Give every code reviewer the following, identically.
+Do not paste the diff into the prompt; reviewers read it with `DIFF_CMD`. Give every code reviewer the following, identically. For a follow-up review, add after the changed files: "Follow-up review: the change is only the fixes since the last review. Read the fixed findings in `<file>`. For each, confirm the defect is gone and that its new or changed test would fail without the fix. Report problems the fixes introduced. Anything outside these fixes is out of scope."
 
 ```
 Target: <mode> (<PR number / path / local changes against base-ref>)

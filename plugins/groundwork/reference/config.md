@@ -133,6 +133,7 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 |---|---|---|---|
 | Review rounds, at most | 1 | 3 | 3 |
 | Who reviews again from round 2 | — (fixes are checked by verification only) | reviewers that raised a confirmed 🔴/🟠 | every reviewer |
+| What round 2+ reviews | — | only the fixes since the last review | the whole change |
 | UI tests | changed screens; full suite at finish | changed screens; full suite at finish | full suite every round |
 | Change-scoped rendered QA, when triggered | changed screens, UI QA only | changed screens and affected user-persona tasks | all uncovered screens and all user-persona tasks |
 
