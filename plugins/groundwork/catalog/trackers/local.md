@@ -80,7 +80,7 @@ created: 2026-10-17T09:30:00Z
 
 ### read(id)
 
-1. Read `$DIR/<id>.md`. If it does not exist, stop and say so, with one exception: with `keep: false`, a missing id at or below the number in `$DIR/.last-id` was deleted after its PR merged. Treat it as `done`; this is how a later step learns that a step it depends on has merged.
+1. Read `$DIR/<id>.md`. If it does not exist, stop and say so, with one exception: a missing id at or below the number in `$DIR/.last-id` was deleted after its PR merged, even if `keep` is `true` now. Treat it as `done`; this is how a later step learns that a step it depends on has merged.
 2. Parse the frontmatter for `title`, `state`, `parent`, `labels`. Split body and log, and the log into comments, as above.
 3. Children: every file in `$DIR` whose frontmatter has `parent: <id>`.
 
@@ -141,7 +141,7 @@ There is no closing syntax. Add `Issue: <id>` to the PR body for reference. Afte
 
 ## After the merge
 
-With `keep: false`, the skill that closed the issue after its PR merged then deletes `$DIR/<id>.md`. If the issue had a parent and no file in `$DIR` still names that parent, delete the parent's file too. Delete nothing earlier: `takeoff` reads the issue and its round log to write the PR, and a later step reads its parent's "Decisions". With `keep: true`, delete nothing.
+With `keep: false`, the skill that closed the issue after its PR merged first raises `$DIR/.last-id` to at least the id's number (a repository that used the tracker before `.last-id` existed has no such file yet), then deletes `$DIR/<id>.md`. If the issue had a parent and no file in `$DIR` still names that parent, raise `.last-id` for the parent too and delete its file. Delete nothing earlier: `takeoff` reads the issue and its round log to write the PR, and a later step reads its parent's "Decisions". With `keep: true`, delete nothing.
 
 ## Setup
 
