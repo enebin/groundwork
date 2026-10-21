@@ -147,7 +147,7 @@ With `keep: false`, the skill that closed the issue after its PR merged then del
 
 1. **Detect.** Choose local when no tracker is detected, or when the user asks for it.
 2. **Ask.** "Should the issue files be committed to the repository so others can see them?" Default: No.
-   Then ask: "Keep finished issues as files, or delete each one once its PR merges?" Default: keep (Recommended). Kept files hold the decisions and review rounds, so a later session can see why the code is the way it is. Deleting keeps the folder small for people who do not want the files to pile up.
+   Then ask: "Keep finished issues as files, or delete each one once its PR merges?" Options: keep (Recommended); delete (looking up past work gets slower or harder, because the decisions and review rounds go with the file). Kept files hold the decisions and review rounds, so a later session can see why the code is the way it is. Deleting keeps the folder small for people who do not want the files to pile up.
 3. **Prepare the directory.** Create `$MAIN/<tracker.path>`. When `shared: false`, write a file named `.gitignore` containing the single line `*` inside that directory. Git then ignores the directory and that file itself, so no tracked file changes, and every worktree sees the same ignored files. Agent harnesses usually refuse writes inside `.git/`, so never use `.git/info/exclude`.
 4. **Verify.** Create nothing. Check that `$DIR` is writable and that `git check-ignore "$DIR/probe.md"` reports it ignored when `shared: false`.
 5. **Record.** `tracker: {type: local, path: <path>, shared: <bool>, keep: <bool>}`.
