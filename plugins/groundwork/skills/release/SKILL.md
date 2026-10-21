@@ -85,7 +85,7 @@ Print one line per check with ✅ or ⚠️ and, for ⚠️, the file and the pa
 
 ## 5. Confirm
 
-Show the version, the release notes, the pinned release candidate, any QA ledger edits to commit on the release branch, and the check results, and ask with AskUserQuestion:
+Show the version, the release notes, the pinned release candidate, any QA ledger edits to commit on the release branch, and the check results, and ask with AskUserQuestion (in Codex, this is an approval, so ask it as one plain-text question rather than with `request_user_input`):
 
 - Proceed as is
 - Edit the notes (the user rewrites them)
