@@ -69,10 +69,10 @@ Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to 
 |---|---|---|---|
 | 1 | Language | conversation / artifacts | your language / English (saves tokens) |
 | 2 | Issue tracker | local files, GitHub Projects, Linear, Jira | local files |
-| 3 | Workflow | step-loop, design-first, tdd-loop, quick, review-only; worktree per issue | step-loop, no worktree |
+| 3 | Workflow | step-loop, design-first, tdd-loop, quick, review-only; worktree per issue | step-loop, worktree per issue |
 | 4 | Release strategy | develop + release, main only; merge style | develop + release |
 | 5 | Architecture | unidirectional, mvvm, layered-service, layered-web, none | recommended based on stack |
-| 6 | Review | app, sdk, service, product, light; Skeptic policy | recommended based on project type |
+| 6 | Review | app, sdk, service, product, light | recommended based on project type |
 | 7 | QA | manual, release, continuous | manual |
 | 8 | Custom rules | free text | none |
 

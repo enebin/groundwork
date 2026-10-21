@@ -83,7 +83,7 @@ Then follow the "Setup" section of `catalog/trackers/<type>.md`: detect, ask its
 
 Bundles from `catalog/workflows.md`. Recommended: `step-loop` for a new project; for an existing repository, the bundle matching the skills it already uses.
 
-Then, unless the bundle skips it (see the catalog), ask the autoland follow-up: "Merge automatically once CI passes?" — No (Recommended), with the catalog's reason. For `step-loop`, `design-first`, and `tdd-loop`, also ask the worktree follow-up from the catalog: "Work on each issue in its own worktree?" — No (Recommended), with the catalog's reason.
+Then, unless the bundle skips it (see the catalog), ask the autoland follow-up: "Merge automatically once CI passes?" — No (Recommended), with the catalog's reason. For `step-loop`, `design-first`, and `tdd-loop`, also ask the worktree follow-up from the catalog: "Work on each issue in its own worktree?" — Yes (Recommended), with the catalog's reason.
 
 ### Step 4 — Deployment strategy
 
@@ -109,7 +109,8 @@ Ask only the follow-ups the chosen bundle triggers (see the catalog), each with 
 
 - `ux` or `dx` in the bundle: personas, each with a `kind` (`user` for `ux`, `developer` for `dx`). Recommend one persona per selected reviewer, drawn from the step 2 answer; the user can add more.
 - Quick workflow: review trigger.
-- Skeptic policy: the bundle's default (Recommended). Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
+
+Do not ask the Skeptic policy. Write the bundle's default, or keep an existing `review.skeptic` on re-runs, and show it in the final preview. Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
 For an existing repository with its own reviewers or review rules, draft a `## Review focus: <key>` section for each chosen reviewer from them, show the drafts, and ask "Use the drafts (Recommended)" or "Edit".
 
