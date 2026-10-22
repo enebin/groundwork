@@ -73,14 +73,14 @@ Claude Code에서는 하루 최대 한 번 GitHub의 새 버전을 확인하고 
 | 4 | 배포 전략 | develop + release, main only; 머지 방식 | develop + release |
 | 5 | 아키텍처 | unidirectional, mvvm, layered-service, layered-web, none | 기술 스택에 따라 추천 |
 | 6 | 리뷰 | app, sdk, service, product, light | 프로젝트 성격에 따라 추천 |
-| 7 | QA | manual, release, continuous | manual |
+| 7 | 화면 검사 | UX: 매 PR, 릴리스 전, 수동; 코드 기반 또는 실제 앱. QA: 매 PR, 릴리스 전, 수동 | UX: 매 PR, 코드 기반. QA: 수동 |
 | 8 | 추가 규칙 | 자유 입력 | 없음 |
 
 첫 질문에 들어가기 전에 현재 레포에 맞춘 추천 표가 먼저 나오고 귀찮으면 추천안대로 한 번에 넘길 수도 있습니다. 다만 한 번 정해 두면 계속 그 방식대로 굴러가니 웬만하면 하나씩 보고 고르는 걸 권합니다.
 
 테스트는 취향에 따라 켜고 끄는 옵션이 아니라 구현의 기본 단계로 들어갑니다. onboarding이 레포의 빌드·테스트 명령과 필요한 검증 항목을 찾아서 미리 보여 준 뒤 [기본 구현 규칙](plugins/groundwork/reference/implementation.md)을 `AGENTS.md`에 적어 둡니다.
 
-`eco / normal / sport`는 작업 강도를 조절하는 별도 프리셋이며 기본값은 `normal`입니다. 모델의 reasoning effort 설정과 비슷하게 검증 깊이, 리뷰 반복 횟수, QA 범위를 한꺼번에 조절합니다(사용할 모델 자체를 바꾸진 않습니다). 실행할 때 `--mode`로 그때그때 바꿀 수 있고 나중에 세부 설정만 따로 고쳐도 됩니다. 화면 QA를 언제 돌릴지는 여전히 QA 번들 설정을 따릅니다.
+`eco / normal / sport`는 작업 강도를 조절하는 별도 프리셋이며 기본값은 `normal`입니다. 모델의 reasoning effort 설정과 비슷하게 검증 깊이, 리뷰 반복 횟수, 화면 검사 범위를 한꺼번에 조절합니다(사용할 모델 자체를 바꾸진 않습니다). 화면 검사에서는 `eco`와 `normal`이 변경 가능성이 있는 화면만, `sport`가 모든 화면을 검사합니다. 실행할 때 `--mode`로 그때그때 바꿀 수 있고 나중에 세부 설정만 따로 고쳐도 됩니다. 화면 검사를 언제 돌릴지는 여전히 7단계에서 고른 빈도를 따릅니다.
 
 각 번들의 장단점과 실제로 문서에 기록되는 상세 규칙은 [`plugins/groundwork/catalog/`](plugins/groundwork/catalog/)에서 볼 수 있습니다.
 
@@ -96,12 +96,12 @@ Claude Code에서는 하루 최대 한 번 GitHub의 새 버전을 확인하고 
 | `release`, `autoland` | 릴리스 생성 및 CI 통과 시 자동 머지 |
 | `review-and-fix`, `commit-push` | 빠르게 치고 빠지는 quick 워크플로우 |
 | `review` | 선택한 리뷰어들을 병렬로 돌려 결과 취합 |
-| `ux-review` | 지정한 사용자 페르소나 기준으로 사용성 리뷰 (QA 정책에 따라 자동 실행 또는 직접 호출) |
-| `ui-qa` | 실제 앱을 띄워 자동 테스트가 놓치는 UI 항목 점검 (QA 정책에 따라 자동 실행 또는 직접 호출) |
+| `ux-review` | 지정한 사용자 페르소나 기준으로 코드 또는 실제 앱에서 사용성 리뷰 (화면 검사 설정에 따라 자동 실행 또는 직접 호출) |
+| `ui-qa` | 실제 앱을 띄워 자동 테스트가 놓치는 UI 항목 점검 (화면 검사 설정에 따라 자동 실행 또는 직접 호출) |
 
-변경 사항이 생길 때마다 돌아가는 코드 리뷰어는 `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, `dx-reviewer`, `ux-flow-reviewer` 여섯 가지입니다. 마지막 둘은 앱을 직접 띄우지 않고 코드만 따라가며 페르소나 입장에서 작업 흐름을 짚어 봅니다. `ux-flow-reviewer`는 앱 사용자의 동선(불필요한 단계, 빠진 상태 처리, 막다른 화면)을 보고 `dx-reviewer`는 라이브러리나 HTTP·RPC API, CLI를 가져다 쓰는 개발자 입장에서 불편한 점을 봅니다. 각 리뷰어는 플러그인 기본 체크리스트에 더해 `GROUNDWORK.md`의 `## Review focus: <reviewer>`에 적힌 레포 전용 기준을 함께 확인합니다.
+변경 사항이 생길 때마다 돌 수 있는 코드 리뷰어는 `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, `dx-reviewer` 다섯 가지입니다. `dx-reviewer`는 앱을 띄우지 않고 코드만 따라가며 라이브러리나 HTTP·RPC API, CLI를 가져다 쓰는 개발자 입장에서 불편한 점을 봅니다. `ux-flow-reviewer`는 같은 방식으로 앱 사용자의 동선(불필요한 단계, 빠진 상태 처리, 막다른 화면)을 보며, 7단계에서 UX를 매 PR·코드 기반으로 고르면 리뷰 라운드마다 함께 돕니다. 각 리뷰어는 플러그인 기본 체크리스트에 더해 `GROUNDWORK.md`의 `## Review focus: <reviewer>`에 적힌 레포 전용 기준을 함께 확인합니다.
 
-화면 변경은 매번 스크린샷을 남기는 UI 테스트로 검증하며 구현을 맡은 에이전트가 찍힌 스크린샷을 직접 열어서 눈으로 확인합니다. 앱을 실제로 띄워서 보는 렌더링 QA는 [QA 단계](plugins/groundwork/catalog/qa.md) 설정에 따라 직접 부를 때만(`manual`, 기본값), 릴리스 직전에(`release`), 혹은 구현이 끝날 때마다(`continuous`) 돌아갑니다. 자동화된 테스트만으로 확인하기 어려운 항목은 UI 커버리지 문서(`docs/ui-coverage.md`)에 따로 적어 두고 관리합니다.
+화면 변경은 매번 스크린샷을 남기는 UI 테스트로 검증하며 구현을 맡은 에이전트가 찍힌 스크린샷을 직접 열어서 눈으로 확인합니다. [화면 검사](plugins/groundwork/catalog/screen-checks.md)는 두 가지로 나뉩니다. UX는 사용자 페르소나가 작업을 끝낼 수 있는지를 코드 기반(빠르지만 정확도가 낮을 수 있음) 또는 시뮬레이터·브라우저(느리지만 실제와 가장 비슷함)로 확인합니다. QA는 앱을 띄워 화면이 요구사항과 디자인에 맞는지 봅니다. 각각 매 PR(`continuous`), 릴리스 직전(`release`), 직접 부를 때만(`manual`) 중에서 고릅니다. 실제 앱으로 하는 검사는 시간이 오래 걸리고 토큰을 많이 쓸 수 있습니다. 자동화된 테스트만으로 확인하기 어려운 항목은 UI 커버리지 문서(`docs/ui-coverage.md`)에 따로 적어 두고 관리합니다.
 
 웹 프로젝트는 대개 브라우저 도구로 화면 요소를 바로 찍어 볼 수 있어서 빠릅니다. 반면 iOS 시뮬레이터나 Android 에뮬레이터는 빌드하고 설치해서 띄우는 시간과 UI 제어 도구의 한계 때문에 시간이 더 걸릴 수 있고 웹이라도 스크린샷 위주로 확인하면 느려질 수 있습니다. 실제 걸리는 시간과 토큰 소모량은 커버리지 범위, 페르소나 수, 사용 도구, 재시도 횟수에 따라 달라집니다.
 

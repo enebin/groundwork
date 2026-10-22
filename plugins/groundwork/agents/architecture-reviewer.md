@@ -38,7 +38,7 @@ Other reviewers own these. Do not report overlaps.
 - User-facing copy → `writing-reviewer`
 - Whether a public API is easy to use, customization reach, compatibility of public symbols, doc comments → `dx-reviewer`
 - Whether a persona can finish its tasks (steps, states, feedback, recovery) → `ux-flow-reviewer`
-- Rendered appearance and interaction → rendered QA under the QA policy (`ux-persona-reviewer`, `ui-qa`)
+- Rendered appearance and interaction → checks on the running app under the screen checks (`ux-persona-reviewer`, `ui-qa`)
 
 For access levels, check only whether they match the documented rules. Whether the public shape is pleasant to use belongs to `dx-reviewer`. If a structural violation also causes a bug, explain the boundary violation and let the coordinator merge it with the bug.
 

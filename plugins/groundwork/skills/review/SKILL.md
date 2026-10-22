@@ -12,7 +12,7 @@ Paths below are relative to the plugin root, two directories above this skill's 
 
 ## 1. Read the configuration
 
-Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.reviewers`, `review.skeptic`, `docs.rules`, and, in local mode, `branches.integration`. Rendered reviewers also need `review.personas` (for `ux`) and the `## UI QA notes` section.
+Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.reviewers`, `review.skeptic`, `docs.rules`, and, in local mode, `branches.integration`. Read `ux.bundle` and `ux.method` when the `ux` mapping is present (Screen checks in `reference/config.md`); `ux` also needs `review.personas`.
 
 Read the rules document before starting.
 
@@ -20,7 +20,7 @@ Read the rules document before starting.
 
 Split the arguments on whitespace.
 
-- `--only <key,...>` narrows the run to those reviewer keys from `reference/config.md`. Stop and say so if a key is unknown. Without it, run every key in `review.reviewers`.
+- `--only <key,...>` narrows the run to those reviewer keys from `reference/config.md`. Stop and say so if a key is unknown. Without it, run every key in `review.reviewers`, plus `ux` when a present `ux` mapping is `continuous` with `code`. A legacy file without a `ux` mapping runs `ux` only when it is listed in `review.reviewers`.
 - `architecture` never runs when `architecture.bundle` is `none`; if `--only` names it, stop and say there is no standard to judge against. `ux` needs at least one entry in `review.personas`.
 - `--since <tree> --fixes <file>` makes a **follow-up review** in local mode: only what changed since the working-tree snapshot `<tree>`, judged against the findings listed in `<file>` as fixed since then. Both flags go together. Stop and say so if either is given without the other, or with PR or path mode.
 - If the first remaining token is a number, use **PR mode**. If it is a path, use **path mode**. With none, use **local mode**. Reject anything else, or an ambiguous target.
@@ -44,7 +44,7 @@ For each selected key, decide whether the change gives it anything to judge. Rec
 - `writing`: applies when user-facing copy changed, or behavior changed in a way that makes existing wording wrong.
 - `dx`: applies when a public surface changed: a library's public symbols or extension points, an HTTP or RPC endpoint or its schema, a command-line command, flag, or output, or developer documentation for any of them.
 - `ux`: applies when the change touches a screen, navigation path, state, or action on the way to a persona task, including backend changes that alter what a screen shows or allows. Needs at least one `user` persona in `review.personas` (a persona without `kind` is a `user`). One `ux-flow-reviewer` covers every `user` persona; it reads code and never launches the app.
-- `ui-qa` and `ux-persona-reviewer` exercise the running app and are never dispatched here. They run separately under the QA policy in `reference/config.md` or when the user calls them directly.
+- `ui-qa` and `ux-persona-reviewer` exercise the running app and are never dispatched here. They run separately under the screen checks in `reference/config.md` or when the user calls them directly.
 
 In path mode, every selected reviewer whose area the path contains applies.
 

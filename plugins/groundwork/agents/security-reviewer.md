@@ -41,6 +41,6 @@ Other reviewers own these. Do not report overlaps.
 - User-facing copy, including privacy wording → `writing-reviewer`
 - Public API usability → `dx-reviewer`
 - Whether a persona can finish its tasks (steps, states, feedback, recovery) → `ux-flow-reviewer`
-- Rendered appearance and interaction → rendered QA under the QA policy (`ux-persona-reviewer`, `ui-qa`)
+- Rendered appearance and interaction → checks on the running app under the screen checks (`ux-persona-reviewer`, `ui-qa`)
 
 Use the coordinator's scope, evidence, severity, and reporting contract. Do not edit files, commit, push, or run another reviewer or Skeptic Review.
