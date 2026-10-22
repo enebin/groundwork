@@ -19,6 +19,8 @@ Every question follows these rules.
 - Before each choice, show the step's bundles as one table with exactly these columns: `Bundle | Pros | Cons | Token cost`. The recommended bundle is the first row and is marked "(Recommended)". Each cell holds the bundle's single strongest point in about twelve words or fewer, not a list; give the full lists only when the user asks. A step whose choice does not change token use (such as deployment strategy) may drop the Token cost column. Token cost is the catalog's relative level (Low / Medium / High / Very high), compared within this step; say once that it is an estimate, not a measurement. Keep the rules inside a bundle folded; show them only when the user asks.
 - Use `AskUserQuestion` when available, with the same three items (pros, cons, token cost) in each option's `preview`. It allows four options; when a step has more, show the full catalog table as text first, then offer the recommended option, the two most relevant alternatives, and let the user name any other bundle through "Other". In Codex, use `request_user_input` when this turn lists it (Plan mode, or Default mode with the `default_mode_request_user_input` feature on). It takes two or three options per question and adds "Other" by itself: offer the recommended option and the one or two most relevant others, with the pros, cons, and token cost in each option's description, and let the user name any other bundle through "Other". Without either tool, show the table as information, then ask one plain-text question that names the recommendation and asks the user to accept it or name another bundle from the table. Codex's Default mode forbids writing a multiple-choice question as a message, so do not format the choices as a numbered list. Approvals are not choices: in Codex, ask to create anything remote, to remove files, or to write the final preview as one plain-text question, never with `request_user_input`.
 - Never invent a bundle, rule, or pro/con that the catalog does not contain.
+- Group related, independent questions in one interaction, up to the question tool's supported limit; with plain text, ask them together. Select a bundle first when it determines which follow-ups apply, then collect only those follow-ups as a group. Do not ask again for facts the user has already supplied. Keep approval questions separate from preference questions.
+- Show each question once. When using a question tool, put comparisons and shared context in the preceding message, and the question and answer options in the tool only. Do not repeat them in commentary or a final message while awaiting the answer. After an answer, briefly acknowledge the choices and move to the next unanswered group; do not send a separate recap-only turn.
 
 ## 1. Scan the repository
 
@@ -83,14 +85,14 @@ Then follow the "Setup" section of `catalog/trackers/<type>.md`: detect, ask its
 
 Bundles from `catalog/workflows.md`. Recommended: `step-loop` for a new project; for an existing repository, the bundle matching the skills it already uses.
 
-Then, unless the bundle skips it (see the catalog), ask the autoland follow-up: "Merge automatically once CI passes?" — No (Recommended), with the catalog's reason. For `step-loop`, `design-first`, and `tdd-loop`, also ask the worktree follow-up from the catalog: "Work on each issue in its own worktree?" — Yes (Recommended), with the catalog's reason.
+After the workflow choice, ask its applicable autoland and worktree follow-ups together in one interaction (see the catalog). Autoland: "Merge automatically once CI passes?" — No (Recommended), with the catalog's reason. Worktree, for `step-loop`, `design-first`, and `tdd-loop`: "Work on each issue in its own worktree?" — Yes (Recommended), with the catalog's reason. Skip follow-ups the chosen bundle does not use.
 
 ### Step 4 — Deployment strategy
 
 - `develop-release` (Recommended for a new project): work lands on `develop`; releases go through `release/x.y.z` into `main`.
 - `main-only`. Recommended instead when an existing repository has no `develop` branch.
 
-Then the merge style: recommend what the repository's merged PRs already use; `squash` for a new project.
+Ask the deployment strategy and merge style together in one interaction. For the merge style, recommend what the repository's merged PRs already use; `squash` for a new project.
 
 ### Step 5 — Architecture
 
