@@ -112,7 +112,7 @@ Optional. Skills read only the section that applies to them.
 | `dx` | `dx-reviewer` | Developer experience of a library API, HTTP or RPC API, or command-line tool, traced through `developer` personas' tasks |
 | `ux` | `ux-flow-reviewer` | Whether each `user` persona can finish its tasks in the app, traced through the code |
 
-All of these read code. Every key except `ux` runs on every change when listed in `review.reviewers`. `ux` is never listed there: it runs in a review when the screen checks below resolve to `ux.bundle: continuous` and `ux.method: code`, and `/groundwork:review --only ux` runs it on request. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run according to the screen checks below, or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
+All of these read code. Every key except `ux` runs on every change when listed in `review.reviewers`. `ux` is never listed there, except in a legacy file without a `ux` mapping (see Screen checks compatibility): it runs in a review when a present `ux` mapping is `ux.bundle: continuous` with `ux.method: code`, and `/groundwork:review --only ux` runs it on request. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run according to the screen checks below, or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
 
 The `fixer` agent is not a reviewer either: the `step` skill hands it each round's confirmed findings, so fixes and their test runs stay out of the step's own context.
 

@@ -126,7 +126,7 @@ First show the cost guidance: checks on the running app can take long and use ma
 - UX method: from the code (`code`, Recommended) or on the simulator or browser (`app`).
 - QA frequency: manual (Recommended), before release only, or every PR.
 
-Do not ask a separate scope question; scope follows the overall mode shown with the route. Existing `ux` and `qa` values are the recommendations on re-runs. When either mapping is absent, migrate it as Screen checks compatibility in `reference/config.md` specifies: remove `ux` from `review.reviewers` and show the mapping in the final preview.
+Do not ask a separate scope question; scope follows the overall mode shown with the route. Existing `ux` and `qa` values are the recommendations on re-runs. When either mapping is absent, migrate it as Screen checks compatibility in `reference/config.md` specifies: remove `ux` from `review.reviewers` and show the mapping in the final preview. When the old file ran UX both from the code and on the running app, ask the UX method even in a recommendation shortcut, and name the on-app check that stops if the user keeps `code`.
 
 Collect the catalog's applicable end-user-persona, launch, and design-source follow-ups. Keep these separate from code review. Set `review.release_qa` to the compatibility mirror, not as a second choice.
 
