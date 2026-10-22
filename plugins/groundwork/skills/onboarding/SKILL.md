@@ -179,6 +179,20 @@ Write only after approval. Apply requested changes and show the preview again.
 
 ## 6. Finish
 
+- Open the message with this banner in a `text` code block, copied exactly, so the end of setup is easy to spot:
+
+  ```text
+  ▄▀▀▀▀ █▀▀▀▀ ▀▀█▀▀ █   █ █▀▀▀▄
+  ▀▄▄▄  █▄▄▄    █   █   █ █▄▄▄▀
+      █ █       █   █   █ █
+  ▀▀▀▀  ▀▀▀▀▀   ▀    ▀▀▀  ▀
+
+  █▀▀▀▄ ▄▀▀▀▄ █▄  █ █▀▀▀▀ █
+  █   █ █   █ █ ▀▄█ █▄▄▄  █
+  █   █ █   █ █   █ █     ▀
+  ▀▀▀▀   ▀▀▀  ▀   ▀ ▀▀▀▀▀ ▀
+  ```
+
 - Report what was written, in a short list.
 - Say what to run next: `/groundwork:plan` for step-loop, design-first, or tdd-loop; `/groundwork:review-and-fix` for quick; `/groundwork:review` for review-only.
 - Offer to commit the changes. Commit only if the user says yes.
