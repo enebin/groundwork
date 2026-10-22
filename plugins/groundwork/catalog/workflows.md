@@ -16,7 +16,7 @@ Onboarding shows these bundles as one choice and writes the id to `workflow.bund
 
 Summary: Split a job into sub-issues with `plan`, then run each one with `step`: implement, then verify → review → fix until no confirmed 🔴/🟠 remains, logging every round on the issue.
 
-Skills: `plan` → `step` (per sub-issue) → `takeoff` when the user asks for a push. `step` calls `review`, then applies the separate QA policy after final verification. `step` also runs a standalone issue that has no parent. After the merge, `landing` cleans up; `autoland` merges and cleans up by itself when it is on.
+Skills: `plan` → `step` (per sub-issue) → `takeoff` when the user asks for a push. `step` calls `review`, then applies the screen checks after final verification. `step` also runs a standalone issue that has no parent. After the merge, `landing` cleans up; `autoland` merges and cleans up by itself when it is on.
 
 Fits:
 - Jobs that take several PRs and several sessions.
@@ -85,7 +85,7 @@ Fits:
 Does not fit:
 - Work that spans sessions; nothing records where you stopped.
 - Shared integration branches with strict review requirements.
-- Large UI changes that need more planning than the quick workflow provides; QA still follows its separate policy.
+- Large UI changes that need more planning than the quick workflow provides; screen checks still follow their own setting.
 
 Pros:
 - Lowest ceremony; the fix and its review land in minutes.

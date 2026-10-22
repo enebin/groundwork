@@ -65,7 +65,7 @@ Resolve the effective overall mode from `--mode` or `mode` and follow Modes in `
 
 If `review.trigger` is `per-round`, review again (step 2) and repeat until nothing at or above the threshold remains. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`), or as soon as a round fixes nothing, and ask the user how to proceed.
 
-After the final verification and review fixes, apply the after-implementation QA gate from `reference/config.md` when the resolved QA bundle is continuous. Pass the effective mode and the complete implementation diff, not just review fixes. Run this even with no review findings. FAIL or BLOCKED prevents completion and commit/push; follow the QA repair/recheck limit. If no review fixes or QA ledger edits were made, report the result and stop without committing or pushing. Otherwise include the verified ledger edits with the fixes.
+After the final verification and review fixes, apply the after-implementation gate from Screen checks in `reference/config.md` when a check on the running app resolves to continuous. Pass the effective mode and the complete implementation diff, not just review fixes. Run this even with no review findings. FAIL or BLOCKED prevents completion and commit/push; follow the QA repair/recheck limit. If no review fixes or QA ledger edits were made, report the result and stop without committing or pushing. Otherwise include the verified ledger edits with the fixes.
 
 ## 6. Commit and push
 

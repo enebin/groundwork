@@ -1,6 +1,6 @@
 ---
 name: onboarding
-description: Sets up groundwork for the current repository. Walks the user through language, issue tracker, workflow, deployment strategy, architecture, review, and QA as pre-packaged bundles with a recommended choice each time, then writes GROUNDWORK.md and the chosen rules into the repository docs. Use when starting a new project, adopting groundwork in an existing repository, or changing earlier choices.
+description: Sets up groundwork for the current repository. Walks the user through language, issue tracker, workflow, deployment strategy, architecture, review, and screen checks (UX and QA) as pre-packaged bundles with a recommended choice each time, then writes GROUNDWORK.md and the chosen rules into the repository docs. Use when starting a new project, adopting groundwork in an existing repository, or changing earlier choices.
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, AskUserQuestion
 argument-hint: "[--recommended]"
 ---
@@ -53,10 +53,10 @@ Before the first choice, show every step at once with the recommendation already
 | 4 | Deployment strategy | <recommendation> |
 | 5 | Architecture | <recommendation> |
 | 6 | Review | <recommendation> |
-| 7 | QA | <recommendation, or not applicable> |
+| 7 | Screen checks (UX, QA) | <recommendation, or not applicable> |
 | 8 | Anything else | none |
 
-Below the route, show the overall effort setting: `eco / normal (Recommended) / sport`. Explain it as one control for implementation verification, review, and applicable QA together, like a reasoning-effort setting, with `--mode` available per run. It does not select a model. Reuse an existing `mode` on re-runs. Explain the trade-offs from Modes in `reference/config.md`; offer a different default without making it a ninth numbered step.
+Below the route, show the overall effort setting: `eco / normal (Recommended) / sport`. Explain it as one control for implementation verification, review, and screen checks together, like a reasoning-effort setting, with `--mode` available per run. It does not select a model. For screen checks it is the scope: eco and normal check only the screens a change may affect, and sport checks every screen. Reuse an existing `mode` on re-runs. Explain the trade-offs from Modes in `reference/config.md`; offer a different default without making it a ninth numbered step.
 
 Tests are always part of implementation. Tell the user that build/test commands and applicable checks will be detected automatically and included in the final preview.
 
@@ -64,7 +64,7 @@ Then offer two choices: "Decide one by one (Recommended)" and "Use all recommend
 
 > "Use all recommendations" picks the recommended option at every step and jumps to the final review. Still, I suggest going through each step and thinking about it yourself. What you choose here becomes the way this repository works. You can change it later, but people rarely change something once it is set. The recommendations are guesses from what I could see, and I do not know your situation.
 
-With `--recommended`, show the table and the warning, apply the recommendations (including the QA compatibility mapping and overall mode), then go straight to step 8. In either recommendation shortcut, still perform automatic implementation setup and collect any missing launch, design-source, or persona facts required by the selected policies before the final preview; never invent them.
+With `--recommended`, show the table and the warning, apply the recommendations (including the screen-check compatibility mappings and overall mode), then go straight to step 8. In either recommendation shortcut, still perform automatic implementation setup and collect any missing launch, design-source, or persona facts required by the selected policies before the final preview; never invent them.
 
 ## 4. The steps
 
@@ -109,18 +109,26 @@ Bundles from `catalog/review.md`. Recommend by `project.kind`: `app` for apps, `
 
 Ask only the follow-ups the chosen bundle triggers (see the catalog), each with a recommendation:
 
-- `ux` or `dx` in the bundle: personas, each with a `kind` (`user` for `ux`, `developer` for `dx`). Recommend one persona per selected reviewer, drawn from the step 2 answer; the user can add more.
+- `dx` in the bundle: developer personas (`kind: developer`). Recommend one, drawn from the step 2 answer; the user can add more. End-user personas come in step 7.
 - Quick workflow: review trigger.
 
 Do not ask the Skeptic policy. Write the bundle's default, or keep an existing `review.skeptic` on re-runs, and show it in the final preview. Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
 For an existing repository with its own reviewers or review rules, draft a `## Review focus: <key>` section for each chosen reviewer from them, show the drafts, and ask "Use the drafts (Recommended)" or "Edit".
 
-### Step 7 — QA
+### Step 7 — Screen checks
 
-Read `catalog/qa.md`. Show its comparison table and platform/tool cost guidance, then ask for `manual` (Recommended initially), `release`, or `continuous`. For projects without screens, show not applicable and write manual without asking an irrelevant question. Existing `qa.bundle` is the recommendation on re-runs; migrate a legacy `review.release_qa` value as QA compatibility in `reference/config.md` specifies, showing the mapping in the final preview.
+Read `catalog/screen-checks.md`. For projects without screens, show not applicable and write the catalog's defaults without asking an irrelevant question.
 
-Collect the catalog's applicable design-source, launch, and end-user-persona follow-ups. Keep these separate from code review. Set `review.release_qa` to the compatibility mirror, not as a second choice.
+First show the cost guidance: checks on the running app can take long and use many tokens. Then show the frequency table and the UX method table, and ask in one interaction:
+
+- UX frequency: every PR (`continuous`, Recommended), before release only (`release`), or manual.
+- UX method: from the code (`code`, Recommended) or on the simulator or browser (`app`).
+- QA frequency: manual (Recommended), before release only, or every PR.
+
+Do not ask a separate scope question; scope follows the overall mode shown with the route. Existing `ux` and `qa` values are the recommendations on re-runs. When either mapping is absent, migrate it as Screen checks compatibility in `reference/config.md` specifies: remove `ux` from `review.reviewers` and show the mapping in the final preview.
+
+Collect the catalog's applicable end-user-persona, launch, and design-source follow-ups. Keep these separate from code review. Set `review.release_qa` to the compatibility mirror, not as a second choice.
 
 ### Step 8 — Anything else
 
@@ -164,7 +172,7 @@ Show a file's full contents only when the user asks.
 
 Files to write:
 
-- `GROUNDWORK.md` — the full frontmatter and body, including automatic implementation settings, separate `qa.bundle`, and the overall `mode`.
+- `GROUNDWORK.md` — the full frontmatter and body, including automatic implementation settings, the `ux` and `qa` screen checks, and the overall `mode`.
 - `docs.rules` (create `AGENTS.md` if absent) — the mandatory block from `reference/implementation.md`, supplemental CI/test-first/add-on rules, and step 8 rules. For an existing managed evidence/basic block, show its replacement with the mandatory implementation block so contradictory run policies do not remain. Preserve CI gates and test-first requirements. Do not duplicate the old evidence block inside a new supplemental block.
 - `docs.architecture` (create `ARCHITECTURE.md` if absent) — the `minimal-structure` rules first, then the chosen bundle's "Contract to write" (none for `none`). When following an existing document, add only the `minimal-structure` block.
 - `CLAUDE.md` — a one-line pointer to `AGENTS.md`, only if `CLAUDE.md` does not exist.
