@@ -12,7 +12,7 @@ Paths below are relative to the plugin root, two directories above this skill's 
 
 ## 1. Read the configuration
 
-Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. Resolve `ux.method` as Screen checks in `reference/config.md` specifies, including its legacy mapping. This skill needs `review.personas`; select only `kind: user` (legacy missing kind means user). With no user personas, report UX Review: NOT APPLICABLE and stop. Read the `## Persona: <name>` sections that exist, and for the app method the `## UI QA notes` section.
+Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. Resolve `ux.method` as Screen checks in `reference/config.md` specifies; a file without a `ux` mapping uses the app method, as before. This skill needs `review.personas`; select only `kind: user` (legacy missing kind means user). With no user personas, report UX Review: NOT APPLICABLE and stop. Read the `## Persona: <name>` sections that exist, and for the app method the `## UI QA notes` section.
 
 ## 2. Establish the target and scope
 
