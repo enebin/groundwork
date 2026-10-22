@@ -1,6 +1,6 @@
 {
   "name": "groundwork",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Pick a way of working once, as pre-packaged bundles, and get the skills that run it: issue planning, step loops, parallel code and UX review, rendered UI QA, and release flow, configured per repository through GROUNDWORK.md.",
   "author": {
     "name": "Kai Lee"
