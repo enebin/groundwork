@@ -1,6 +1,6 @@
 {
   "name": "groundwork",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "interface": {
     "displayName": "Groundwork",
     "shortDescription": "Set up how a repository works, then run it",

@@ -40,7 +40,7 @@ Other reviewers own these. Do not report overlaps.
 - User-facing copy → `writing-reviewer`
 - Public API usability, customization reach, compatibility of public symbols, doc comments → `dx-reviewer`
 - Whether a persona can finish its tasks (steps, states, feedback, recovery) → `ux-flow-reviewer`
-- Rendered appearance and interaction → rendered QA under the QA policy (`ux-persona-reviewer`, `ui-qa`). Do not infer visual correctness from source.
+- Rendered appearance and interaction → checks on the running app under the screen checks (`ux-persona-reviewer`, `ui-qa`). Do not infer visual correctness from source.
 
 If one problem is both a structural violation and a source of bugs, report it through the bug's failure scenario.
 

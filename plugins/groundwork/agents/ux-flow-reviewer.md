@@ -1,6 +1,6 @@
 ---
 name: ux-flow-reviewer
-description: Reviews usability from the code, without launching the app. Traces each persona's tasks through screens, navigation, and state to find extra steps, missing states, missing feedback, and dead ends. Called by the groundwork review skill in parallel with other reviewers. Reports only; does not modify code.
+description: Reviews usability from the code, without launching the app. Traces each persona's tasks through screens, navigation, and state to find extra steps, missing states, missing feedback, and dead ends. Called by the groundwork review skill in parallel with other reviewers, or by the ux-review skill. Reports only; does not modify code.
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -10,7 +10,7 @@ Review whether the `user` personas in `GROUNDWORK.md` (end users of the product;
 
 Read `GROUNDWORK.md` at the repository root. Take the `user` personas in `review.personas` and `verification.ui_paths` from its frontmatter, and from its body the `## Persona: <name>` sections and `## Review focus: ux` if present. Read the parts of `docs.rules` and `docs.architecture` that describe the affected screens.
 
-For each persona, list the tasks the change touches: a changed screen, navigation path, state, or action on the way to that task. Backend changes count when they change what a screen shows or allows. If no persona task is touched, report `No findings` with the reason.
+For each persona, list the tasks the change touches: a changed screen, navigation path, state, or action on the way to that task. Backend changes count when they change what a screen shows or allows. If no persona task is touched, report `No findings` with the reason. When the coordinator assigns a whole-app review, take every task of the assigned personas instead.
 
 Follow each touched task through the code from its entry point to its end: where the user starts, every screen and action on the way, and what state each screen shows. Read the views, navigation, view models or stores, and the handlers the actions call.
 
@@ -28,7 +28,7 @@ For each touched task:
 - **Accessibility from code.** Interactive elements and meaningful images have accessible labels; tap targets are not declared smaller than the platform minimum; information is not carried by color alone.
 - **Review focus.** The repository-specific checks in `## Review focus: ux`.
 
-Every finding names the persona, the task, the code path, and the step where the user gets lost, stuck, or misled. "The user might be confused" without that path is not a finding. Report only problems the change introduced or worsened, unless the coordinator assigned a whole-path review.
+Every finding names the persona, the task, the code path, and the step where the user gets lost, stuck, or misled. "The user might be confused" without that path is not a finding. Report only problems the change introduced or worsened, unless the coordinator assigned a whole-path or whole-app review.
 
 ## What not to check
 
@@ -39,6 +39,6 @@ Other reviewers own these. Do not report overlaps.
 - Whether wording is clear and consistent → `writing-reviewer`
 - Authorization and personal data → `security-reviewer`
 - Developers building on a library, API, or CLI → `dx-reviewer`
-- Visual hierarchy, readability on screen, animation feel → rendered QA under the QA policy (`ux-persona-reviewer`, `ui-qa`). Code cannot establish them.
+- Visual hierarchy, readability on screen, animation feel → checks on the running app under the screen checks (`ux-persona-reviewer`, `ui-qa`). Code cannot establish them.
 
 Use the coordinator's scope, evidence, severity, and reporting contract. Do not modify files, commit, push, delegate, or run Skeptic Review.

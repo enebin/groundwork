@@ -64,12 +64,15 @@ review:
       kind: developer
 qa:
   bundle: manual
+ux:
+  bundle: manual
+  method: code
 mode: normal
 ---
 
 ## Review focus: code-quality
 
-- Check configuration reads, migrations, workflow triggers, and QA triggers against `plugins/groundwork/reference/config.md`.
+- Check configuration reads, migrations, workflow triggers, and screen-check triggers against `plugins/groundwork/reference/config.md`.
 - Verify tracker state changes and worktree paths follow configured values without repeating remote side effects.
 - Require meaningful behavior tests for changed executable hooks.
 
@@ -86,5 +89,5 @@ mode: normal
 - Integration branch develop was initialized from main for the develop-release workflow.
 - No build pipeline, behavioral test suite, or CI workflow was found. The verified commands check syntax only.
 - First scaffold task: add meaningful automated behavior checks for executable hooks and document the test command in verification.commands. Do not treat syntax checks as behavior-test coverage.
-- Rendered QA is not applicable: this plugin has no application screens. qa.bundle is manual and review.release_qa is its false compatibility mirror.
+- Screen checks are not applicable: this plugin has no application screens. qa.bundle and ux.bundle are manual, and review.release_qa is the false compatibility mirror of qa.bundle.
 - Architecture none adds no application-specific layering. ARCHITECTURE.md contains only the mandatory minimal-structure rules.
