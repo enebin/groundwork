@@ -32,6 +32,9 @@ verification:
     - name: Shell syntax
       run: bash -n plugins/groundwork/hooks/check-update.sh
       verified: true
+    - name: Slack reporting behavior
+      run: python3 -W error -m unittest discover -s tests -p 'test_*.py'
+      verified: true
     - name: JSON syntax
       run: |
         python3 - <<'PY'
@@ -87,7 +90,6 @@ mode: normal
 - GitHub closes issues on merge: no — integration branch is not the default branch.
 - Projects Item closed → Done: on (user-confirmed). Skills still close issues explicitly after a merge into develop.
 - Integration branch develop was initialized from main for the develop-release workflow.
-- No build pipeline, behavioral test suite, or CI workflow was found. The verified commands check syntax only.
-- First scaffold task: add meaningful automated behavior checks for executable hooks and document the test command in verification.commands. Do not treat syntax checks as behavior-test coverage.
+- No build pipeline or CI workflow was found. The unittest suite verifies Slack reporting helpers and both clients' repository-local hooks with isolated files and mocked network calls. Shell and JSON commands check syntax separately.
 - Screen checks are not applicable: this plugin has no application screens. qa.bundle and ux.bundle are manual, and review.release_qa is the false compatibility mirror of qa.bundle.
 - Architecture none adds no application-specific layering. ARCHITECTURE.md contains only the mandatory minimal-structure rules.

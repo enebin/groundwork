@@ -84,11 +84,29 @@ Testing isn't an optional toggle — it's built into implementation. Onboarding 
 
 You can browse the pros, cons, and exact rules written by each bundle in [`plugins/groundwork/catalog/`](plugins/groundwork/catalog/).
 
+## Optional add-ons
+
+After setup, onboarding shows **You might also find these useful** outside the eight steps. Pick a feature to continue its setup, or finish and return later with `/groundwork:addons`. All five skills ship with Groundwork and use the same files in Claude Code and Codex. Nothing starts automatically when the plugin is installed or when all onboarding recommendations are accepted.
+
+| Skill | What it does | When it helps |
+|---|---|---|
+| `slack-report` | Collect work changes and test results in Slack | Follow several repositories from one place |
+| `handoff` | Save completed work, remaining work, and the next starting point | Resume in a new session without rebuilding context |
+| `weekly-summary` | Summarize a week's commits, PRs, and issues | Prepare a weekly update or retrospective |
+| `release-notes` | Turn a revision range into user-facing release notes | Explain features, fixes, and upgrade requirements |
+| `release-prep` | Prepare and verify releases on a chosen cadence, then request final approval | Keep releases moving without repeating the checklist |
+
+Slack setup asks for the destination and on-demand or automatic reporting. Credentials stay in `~/.config/slack-report/`, outside Git; see [connection setup](plugins/groundwork/skills/slack-report/references/setup.md). Automatic reporting is opt-in and installs repository-local Stop hooks for both clients. Handoff notes and weekly summaries create local drafts; they do not send messages or schedule themselves.
+
+Scheduled release preparation asks for cadence, timezone, destination, and allowed cleanup once. It recommends the next version from the diff and the repository's version policy, prepares the release notes, and runs required checks before asking only whether to approve that release. Publication waits for a human Yes tied to the verified candidate. Scheduling uses the current client's supported tools; when none is available, setup reports **not scheduled** and supplies the missing setup step. Installing the skill never creates a schedule or publishes a release.
+
 ## Skills
 
 | Skill | Description |
 |---|---|
 | `onboarding` | Initialize or update `GROUNDWORK.md` |
+| `addons` | Browse optional features and continue their setup or one-off use |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep` | Optional reporting, session handoff, summaries, and release preparation; see above |
 | `plan` | Break a large task into a parent issue and smaller step issues |
 | `step` | Run a single step: implement, then loop through verify → review → fix until no confirmed 🔴/🟠 issues remain |
 | `takeoff` | Rebase, push, and open the PR for a finished step |
