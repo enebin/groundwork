@@ -4,7 +4,7 @@
   "interface": {
     "displayName": "Groundwork",
     "shortDescription": "Set up how a repository works, then run it",
-    "longDescription": "Onboarding asks how this repository should work — tracker, workflow, branches, verification, architecture, review — as bundles with a recommended choice each time, and writes GROUNDWORK.md. The workflow, review, and QA skills then read that file in every repository.",
+    "longDescription": "Onboarding configures repository workflows in GROUNDWORK.md. Workflow, review, and QA skills follow those choices. After setup, optional shared skills offer Slack reports, handoff notes, weekly summaries, release notes, and scheduled release preparation.",
     "developerName": "Kai Lee",
     "category": "Engineering",
     "capabilities": [
@@ -15,7 +15,7 @@
       "Use groundwork onboarding to set up this repository."
     ]
   },
-  "description": "Set up how a repository works once, then run planning, step loops, review, and QA from GROUNDWORK.md.",
+  "description": "Set up repository workflows, then run planning, review, QA, and optional productivity skills from the same files as Claude Code.",
   "author": {
     "name": "Kai Lee"
   },
