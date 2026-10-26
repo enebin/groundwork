@@ -64,7 +64,7 @@ Lead with `UX Review: <status>` and the method. Then:
 
 1. Each persona's status, with completed and missing coverage.
 2. Defects: persona, task, and where the user gets stuck — the screen, state, steps, and absolute screenshot paths for the app method, or the code path for the code method — with expected versus actual behavior, impact, and severity. For the code method, add the Skeptic Review status line from `skills/review/SKILL.md`.
-3. Preference-only suggestions and unverified assumptions, kept apart from defects.
+3. Preference-only suggestions and unverified assumptions, kept apart from defects. For the code method, also the reviewer's pre-existing problems and rendered-check handoffs.
 4. Evidence limits and blockers. Expert review is not real-user validation.
 
 After a fix, recheck the affected persona behavior on the updated build or code.
