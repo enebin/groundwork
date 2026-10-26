@@ -15,6 +15,7 @@ After a report, the working tree fingerprint is saved so stop_hook.py knows
 the repository has not changed since.
 """
 import argparse
+from contextlib import contextmanager
 import datetime as dt
 import hashlib
 import json
@@ -141,6 +142,33 @@ def load_threads(repo):
     return path, (json.loads(path.read_text()) if path.exists() else {})
 
 
+@contextmanager
+def thread_lock(repo):
+    THREADS_DIR.mkdir(parents=True, exist_ok=True)
+    path = THREADS_DIR / f"{hashlib.sha256(repo.encode()).hexdigest()}.lock"
+    # Keep a separate, permanent inode so every process locks the same file.
+    with path.open("a+b") as lock:
+        if os.name == "nt":
+            import msvcrt
+            lock.seek(0, os.SEEK_END)
+            if lock.tell() == 0:
+                lock.write(b"\0")
+                lock.flush()
+            lock.seek(0)
+            msvcrt.locking(lock.fileno(), msvcrt.LK_LOCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if os.name == "nt":
+                lock.seek(0)
+                msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(lock, fcntl.LOCK_UN)
+
+
 PR_ICONS = {"draft": "[draft]", "open": "[open]", "merged": "[merged]", "closed": "[closed]"}
 
 
@@ -190,32 +218,33 @@ def sync_other_threads(token, repo, current_branch):
     A branch is usually deleted right after its PR merges, so no later report
     lands in its thread and its icon would stay "open" for good.
     """
-    path, threads = load_threads(repo)
-    done = (PR_ICONS["merged"], PR_ICONS["closed"])
-    for branch, entry in threads.items():
-        if branch == current_branch or (entry.get("parent_text") or "").startswith(done):
-            continue
-        pr = current_pr(branch)
-        if pr:
-            sync_parent(token, entry, pr)
-    if threads:
-        path.write_text(json.dumps(threads, indent=2, ensure_ascii=False))
+    with thread_lock(repo):
+        path, threads = load_threads(repo)
+        done = (PR_ICONS["merged"], PR_ICONS["closed"])
+        for branch, entry in threads.items():
+            if branch == current_branch or (entry.get("parent_text") or "").startswith(done):
+                continue
+            pr = current_pr(branch)
+            if pr:
+                sync_parent(token, entry, pr)
+        if threads:
+            path.write_text(json.dumps(threads, indent=2, ensure_ascii=False))
 
 
 def post_branch_report(token, channel, repo, branch, title, body):
-    path, threads = load_threads(repo)
-    entry = threads.get(branch)
-    pr = current_pr()
-    if entry is None:
-        text = parent_text(title, pr)
-        parent = post(token, f"#{channel}", text)
-        invite_owner(token, parent["channel"])
-        entry = {"channel": parent["channel"], "ts": parent["ts"], "title": title, "parent_text": text}
-        threads[branch] = entry
-    else:
-        sync_parent(token, entry, pr)
-    THREADS_DIR.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(threads, indent=2, ensure_ascii=False))
+    with thread_lock(repo):
+        path, threads = load_threads(repo)
+        entry = threads.get(branch)
+        pr = current_pr()
+        if entry is None:
+            text = parent_text(title, pr)
+            parent = post(token, f"#{channel}", text)
+            invite_owner(token, parent["channel"])
+            entry = {"channel": parent["channel"], "ts": parent["ts"], "title": title, "parent_text": text}
+            threads[branch] = entry
+        else:
+            sync_parent(token, entry, pr)
+        path.write_text(json.dumps(threads, indent=2, ensure_ascii=False))
     for text in chunk_report(title, body):
         post(token, entry["channel"], text, thread_ts=entry["ts"])
     return entry["channel"], entry["ts"]
