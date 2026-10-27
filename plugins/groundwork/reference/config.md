@@ -84,6 +84,7 @@ qa:
 ux:
   bundle: continuous                     # manual | release | continuous — when the UX check runs
   method: code                           # code (ux-flow-reviewer reads the code) | app (ux-persona-reviewer uses the running app)
+  journey: manual                        # manual | release — when the ux-journey add-on runs; optional, absent means manual
 
 mode: normal                             # eco | normal | sport — overall effort for verification, review, and screen checks
 ---
@@ -95,6 +96,7 @@ Optional. Skills read only the section that applies to them.
 
 - `## Review focus: <reviewer>` — repository-specific checks for one reviewer, such as `## Review focus: architecture`. The reviewer adds these to its own checklist. They narrow where to look; the documents in `docs` stay the standard.
 - `## Persona: <name>` — the tasks a UX persona performs, when `review.personas[].goal` is not enough.
+- `## Journey: <name>` — an end-to-end journey for the `ux-journey` add-on: persona, devices, start, scenario, test access, reset, milestones, success, and code map. The format is in `ux/journey-test.md`.
 - `## Release checks` — checks the `release` skill runs before cutting a release, beyond its built-in ones.
 - `## UI QA notes` — how to launch the app for QA, sample data, launch flags, screen-specific checks.
 - `## Notes` — anything else the user added during onboarding that applies to every skill.
@@ -151,7 +153,9 @@ Onboarding writes `reference/implementation.md` into `docs.rules` for every proj
 
 ### Screen checks
 
-`qa` and `ux` are set together in onboarding step 7; their bundles and cost guidance are in `catalog/screen-checks.md`. QA always runs `ui-qa` on the running app. UX runs by `ux.method`: `code` runs one `ux-flow-reviewer`, which reads the code and never launches the app; `app` runs one `ux-persona-reviewer` per `user` persona on the running app. `/groundwork:ux-review` runs whichever the method names.
+`qa` and `ux` are set together in onboarding step 7; their bundles and cost guidance are in `catalog/screen-checks.md`. QA always runs `ui-qa` on the running app. UX runs by `ux.method`: `code` runs one `ux-flow-reviewer`, which reads the code and never launches the app; `app` runs one `ux-persona-reviewer` per `user` persona on the running app. `/groundwork:ux-review` runs whichever the method names. `ux/README.md` compares these with the journey test.
+
+The journey test (`/groundwork:ux-journey`, one `ux-journey-tester` per session) is an add-on, not a screen-check bundle. `ux.journey` decides only whether it gates releases: `manual` or absent runs it on request; `release` adds it to the before-release gate. It never runs after implementation, because each session walks a whole journey from a clean state.
 
 | Bundle | After implementation | Before release |
 |---|---|---|
@@ -167,7 +171,7 @@ Onboarding writes both mappings and migrates the old UX triggers. `ux` in `revie
 
 **After implementation:** only continuous runs automatically. Code-based UX runs as the `ux` reviewer in every review round, so its findings follow the review's Skeptic and fix rules. Checks on the running app run once after the final verification and code-review fixes, before completion; quick runs them in review-and-fix even when code review has no findings. When `qa.bundle` is continuous, use `/groundwork:ui-qa <changed screens> --mode <effective-mode>`. When `ux.bundle` is continuous and `ux.method` is app, use `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks, except in eco. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
 
-**Before release:** when `qa.bundle` is release or continuous, run `/groundwork:ui-qa --full --mode <effective-mode>`. When `ux.bundle` is release or continuous and at least one user persona exists, run `/groundwork:ux-review --full --mode <effective-mode>` with the configured method. Explicit `--full` keeps all uncovered checks and all user tasks in scope in every mode; eco does not remove this release gate. Use the exact release candidate (the integration head for develop-release, production head for main-only). The release skill runs the gate before creating a release branch or PR. For main-only, the workflow creating a version tag must run this gate before tagging, since the release-branch skill is not applicable. Manual shows the uncovered ledger rows as the human checklist.
+**Before release:** when `qa.bundle` is release or continuous, run `/groundwork:ui-qa --full --mode <effective-mode>`. When `ux.bundle` is release or continuous and at least one user persona exists, run `/groundwork:ux-review --full --mode <effective-mode>` with the configured method. When `ux.journey` is release and at least one `## Journey:` section exists, run `/groundwork:ux-journey --full --mode <effective-mode>`. Explicit `--full` keeps all uncovered checks and all user tasks in scope in every mode; eco does not remove this release gate. Use the exact release candidate (the integration head for develop-release, production head for main-only). The release skill runs the gate before creating a release branch or PR. For main-only, the workflow creating a version tag must run this gate before tagging, since the release-branch skill is not applicable. Manual shows the uncovered ledger rows as the human checklist.
 
 **Results and fixes:** select rows with no automated test, stale rows first, and skip checks already proven by matching automated results. A FAIL or BLOCKED stops implementation completion or release, depending on the trigger. The implementation agent fixes defects, adds regression coverage where possible, re-verifies, and returns the affected checks to QA on the new build. UI QA can update the ledger; commit that update only as the calling workflow allows. Never carry PASS across new edits that affect a checked behavior. Keep QA repair/recheck attempts within the effective mode's round limit; if still failing, or if a blocker cannot be resolved within scope, report and stop without marking done, tagging, pushing, or creating a release PR. Respect existing workflow permissions for all such actions.
 
@@ -212,4 +216,4 @@ Issue ids are written as the tracker shows them: `#12` for GitHub, `ABC-12` for 
 
 ## Paths
 
-Paths in skills and agents are relative to the plugin root, which is the directory that holds `skills/`, `agents/`, `catalog/`, and `reference/`. From a skill, the plugin root is two directories above the skill's own directory. An agent cannot locate its own file, so the skill that dispatches it passes the absolute plugin root as a `Plugin root: <path>` line in the prompt.
+Paths in skills and agents are relative to the plugin root, which is the directory that holds `skills/`, `agents/`, `catalog/`, `reference/`, and `ux/`. From a skill, the plugin root is two directories above the skill's own directory. An agent cannot locate its own file, so the skill that dispatches it passes the absolute plugin root as a `Plugin root: <path>` line in the prompt.

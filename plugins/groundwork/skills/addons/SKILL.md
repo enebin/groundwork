@@ -1,6 +1,6 @@
 ---
 name: addons
-description: Show Groundwork's optional productivity skills and continue with the user's chosen setup or one-off task. Use after onboarding or when the user asks about add-ons, Slack reporting, handoff notes, weekly summaries, or release preparation options.
+description: Show Groundwork's optional productivity skills and continue with the user's chosen setup or one-off task. Use after onboarding or when the user asks about add-ons, Slack reporting, handoff notes, weekly summaries, journey usability tests, or release preparation options.
 ---
 
 Read `reference/config.md` under the plugin root (two directories above this skill), then the repository's `GROUNDWORK.md` and its rules. Use `language.conversation` for the menu and `language.artifacts` for saved documents.

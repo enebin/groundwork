@@ -130,6 +130,8 @@ Do not ask a separate scope question; scope follows the overall mode shown with 
 
 Collect the catalog's applicable end-user-persona, launch, and design-source follow-ups. Keep these separate from code review. Set `review.release_qa` to the compatibility mirror, not as a second choice.
 
+Keep an existing `ux.journey` value and the `## Journey:` sections as they are. They belong to the `ux-journey` add-on, which sets them up itself; step 7 does not ask about them.
+
 ### Step 8 — Anything else
 
 Always ask, even after "Use all recommendations":
