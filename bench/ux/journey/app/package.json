@@ -1,0 +1,12 @@
+{
+  "name": "taskfold",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared tasks for small teams",
+  "scripts": {
+    "start": "node server.js",
+    "reset": "node tools.js reset",
+    "checkpoint:save": "node tools.js save",
+    "checkpoint:restore": "node tools.js restore"
+  }
+}

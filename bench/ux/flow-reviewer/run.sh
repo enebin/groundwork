@@ -10,7 +10,7 @@ label=$2
 model=${3:-claude-sonnet-5-5}
 
 here=$(cd "$(dirname "$0")" && pwd)
-plugin_root=$(cd "$here/../../plugins/groundwork" && pwd)
+plugin_root=$(cd "$here/../../../plugins/groundwork" && pwd)
 branch=$(jq -r --arg f "$fixture" '.fixtures[] | select(.id == $f) | .branch' "$here/answer-key.json")
 base_branch=$(jq -r --arg f "$fixture" '.fixtures[] | select(.id == $f) | .base' "$here/answer-key.json")
 out_dir="$here/runs/$label"

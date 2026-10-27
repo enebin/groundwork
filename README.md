@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.2.0" src="https://img.shields.io/badge/version-0.2.0-6E6C66">
+  <img alt="Version 0.3.0" src="https://img.shields.io/badge/version-0.3.0-6E6C66">
 </p>
 
 <p align="center"><b>English</b> · <a href="README.ko.md">한국어</a></p>
@@ -86,7 +86,7 @@ You can browse the pros, cons, and exact rules written by each bundle in [`plugi
 
 ## Optional add-ons
 
-After setup, onboarding shows **You might also find these useful** outside the eight steps. Pick a feature to continue its setup, or finish and return later with `/groundwork:addons`. All five skills ship with Groundwork and use the same files in Claude Code and Codex. Nothing starts automatically when the plugin is installed or when all onboarding recommendations are accepted.
+After setup, onboarding shows **You might also find these useful** outside the eight steps. Pick a feature to continue its setup, or finish and return later with `/groundwork:addons`. All six skills ship with Groundwork and use the same files in Claude Code and Codex. Nothing starts automatically when the plugin is installed or when all onboarding recommendations are accepted.
 
 | Skill | What it does | When it helps |
 |---|---|---|
@@ -94,9 +94,12 @@ After setup, onboarding shows **You might also find these useful** outside the e
 | `handoff` | Save completed work, remaining work, and the next starting point | Resume in a new session without rebuilding context |
 | `weekly-summary` | Summarize a week's commits, PRs, and issues | Prepare a weekly update or retrospective |
 | `release-notes` | Turn a revision range into user-facing release notes | Explain features, fixes, and upgrade requirements |
+| `ux-journey` | Have a first-time user walk a whole journey (landing page → sign-up → organization setup) on the running app and report where they get stuck | Before a launch or release, or after changing first-run screens |
 | `release-prep` | Prepare and verify releases on a chosen cadence, then request final approval | Keep releases moving without repeating the checklist |
 
 Slack setup asks for the destination and on-demand or automatic reporting. Credentials stay in `~/.config/slack-report/`, outside Git; see [connection setup](plugins/groundwork/skills/slack-report/references/setup.md). Automatic reporting is opt-in and installs repository-local Stop hooks for both clients. Handoff notes and weekly summaries create local drafts; they do not send messages or schedule themselves.
+
+The journey usability test explores the project on first use, proposes journeys from the entry point to first value, and writes them to `GROUNDWORK.md` only after you confirm them. Each session is a fresh participant agent that never sees the code: it gets only a scenario and test access, thinks aloud at every step, and rates how easy each part felt. The skill moderates, checks each journey's success state, and reports per-milestone results with screenshots. It runs on request, or before every release if you choose that during setup.
 
 Scheduled release preparation asks for cadence, timezone, destination, and allowed cleanup once. It recommends the next version from the diff and the repository's version policy, prepares the release notes, and runs required checks before asking only whether to approve that release. Publication waits for a human Yes tied to the verified candidate. Scheduling uses the current client's supported tools; when none is available, setup reports **not scheduled** and supplies the missing setup step. Installing the skill never creates a schedule or publishes a release.
 
@@ -105,8 +108,9 @@ Scheduled release preparation asks for cadence, timezone, destination, and allow
 | Skill | Description |
 |---|---|
 | `onboarding` | Initialize or update `GROUNDWORK.md` |
+| `update` | After a plugin update, apply migrations and pick new features from the release notes, without redoing onboarding |
 | `addons` | Browse optional features and continue their setup or one-off use |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep` | Optional reporting, session handoff, summaries, and release preparation; see above |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey` | Optional reporting, session handoff, summaries, release preparation, and journey usability tests; see above |
 | `plan` | Break a large task into a parent issue and smaller step issues |
 | `step` | Run a single step: implement, then loop through verify → review → fix until no confirmed 🔴/🟠 issues remain |
 | `takeoff` | Rebase, push, and open the PR for a finished step |
@@ -119,7 +123,7 @@ Scheduled release preparation asks for cadence, timezone, destination, and allow
 
 Five code reviewers can run on every change: `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, and `dx-reviewer`. `dx-reviewer` traces developer tasks directly through the code, looking for friction from the perspective of developers using your library, HTTP/RPC API, or CLI. `ux-flow-reviewer` does the same for end-user journeys (extra steps, missing state handling, dead ends); it joins every review round when you pick code-based UX on every PR in step 7. Alongside their built-in checklists, each reviewer also checks repo-specific criteria under `## Review focus: <reviewer>` in `GROUNDWORK.md`.
 
-UI changes are verified on every run by UI tests that capture screenshots, which the implementing agent opens and inspects directly. [Screen checks](plugins/groundwork/catalog/screen-checks.md) go further, in two parts. UX checks whether each user persona can finish its tasks, either from the code (fast, may be less accurate) or on the simulator or browser (slow, closest to real use). QA launches the app and checks the rendered UI against requirements and the design source. Each runs on every PR (`continuous`), before releases (`release`), or only when requested (`manual`). Checks on the running app can take a long time and use many tokens. Anything automated tests can't reliably verify is tracked in `docs/ui-coverage.md`.
+UI changes are verified on every run by UI tests that capture screenshots, which the implementing agent opens and inspects directly. [Screen checks](plugins/groundwork/catalog/screen-checks.md) go further, in two parts. UX checks whether each user persona can finish its tasks, either from the code (fast, may be less accurate) or on the simulator or browser (slow, closest to real use). QA launches the app and checks the rendered UI against requirements and the design source. Each runs on every PR (`continuous`), before releases (`release`), or only when requested (`manual`). Checks on the running app can take a long time and use many tokens. Anything automated tests can't reliably verify is tracked in `docs/ui-coverage.md`. [UX checks](plugins/groundwork/reference/ux-checks.md) compares the code-based review, the app-based review, and the journey test.
 
 Web projects are usually fast to check since browser tools can inspect DOM elements directly. iOS simulators and Android emulators can take longer due to build, install, and launch times as well as UI automation limits; web QA can also be slower if it relies heavily on screenshots. Actual time and token usage depend on coverage scope, number of personas, tooling, and retries.
 
@@ -134,13 +138,13 @@ How well can `ux-flow-reviewer` judge usability from the code alone? A benchmark
 | Seeded defects found | 36/39 | 32/32 (27 seen on screen) |
 | False positives | 0 | 4 |
 | Mean time per run | 21 s | 126 s |
-| Mean cost per run | $0.17 | not measured |
+| Mean cost per run | $0.17 | $1.79 |
 
-The code-based reviewer is about 6× faster and finds failure paths the app cannot easily trigger. The app-based reviewer confirms layout risks and caught a number-format regression that every code-based run missed. Running the code-based review on every change and the app-based review only on what it hands off covers both. Prompt-version comparisons, per-defect results, and how to rerun it are in [`bench/ux-flow-reviewer/`](bench/ux-flow-reviewer/README.md).
+The code-based reviewer is about 6× faster and 10× cheaper, and finds failure paths the app cannot easily trigger. The app-based reviewer confirms layout risks and caught a number-format regression that every code-based run missed. Running the code-based review on every change and the app-based review only on what it hands off covers both. Prompt-version comparisons, per-defect results, and how to rerun it are in [`bench/ux/flow-reviewer/`](bench/ux/flow-reviewer/README.md).
 
 ## GROUNDWORK.md
 
-The full config specification lives in [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md). Config keys are only ever added — existing keys are never renamed or removed. If the structure ever needs to change, the schema version is bumped and onboarding migrates your existing file automatically.
+The full config specification lives in [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md). Config keys are only ever added — existing keys are never renamed or removed. If the structure ever needs to change, the schema version is bumped and onboarding migrates your existing file automatically. After updating the plugin, run `/groundwork:update` (in Codex, ask it to use groundwork update): it reads the release notes since your setup, applies required migrations, and lets you pick which new features to add.
 
 Commit `GROUNDWORK.md` and the docs generated by onboarding to your repo. Teammates just need to install the plugin to work under the exact same rules — no need for everyone to run onboarding again.
 

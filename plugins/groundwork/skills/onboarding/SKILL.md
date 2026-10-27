@@ -29,7 +29,7 @@ Read-only. Record what you find; it decides the recommendations.
 - Files: build manifests (`Package.swift`, `*.xcodeproj`, `project.yml`, `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `build.gradle*`, ...), CI workflows, `AGENTS.md`, `CLAUDE.md`, an architecture document, a design reference.
 - Git: remotes, branches (`develop`?), whether there are any commits.
 - Existing agent setup: `.claude/skills`, `.claude/agents`, `.claude/commands`, `.agents/skills`, `.codex/`. Note each item that overlaps a groundwork skill or agent.
-- Existing `GROUNDWORK.md`: if present, this is a re-run. Its values become the recommendations, and the user only changes what they want. If its `groundwork` version is older than `reference/config.md`, migrate it as part of this run and say what changed. A `workflow.bundle: flight` becomes `step-loop` with `workflow.worktree: true`, which keeps one worktree per issue; say so, and set `review.trigger` to `per-round`, as every step workflow uses.
+- Existing `GROUNDWORK.md`: if present, this is a re-run. Its values become the recommendations, and the user only changes what they want. If its `groundwork` version is older than `reference/config.md`, migrate it as part of this run and say what changed. A `workflow.bundle: flight` becomes `step-loop` with `workflow.worktree: true`, which keeps one worktree per issue; say so, and set `review.trigger` to `per-round`, as every step workflow uses. If the user only wants what a newer plugin version added, suggest `/groundwork:update` instead: it asks only about the changes.
 
 Tell the user in two or three lines what you found. For an empty repository, say plainly that it is empty and that the recommendations will come from the next answer.
 
@@ -130,6 +130,8 @@ Do not ask a separate scope question; scope follows the overall mode shown with 
 
 Collect the catalog's applicable end-user-persona, launch, and design-source follow-ups. Keep these separate from code review. Set `review.release_qa` to the compatibility mirror, not as a second choice.
 
+Keep an existing `ux.journey` value and the `## Journey:` sections as they are. They belong to the `ux-journey` add-on, which sets them up itself; step 7 does not ask about them.
+
 ### Step 8 — Anything else
 
 Always ask, even after "Use all recommendations":
@@ -172,7 +174,7 @@ Show a file's full contents only when the user asks.
 
 Files to write:
 
-- `GROUNDWORK.md` — the full frontmatter and body, including automatic implementation settings, the `ux` and `qa` screen checks, and the overall `mode`.
+- `GROUNDWORK.md` — the full frontmatter and body, with `plugin_version` set to the installed plugin version (`.claude-plugin/plugin.json` under the plugin root), including automatic implementation settings, the `ux` and `qa` screen checks, and the overall `mode`.
 - `docs.rules` (create `AGENTS.md` if absent) — the mandatory block from `reference/implementation.md`, supplemental CI/test-first/add-on rules, and step 8 rules. For an existing managed evidence/basic block, show its replacement with the mandatory implementation block so contradictory run policies do not remain. Preserve CI gates and test-first requirements. Do not duplicate the old evidence block inside a new supplemental block.
 - `docs.architecture` (create `ARCHITECTURE.md` if absent) — the `minimal-structure` rules first, then the chosen bundle's "Contract to write" (none for `none`). When following an existing document, add only the `minimal-structure` block.
 - `CLAUDE.md` — a one-line pointer to `AGENTS.md`, only if `CLAUDE.md` does not exist.

@@ -10,6 +10,7 @@ Use this table as the single menu source. Translate names and descriptions into 
 | `handoff` | Handoff notes | Save completed work, remaining work, and the next starting point. | Resume work in a new session without reconstructing the previous conversation. |
 | `weekly-summary` | Weekly work summary | Summarize a week's commits, pull requests, and issues with evidence. | Prepare a weekly update or retrospective. |
 | `release-notes` | Release notes | Turn the changes between two revisions into user-facing notes. | Explain new features, fixes, and compatibility changes when shipping a version. |
+| `ux-journey` | Journey usability test | Have a first-time user walk a whole journey, such as landing page → sign-up → organization setup, on the running app, and report where they hesitate, get lost, or give up. First use explores the project and proposes journeys for you to confirm. | Before a launch or release, or after changing the landing page, sign-up, or onboarding. Can also gate every release. |
 | `release-prep` | Scheduled release preparation | Prepare and verify a release on a chosen cadence, recommend a version from the diff, and request final publication approval. | Keep releases moving without repeating the preparation checklist yourself. |
 
 ## Menu behavior
@@ -22,6 +23,6 @@ Configure or run only the item the user chooses. After it finishes, offer anothe
 
 ## Recording setup
 
-When the user asks to keep a setup choice, store a short Markdown table in an optional `## Add-ons` body section of `GROUNDWORK.md`, inside `<!-- groundwork:begin addons -->` and `<!-- groundwork:end addons -->`. Keep unrelated text intact. Columns: `Skill | Settings`. Link detailed settings such as `SLACK_INFO.md` or `RELEASE_PREP.md` instead of duplicating them. One-off use needs no configuration write.
+When the user asks to keep a setup choice, store a short Markdown table in an optional `## Add-ons` body section of `GROUNDWORK.md`, inside `<!-- groundwork:begin addons -->` and `<!-- groundwork:end addons -->`. Keep unrelated text intact. Columns: `Skill | Settings`. Link detailed settings such as `SLACK_INFO.md`, `RELEASE_PREP.md`, or the `## Journey:` sections instead of duplicating them. One-off use needs no configuration write.
 
 Record only actual setup: on-demand use, a confirmed Slack reporting mode, or a scheduler's successful response and task identity. If scheduling is unavailable, record **not scheduled**, with the recovery action; a saved desired cadence is not an active schedule. Do not put secrets in this section. These add-ons are unrelated to `verification.addons`.

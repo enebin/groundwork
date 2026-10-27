@@ -31,4 +31,4 @@ if [ "$latest" = "$(cat "$notified" 2>/dev/null)" ]; then
 fi
 echo "$latest" > "$notified"
 
-printf '{"systemMessage": "groundwork %s is available (installed: %s). Run `claude plugin update groundwork@groundwork`, then restart Claude Code."}\n' "$latest" "$installed"
+printf '{"systemMessage": "groundwork %s is available (installed: %s). Run `claude plugin update groundwork@groundwork`, restart Claude Code, then run `/groundwork:update` in each set-up repository."}\n' "$latest" "$installed"
