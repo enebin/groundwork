@@ -39,8 +39,10 @@ for run in runs:
 
 seconds = [r["seconds"] for r in runs]
 tools = [r["tool_calls"] for r in runs]
+cost = [r["cost_usd"] for r in runs]
 print()
 print(f"runs {len(runs)}  recall {found_total}/{need_total}  observed {seen_total}/{need_total}"
       f"  false positives {sum(r['false_positive'] for r in runs)}  severity match {severity_hits}/{severity_graded}")
 print(f"seconds  mean {statistics.mean(seconds):.1f}  median {statistics.median(seconds):.1f}  max {max(seconds):.1f}")
 print(f"tool calls  mean {statistics.mean(tools):.1f}  median {statistics.median(tools):.1f}")
+print(f"cost  mean ${statistics.mean(cost):.2f}  median ${statistics.median(cost):.2f}  max ${max(cost):.2f}")

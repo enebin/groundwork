@@ -38,7 +38,9 @@ The app method ran `ux-persona-reviewer` once per affected persona, twice per fi
 | Severity matches the rubric | 35/39 | 22/33 |
 | Mean time per run | 21 s | 126 s (max 209 s) |
 | Mean tool calls per run | 4.5 | 36.6 |
-| Cost per run | $0.17 (measured) | not reported by the subagent tool |
+| Mean cost per run | $0.17 | $1.79 (max $2.99) |
+
+The subagent tool does not report cost, and a headless `claude -p` run has no simulator tools, so the app method's cost is computed from the saved subagent transcripts (`~/.claude/projects/<repo path>/<session id>/subagents/agent-*.jsonl`). Each run's cost is the sum over its responses, counting each response once by message id, of input, cache-write, cache-read, and output tokens at Sonnet rates: $5, $6.25 (5-minute cache), $0.50, and $25 per million tokens. The input, cache-read, and output rates reproduce Claude Code's reported cost exactly across 143 headless code-method runs, checked against their raw stream logs (local only; the committed metrics keep just the totals); the 5-minute cache-write rate is assumed at 1.25× input, since those runs only wrote 1-hour cache. More than 90% of the tokens are cache reads, because the reviewer re-reads its context on each of its ~37 tool calls. The per-run figures are `cost_usd` in `runs/app-results.json`.
 
 Which method caught each defect, counting runs that reported it:
 
@@ -61,7 +63,7 @@ Which method caught each defect, counting runs that reported it:
 
 What this shows:
 
-- **The code method is about 6× faster and finds failure paths.** It reported the silent save failure in every run. The app method could not trigger that failure from the UI and fell back to reading the code.
+- **The code method is about 6× faster, about 10× cheaper, and finds failure paths.** It reported the silent save failure in every run. The app method could not trigger that failure from the UI and fell back to reading the code.
 - **The app method confirms what the code method can only suspect, and catches what reading misses.** It confirmed the large-text breakage the code method handed off, observed that the 250 ml long press never fires because the context menu takes the press, and found the number-format regression in a refactor that every code run judged UI-identical (SwiftUI groups an `Int` interpolated into a `Text` literal, but not a pre-built `String`).
 - **The app method misattributes pre-existing problems.** All 4 of its false positives came from `h3`, where it blamed the change for stale totals and a no-undo delete that the base version already had. With no base build to compare, it inferred the cause from the diff. The code method, which compares against the base version, classified the same problems as pre-existing in 3/3 runs.
 - **A practical split:** run the code method on every change, and run the app method only on its **Rendered-check handoffs** and on refactors of display code.
@@ -111,7 +113,7 @@ App method, from a Claude Code session with the iOS Simulator tools:
 ./app-prompt.sh h2-custom-amount "Daily water logger" <simulator-udid> mytest-app-r1
 ```
 
-Dispatch `groundwork:ux-persona-reviewer` with the printed prompt, record each result in `runs/app-results.json`, then run `python3 summarize_app.py`. Uninstall the app on the simulator between runs.
+Dispatch `groundwork:ux-persona-reviewer` with the printed prompt, record each result in `runs/app-results.json` (with `cost_usd` computed from the subagent transcript as described above), then run `python3 summarize_app.py`. Uninstall the app on the simulator between runs.
 
 ## Files
 

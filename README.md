@@ -134,9 +134,9 @@ How well can `ux-flow-reviewer` judge usability from the code alone? A benchmark
 | Seeded defects found | 36/39 | 32/32 (27 seen on screen) |
 | False positives | 0 | 4 |
 | Mean time per run | 21 s | 126 s |
-| Mean cost per run | $0.17 | not measured |
+| Mean cost per run | $0.17 | $1.79 |
 
-The code-based reviewer is about 6× faster and finds failure paths the app cannot easily trigger. The app-based reviewer confirms layout risks and caught a number-format regression that every code-based run missed. Running the code-based review on every change and the app-based review only on what it hands off covers both. Prompt-version comparisons, per-defect results, and how to rerun it are in [`bench/ux-flow-reviewer/`](bench/ux-flow-reviewer/README.md).
+The code-based reviewer is about 6× faster and 10× cheaper, and finds failure paths the app cannot easily trigger. The app-based reviewer confirms layout risks and caught a number-format regression that every code-based run missed. Running the code-based review on every change and the app-based review only on what it hands off covers both. Prompt-version comparisons, per-defect results, and how to rerun it are in [`bench/ux-flow-reviewer/`](bench/ux-flow-reviewer/README.md).
 
 ## GROUNDWORK.md
 
