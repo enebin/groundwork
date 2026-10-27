@@ -10,7 +10,7 @@
     {
       "name": "groundwork",
       "description": "Onboarding with recommended bundles, plus planning, step loops, parallel review, UX review, UI QA, and release skills driven by GROUNDWORK.md.",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "author": {
         "name": "Kai Lee"
       },
