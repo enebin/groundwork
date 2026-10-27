@@ -1,0 +1,165 @@
+{
+  "run": "r1",
+  "model": "sonnet",
+  "device": "desktop (actual viewports 800x600 to 1024x768)",
+  "variants": {
+    "A": "agents/participant.md (separate participant agent)",
+    "B": "agents/persona-first-time.md (persona reviewer with a first-time section)",
+    "C": "plugins/groundwork/agents/ux-persona-reviewer.md with a 'First-timer' persona, dispatched as ux-review would"
+  },
+  "sessions": [
+    {
+      "id": "s1",
+      "variant": "A",
+      "journey": "new-workspace",
+      "status": "COMPLETED",
+      "success_confirmed": true,
+      "found": {
+        "D1": "🟡",
+        "D3": "🟡",
+        "D4": "🟠"
+      },
+      "not_reached": [
+        "D2"
+      ],
+      "scope_creep": true,
+      "project_reads": 0,
+      "tool_calls": 62,
+      "seconds": 1988,
+      "cost_usd": 2.75
+    },
+    {
+      "id": "s2",
+      "variant": "B",
+      "journey": "new-workspace",
+      "status": "COMPLETED",
+      "success_confirmed": true,
+      "found": {
+        "D1": "🟡",
+        "D3": "🟡",
+        "D4": "🟠"
+      },
+      "not_reached": [
+        "D2"
+      ],
+      "scope_creep": true,
+      "project_reads": 0,
+      "tool_calls": 52,
+      "seconds": 1976,
+      "cost_usd": 2.46
+    },
+    {
+      "id": "s3",
+      "variant": "C",
+      "journey": "new-workspace",
+      "status": "PASS",
+      "success_confirmed": true,
+      "found": {
+        "D1": "🟡",
+        "D3": "🟡",
+        "D4": "🟡"
+      },
+      "not_reached": [
+        "D2"
+      ],
+      "scope_creep": false,
+      "project_reads": 0,
+      "tool_calls": 47,
+      "seconds": 1945,
+      "cost_usd": 2.22,
+      "note": "First dispatch was BLOCKED by the browser tab cap and rerun."
+    },
+    {
+      "id": "s4",
+      "variant": "A",
+      "journey": "first-project",
+      "status": "COMPLETED",
+      "success_confirmed": true,
+      "found": {
+        "D6": "🟡"
+      },
+      "scope_creep": true,
+      "project_reads": 0,
+      "tool_calls": 29,
+      "seconds": 1936,
+      "cost_usd": 1.64
+    },
+    {
+      "id": "s5",
+      "variant": "B",
+      "journey": "first-project",
+      "status": "COMPLETED",
+      "success_confirmed": true,
+      "found": {
+        "D6": "🟡"
+      },
+      "scope_creep": true,
+      "project_reads": 0,
+      "tool_calls": 24,
+      "seconds": 1929,
+      "cost_usd": 1.54
+    },
+    {
+      "id": "s6",
+      "variant": "C",
+      "journey": "first-project",
+      "status": "FAIL",
+      "success_confirmed": true,
+      "found": {
+        "D6": "🟠"
+      },
+      "scope_creep": false,
+      "project_reads": 0,
+      "tool_calls": 18,
+      "seconds": 1912,
+      "cost_usd": 1.18
+    },
+    {
+      "id": "s7",
+      "variant": "A",
+      "journey": "invite-teammate",
+      "status": "GAVE UP",
+      "success_confirmed": true,
+      "found": {
+        "D5": "🟠"
+      },
+      "scope_creep": false,
+      "project_reads": 0,
+      "tool_calls": 29,
+      "seconds": 1929,
+      "cost_usd": 1.54,
+      "note": "Sent the invite twice."
+    },
+    {
+      "id": "s8",
+      "variant": "B",
+      "journey": "invite-teammate",
+      "status": "GAVE UP",
+      "success_confirmed": true,
+      "found": {
+        "D5": "🟠"
+      },
+      "scope_creep": false,
+      "project_reads": 0,
+      "tool_calls": 28,
+      "seconds": 1930,
+      "cost_usd": 1.94,
+      "note": "Sent the invite twice; assisted search read page structure only."
+    },
+    {
+      "id": "s9",
+      "variant": "C",
+      "journey": "invite-teammate",
+      "status": "FAIL",
+      "success_confirmed": true,
+      "found": {
+        "D5": "🟠"
+      },
+      "scope_creep": false,
+      "project_reads": 0,
+      "tool_calls": 23,
+      "seconds": 1906,
+      "cost_usd": 1.32
+    }
+  ]
+}

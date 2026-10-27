@@ -21,6 +21,8 @@ All three report expert observations from an AI, not results from real-user rese
 
 Shared rules for any agent on the running app (environment isolation, evidence, independence) stay in `reference/rendered-review.md`, because `ui-qa` uses them too. Screen-check frequencies and their cost guidance stay in `catalog/screen-checks.md`.
 
+Benchmarks for the flow review and the journey test are in `bench/ux/` at the repository root; they are not part of the plugin.
+
 ## Choosing a check
 
 - Run the flow review on every change. It is fast and cheap, and it finds failure paths the app cannot easily trigger.

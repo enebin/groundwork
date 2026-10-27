@@ -1,0 +1,85 @@
+{
+  "app": "Taskfold (app/)",
+  "defects": [
+    {
+      "id": "D1",
+      "journey": "new-workspace",
+      "milestone": "Finds where to sign up",
+      "where": "Landing page",
+      "summary": "The only sign-up link is a small footer link; the hero button goes to a 'Book a demo' form that ends in 'our sales team will reach out'. The sign-in page has no sign-up link.",
+      "severity": "🟡",
+      "heuristic": "Discoverability",
+      "note": "Was 🟠. Changed after run r1: the footer link stays visible, and reference/ux-heuristics.md rates a hesitation on a visible path as 🟡. All three variants rated it 🟡."
+    },
+    {
+      "id": "D2",
+      "journey": "new-workspace",
+      "milestone": "Creates an account",
+      "where": "Sign-up form",
+      "summary": "The password rule (10+ characters with a number) is never shown. A weak password returns 'Something went wrong. Please try again.' and clears every field.",
+      "severity": "🟠",
+      "heuristic": "Recovery",
+      "note": "No session in r1 reached it: every participant chose a password that met the hidden rule."
+    },
+    {
+      "id": "D3",
+      "journey": "new-workspace",
+      "milestone": "Verifies the email address",
+      "where": "Email confirmation link",
+      "summary": "Confirming the email lands on the sign-in page with no message that the email was confirmed.",
+      "severity": "🟡",
+      "heuristic": "Feedback"
+    },
+    {
+      "id": "D4",
+      "journey": "new-workspace",
+      "milestone": "Creates and names an organization",
+      "where": "Organization setup",
+      "summary": "Continue stays disabled until the Workspace URL is 3+ lowercase letters, numbers, or hyphens. The rule is not shown, the placeholder 'taskfold.app/' reads like a value, and nothing says why Continue is disabled.",
+      "severity": "🟠",
+      "heuristic": "Understanding"
+    },
+    {
+      "id": "D5",
+      "journey": "invite-teammate",
+      "milestone": "Sends an invitation",
+      "where": "Invite people",
+      "summary": "Sending an invite clears the form with no confirmation, and pending invitations are shown nowhere, so the user cannot tell whether it worked.",
+      "severity": "🟠",
+      "heuristic": "Feedback"
+    },
+    {
+      "id": "D6",
+      "journey": "first-project",
+      "milestone": "Finds where to create a project",
+      "where": "Dashboard",
+      "summary": "The empty project list says 'No projects yet.' with no action; New project exists only in the '⋯' menu.",
+      "severity": "🟠",
+      "heuristic": "Discoverability"
+    }
+  ],
+  "clean": [
+    {
+      "id": "C1",
+      "where": "Sign-in",
+      "summary": "Wrong password and unconfirmed email each show a clear message."
+    },
+    {
+      "id": "C2",
+      "where": "Invitation acceptance",
+      "summary": "The join form states the password rule and shows a clear error."
+    }
+  ],
+  "journeys": {
+    "new-workspace": "Landing page → sign up → confirm email → sign in → create organization. Success: an organization owned by the new account.",
+    "invite-teammate": "Continues from new-workspace. Success: one pending invitation.",
+    "first-project": "Continues from new-workspace. Success: one project in the organization."
+  },
+  "discovery_expectations": [
+    "Finds the landing, sign-up, confirmation, sign-in, organization, dashboard, members, invite, project, and invitation-acceptance screens in server.js.",
+    "Proposes the first-run journey first, and splits invite and first-project as Continues from journeys.",
+    "Lists invitation acceptance as a candidate needing a Precondition.",
+    "Drafts a user persona because review.personas is empty.",
+    "Finds launch steps, the dev inbox with ?to= filtering, reset, and checkpoint commands, and proposes recording them in ## UI QA notes."
+  ]
+}

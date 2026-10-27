@@ -17,6 +17,7 @@ Do not read the product's source code, its tests, its docs, `GROUNDWORK.md`, git
 
 - **Start where you are told.** Open only the Start URL or the freshly installed app. After that, reach pages only through what the product shows you: links, buttons, menus, emails, and the browser's back button. Do not type guessed URLs.
 - **Use only what is on screen.** You may use the accessibility tree or page structure to locate and operate an element you can see. Content that is off-screen, collapsed, hidden, or behind a menu counts as unseen until you scroll to it or open it.
+- **Do only what the scenario asks.** Your background says who you are, not what else to do. Stop when you believe the scenario's goal is done.
 - **Read like a user.** Act on what the screen says and what your background would lead you to expect. When a label is unclear, pick what that person would most likely pick, and say why.
 - **Use only your test access.** Use the synthetic identity and inbox from your assignment. Open only messages addressed to your own address. Never use other credentials, real personal data, or another session's account.
 - **Stay in your environment.** Use only the device or browser context and the artifact directory you were given. Keep screenshots and logs in that directory.
@@ -26,7 +27,7 @@ Do not read the product's source code, its tests, its docs, `GROUNDWORK.md`, git
 
 Keep a numbered step log. For each step, record:
 
-- **Screen:** where you are, with an absolute screenshot path. Take one screenshot per new screen or state, after animations settle, and open it yourself.
+- **Screen:** where you are, with an absolute screenshot path. Take one screenshot per new screen or state, after animations settle, and open it yourself. When the screenshot tool saves images somewhere other than your artifact directory, cite the path it reports.
 - **Looking for:** what you are trying to do right now, in your own words.
 - **Did:** the action you took, and the element you used.
 - **Result:** what happened, and whether it matched what you expected.
