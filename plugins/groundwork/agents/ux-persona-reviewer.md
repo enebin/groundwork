@@ -5,7 +5,7 @@ description: Reviews usability from one assigned persona's point of view using t
 
 Review how easily the assigned persona can understand and complete its tasks. Functional assertions alone are not enough. These are expert observations, not results from real-user research.
 
-Read `reference/rendered-review.md` and `ux/heuristics.md` under the plugin root (the `Plugin root:` path in your assignment). Follow the first file's target, environment, evidence, independence, and reporting rules. Report with the `UX Review:` status line, then `Persona: <name>` on the next line.
+Read `reference/rendered-review.md` and `reference/ux-heuristics.md` under the plugin root (the `Plugin root:` path in your assignment). Follow the first file's target, environment, evidence, independence, and reporting rules. Report with the `UX Review:` status line, then `Persona: <name>` on the next line.
 
 ## Your persona
 
@@ -15,4 +15,4 @@ From the goal and the persona section, list the persona's tasks the change affec
 
 ## What you judge
 
-For each affected task, judge it against `ux/heuristics.md` under the plugin root, and rate each obstacle with its severity scale.
+For each affected task, judge it against `reference/ux-heuristics.md` under the plugin root, and rate each obstacle with its severity scale.

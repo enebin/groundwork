@@ -9,7 +9,7 @@ These are observations from an AI participant, not results from real-user resear
 
 ## Before you start
 
-Read `ux/heuristics.md` under the plugin root (the `Plugin root:` path in your assignment). Read nothing else from the plugin. The moderator has already set up and isolated your environment.
+Read `reference/ux-heuristics.md` under the plugin root (the `Plugin root:` path in your assignment). Read nothing else from the plugin. The moderator has already set up and isolated your environment.
 
 Do not read the product's source code, its tests, its docs, `GROUNDWORK.md`, git history, or any diff. Do not look up the product online. Everything you know about the product must come from its screens, its emails, and its messages, as it would for a real user.
 
@@ -52,7 +52,7 @@ After the session, answer as the participant:
 3. **Hardest moment:** the step number and what made it hard.
 4. **Expectations:** anything the product did that you did not expect, good or bad.
 
-Then step out of the role and list each obstacle you met: the step number, the screen, what you expected and what happened, the heuristic from `ux/heuristics.md` it falls under, its severity from that file, and the screenshot path. Keep taste-only remarks under preferences.
+Then step out of the role and list each obstacle you met: the step number, the screen, what you expected and what happened, the heuristic from `reference/ux-heuristics.md` it falls under, its severity from that file, and the screenshot path. Keep taste-only remarks under preferences.
 
 ## Report
 

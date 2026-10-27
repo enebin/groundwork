@@ -96,7 +96,7 @@ Optional. Skills read only the section that applies to them.
 
 - `## Review focus: <reviewer>` — repository-specific checks for one reviewer, such as `## Review focus: architecture`. The reviewer adds these to its own checklist. They narrow where to look; the documents in `docs` stay the standard.
 - `## Persona: <name>` — the tasks a UX persona performs, when `review.personas[].goal` is not enough.
-- `## Journey: <name>` — an end-to-end journey for the `ux-journey` add-on: persona, devices, start, precondition, scenario, test access, reset, milestones, success, code map, and continues from. The format is in `ux/journey-test.md`.
+- `## Journey: <name>` — an end-to-end journey for the `ux-journey` add-on: persona, devices, start, precondition, scenario, test access, reset, milestones, success, code map, and continues from. The format is in `skills/ux-journey/references/journey-test.md`.
 - `## Release checks` — checks the `release` skill runs before cutting a release, beyond its built-in ones.
 - `## UI QA notes` — how to launch the app for QA, sample data, launch flags, screen-specific checks.
 - `## Notes` — anything else the user added during onboarding that applies to every skill.
@@ -153,7 +153,7 @@ Onboarding writes `reference/implementation.md` into `docs.rules` for every proj
 
 ### Screen checks
 
-`qa` and `ux` are set together in onboarding step 7; their bundles and cost guidance are in `catalog/screen-checks.md`. QA always runs `ui-qa` on the running app. UX runs by `ux.method`: `code` runs one `ux-flow-reviewer`, which reads the code and never launches the app; `app` runs one `ux-persona-reviewer` per `user` persona on the running app. `/groundwork:ux-review` runs whichever the method names. `ux/README.md` compares these with the journey test.
+`qa` and `ux` are set together in onboarding step 7; their bundles and cost guidance are in `catalog/screen-checks.md`. QA always runs `ui-qa` on the running app. UX runs by `ux.method`: `code` runs one `ux-flow-reviewer`, which reads the code and never launches the app; `app` runs one `ux-persona-reviewer` per `user` persona on the running app. `/groundwork:ux-review` runs whichever the method names. `reference/ux-checks.md` compares these with the journey test.
 
 The journey test (`/groundwork:ux-journey`, one `ux-journey-tester` per session) is an add-on, not a screen-check bundle. `ux.journey` decides only whether it gates releases: `manual` or absent runs it on request; `release` adds it to the before-release gate. It never runs after implementation, because each session walks a whole journey from a clean state.
 
@@ -216,4 +216,4 @@ Issue ids are written as the tracker shows them: `#12` for GitHub, `ABC-12` for 
 
 ## Paths
 
-Paths in skills and agents are relative to the plugin root, which is the directory that holds `skills/`, `agents/`, `catalog/`, `reference/`, and `ux/`. From a skill, the plugin root is two directories above the skill's own directory. An agent cannot locate its own file, so the skill that dispatches it passes the absolute plugin root as a `Plugin root: <path>` line in the prompt.
+Paths in skills and agents are relative to the plugin root, which is the directory that holds `skills/`, `agents/`, `catalog/`, and `reference/`. From a skill, the plugin root is two directories above the skill's own directory. An agent cannot locate its own file, so the skill that dispatches it passes the absolute plugin root as a `Plugin root: <path>` line in the prompt.

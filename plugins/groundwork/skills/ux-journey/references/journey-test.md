@@ -105,7 +105,7 @@ Then:
 1. **Summary,** when more than one journey ran: one line per journey with its status, sessions run, and the milestone where most sessions struggled. Obstacles on a screen that several journeys share are listed once, with every journey that hit them.
 2. **Sessions.** Journey, device, environment, build provenance, the synthetic identity used, and for a continuing session the checkpoint it started from.
 3. **Journey map.** One row per milestone per session: result, actions taken, backtracks, and the participant's ease rating where it applies.
-4. **Obstacles,** most severe first: the milestone, the screen and state, what the participant expected and what happened, the participant's own words from the log, severity from `ux/heuristics.md`, absolute screenshot paths, and how many sessions hit it. Add a suspected cause from the Code map only as a labeled inference.
+4. **Obstacles,** most severe first: the milestone, the screen and state, what the participant expected and what happened, the participant's own words from the log, severity from `reference/ux-heuristics.md`, absolute screenshot paths, and how many sessions hit it. Add a suspected cause from the Code map only as a labeled inference.
 5. **What worked.** Moments the participant moved through without hesitation, so a fix does not remove them.
 6. **Preferences and unverified assumptions,** kept apart from obstacles.
 7. **Evidence limits.** An AI participant is not a real user: it reads every word, never gets bored, and may know common product patterns better or worse than the target persona.

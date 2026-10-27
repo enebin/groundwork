@@ -6,11 +6,11 @@ argument-hint: "[<journey name>...] [--discover] [--full] [--mode eco|normal|spo
 
 # Journey test
 
-Moderate a usability test of one or more journeys from `ux/journey-test.md`. This skill prepares clean environments, dispatches one `ux-journey-tester` per session, and turns the sessions into a report. It does not modify product code; fixes belong to the implementation agent.
+Moderate a usability test of one or more journeys from `skills/ux-journey/references/journey-test.md`. This skill prepares clean environments, dispatches one `ux-journey-tester` per session, and turns the sessions into a report. It does not modify product code; fixes belong to the implementation agent.
 
 Paths below are relative to the plugin root, two directories above this skill's directory. Resolve the plugin root to an absolute path and put it in every agent prompt as a `Plugin root: <path>` line.
 
-Read `ux/journey-test.md` before starting. It defines the journey format, first-run discovery, milestone results, and the report.
+Read `skills/ux-journey/references/journey-test.md` before starting. It defines the journey format, first-run discovery, milestone results, and the report.
 
 ## 1. Read the configuration
 
@@ -24,7 +24,7 @@ Before launching anything, explain the cost: each session builds or starts the a
 
 ## 2. Define journeys on first run
 
-Run first-run discovery from `ux/journey-test.md` when no `## Journey:` section exists, when `--discover` is given, or when a journey's screens no longer exist. Discovery ends only with the user's approval; never run a journey the user has not confirmed. When run by another skill, report a missing or stale journey as BLOCKED with the journey, the missing screen, and the recovery `/groundwork:ux-journey --discover`, which offers to update drifted journeys.
+Run first-run discovery from `skills/ux-journey/references/journey-test.md` when no `## Journey:` section exists, when `--discover` is given, or when a journey's screens no longer exist. Discovery ends only with the user's approval; never run a journey the user has not confirmed. When run by another skill, report a missing or stale journey as BLOCKED with the journey, the missing screen, and the recovery `/groundwork:ux-journey --discover`, which offers to update drifted journeys.
 
 When this skill was opened from the add-on menu, or discovery just wrote the first journeys, also ask whether the journey test should gate releases:
 
@@ -41,7 +41,7 @@ Named journeys select those journeys; without names, select every journey. Resol
 
 Check each selected journey before launching, and report each problem with the journey, what is wrong, and how to fix it:
 
-- It has Start, Scenario, Milestones, and Success lines. A journey without Continues from also has Persona, Devices, Test access, and Reset lines; only a journey with Continues from may inherit those four, as Shared beginnings in `ux/journey-test.md` allows. Fix: add the line.
+- It has Start, Scenario, Milestones, and Success lines. A journey without Continues from also has Persona, Devices, Test access, and Reset lines; only a journey with Continues from may inherit those four, as Shared beginnings in `skills/ux-journey/references/journey-test.md` allows. Fix: add the line.
 - Its Persona, its own or inherited, is a `user` persona in `review.personas`. Fix: correct the journey's Persona line, or add the persona to `review.personas` with `kind: user`. Adding a `user` persona can start other UX checks; Screen checks in `reference/config.md` says which.
 - A Continues from names an existing journey, the chain has no cycle, and its Devices are a subset of the source's. Fix: correct the line.
 - `## UI QA notes` says how to launch the app. Fix: add the launch steps there, or rerun with `--discover`.
@@ -60,7 +60,7 @@ Follow the isolation rules in `reference/rendered-review.md`; the participant do
 
 Then create the journey's Precondition in that session's environment with its seed or setup command, using that session's synthetic identity. When no command exists, create it yourself through the product as setup, not as part of the test, and record how. Never let a session continue in another session's live environment; one session's actions must not change another's state.
 
-For a journey that continues from another, follow Shared beginnings in `ux/journey-test.md`: after the source session ends and meets the checkpoint condition there, save a checkpoint, then restore a separate copy for each continuing session on the same device kind. Dispatch continuing sessions only after their checkpoint exists. If the environment cannot save and restore that state, tell the user and mark the continuing journey BLOCKED rather than starting it from a guessed state.
+For a journey that continues from another, follow Shared beginnings in `skills/ux-journey/references/journey-test.md`: after the source session ends and meets the checkpoint condition there, save a checkpoint, then restore a separate copy for each continuing session on the same device kind. Dispatch continuing sessions only after their checkpoint exists. If the environment cannot save and restore that state, tell the user and mark the continuing journey BLOCKED rather than starting it from a guessed state.
 
 ## 5. Dispatch participants
 
@@ -80,11 +80,11 @@ Never give a participant the Precondition, Milestones, Success, Code map, the `#
 For each session:
 
 1. Confirm the Success state yourself: on screen, or with a read-only query against that session's test data. A participant that believes it finished is not proof.
-2. Map the participant's step log to the Milestones and give each a result from `ux/journey-test.md`.
+2. Map the participant's step log to the Milestones and give each a result from `skills/ux-journey/references/journey-test.md`.
 3. Open the screenshots behind every 🔴/🟠 obstacle and confirm they show it. Keep an obstacle the evidence does not show as unverified, apart from confirmed obstacles.
 
 Then merge across sessions and journeys: combine obstacles that share a screen and cause, keeping every session's and journey's attribution, and count how many sessions hit each one. Use the Code map to add a suspected cause only as a labeled inference.
 
-Report as `ux/journey-test.md` says. A participant that failed to run, or a missing session, never becomes PASS.
+Report as `skills/ux-journey/references/journey-test.md` says. A participant that failed to run, or a missing session, never becomes PASS.
 
 After a fix, rerun the affected journeys from a clean state on the new build, and discard checkpoints taken before it. Never carry a PASS across edits to the screens a journey passes through.

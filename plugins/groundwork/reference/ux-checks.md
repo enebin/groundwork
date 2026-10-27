@@ -1,6 +1,6 @@
 # UX checks
 
-Groundwork checks end-user usability three ways. Each answers a different question and costs a different amount. Developer experience of APIs and CLIs is `dx-reviewer`'s job, not part of this folder.
+Groundwork checks end-user usability three ways. Each answers a different question and costs a different amount. Developer experience of APIs and CLIs is `dx-reviewer`'s job, not one of these checks.
 
 | Check | Question | How | When | Agent |
 |---|---|---|---|---|
@@ -16,8 +16,8 @@ All three report expert observations from an AI, not results from real-user rese
 
 | File | Holds |
 |---|---|
-| `heuristics.md` | What a rendered session judges, and the severity scale for usability obstacles. Used by `ux-persona-reviewer` and `ux-journey-tester`. |
-| `journey-test.md` | The journey format in `GROUNDWORK.md`, how first-run discovery proposes journeys, and the journey report. |
+| `reference/ux-heuristics.md` | What a rendered session judges, and the severity scale for usability obstacles. Used by `ux-persona-reviewer` and `ux-journey-tester`. |
+| `skills/ux-journey/references/journey-test.md` | The journey format in `GROUNDWORK.md`, how first-run discovery proposes journeys, and the journey report. |
 
 Shared rules for any agent on the running app (environment isolation, evidence, independence) stay in `reference/rendered-review.md`, because `ui-qa` uses them too. Screen-check frequencies and their cost guidance stay in `catalog/screen-checks.md`.
 

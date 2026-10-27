@@ -87,7 +87,7 @@ Then include:
 
 1. **Target and environment,** with any provenance limits.
 2. **Coverage:** each required check marked PASS, FAIL, or NOT RUN, with a reason for NOT RUN.
-3. **Defects:** severity (🔴/🟠/🟡 as defined in `reference/config.md`; usability obstacles use `ux/heuristics.md`), screen and state, reproduction steps, expected versus actual behavior, impact, and an absolute screenshot path. Add observed coordinates when useful. Keep design preferences separate from defects, and label a suspected code cause as an inference.
+3. **Defects:** severity (🔴/🟠/🟡 as defined in `reference/config.md`; usability obstacles use `reference/ux-heuristics.md`), screen and state, reproduction steps, expected versus actual behavior, impact, and an absolute screenshot path. Add observed coordinates when useful. Keep design preferences separate from defects, and label a suspected code cause as an inference.
 4. **Evidence:** absolute paths to screenshots, logs, traces, and test results, and which checks each supports. Keep raw screenshots intact. Private references the user supplied stay outside the repository.
 5. **Blockers,** workarounds used, and unverified assumptions. If none, say so briefly.
 
