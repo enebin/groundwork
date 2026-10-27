@@ -105,6 +105,7 @@ Slack 설정에서는 보고 대상과 수동·자동 보고 여부를 정합니
 | 스킬 | 설명 |
 |---|---|
 | `onboarding` | `GROUNDWORK.md` 초기 설정 및 변경 |
+| `update` | 플러그인 업데이트 후 릴리즈 노트를 보고 마이그레이션을 적용하고 새 기능을 골라 붙이기 (onboarding을 처음부터 다시 하지 않음) |
 | `addons` | 부가기능 목록을 보고 원하는 기능의 설정이나 일회성 사용으로 이어가기 |
 | `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep` | Slack 보고·인수인계·주간 요약·릴리스 노트·정기 릴리스 준비; 위 부가기능 설명 참고 |
 | `plan` | 큰 작업을 상위 이슈 하나와 세부 단계 이슈들로 쪼개기 |
@@ -140,7 +141,7 @@ Slack 설정에서는 보고 대상과 수동·자동 보고 여부를 정합니
 
 ## GROUNDWORK.md
 
-설정 파일의 상세 규약은 [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md)에 정의되어 있습니다. 설정 키는 새로 추가만 될 뿐 기존 키의 이름이 바뀌거나 삭제되지 않습니다. 구조 자체가 바뀌어야 할 때는 스키마 버전을 올리고 onboarding이 기존 파일을 새 버전에 맞게 마이그레이션합니다.
+설정 파일의 상세 규약은 [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md)에 정의되어 있습니다. 설정 키는 새로 추가만 될 뿐 기존 키의 이름이 바뀌거나 삭제되지 않습니다. 구조 자체가 바뀌어야 할 때는 스키마 버전을 올리고 onboarding이 기존 파일을 새 버전에 맞게 마이그레이션합니다. 플러그인을 업데이트한 뒤에는 `/groundwork:update`를 실행하세요(Codex에서는 groundwork update를 쓰라고 요청하면 됩니다). 설정 이후의 릴리즈 노트를 읽고 필요한 마이그레이션을 적용한 다음, 붙일 새 기능을 고르게 해 줍니다.
 
 `GROUNDWORK.md`와 onboarding이 만들어 준 문서들은 레포에 그대로 커밋해 두세요. 다른 팀원들은 플러그인만 깔면 바로 같은 규칙으로 작업할 수 있고 각자 onboarding을 다시 돌릴 필요가 없습니다.
 
