@@ -4,7 +4,7 @@
   "interface": {
     "displayName": "Groundwork",
     "shortDescription": "Set up how a repository works, then run it",
-    "longDescription": "Onboarding configures repository workflows in GROUNDWORK.md. Workflow, review, and QA skills follow those choices. After setup, optional shared skills offer Slack reports, handoff notes, weekly summaries, release notes, and scheduled release preparation.",
+    "longDescription": "Onboarding configures repository workflows in GROUNDWORK.md. Workflow, review, and QA skills follow those choices. After setup, optional shared skills offer Slack reports, handoff notes, weekly summaries, release notes, scheduled release preparation, and journey usability tests.",
     "developerName": "Kai Lee",
     "category": "Engineering",
     "capabilities": [

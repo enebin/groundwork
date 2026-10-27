@@ -1,0 +1,118 @@
+{
+  "run": "r2",
+  "model": "sonnet",
+  "variant": "A (plugins/groundwork/agents/ux-journey-tester.md with profiles)",
+  "device": "desktop",
+  "concurrency": 3,
+  "sessions": [
+    {
+      "id": "t1",
+      "journey": "new-workspace",
+      "profile": "typical",
+      "habits": [
+        "password biscuit7"
+      ],
+      "status": "COMPLETED after GAVE UP",
+      "found": {
+        "D1": "🟠",
+        "D2": "🟠",
+        "D3": "🟡",
+        "D4": "🟡"
+      },
+      "false_alarms": 0,
+      "project_reads": 0,
+      "tool_calls": 71,
+      "seconds": 137,
+      "cost_usd": 1.95,
+      "note": "In assisted search it navigated by URL to /signin and /signup, links it had seen."
+    },
+    {
+      "id": "t2",
+      "journey": "new-workspace",
+      "profile": "typical",
+      "habits": [
+        "mistyped email",
+        "signs in before confirming"
+      ],
+      "status": "COMPLETED after GAVE UP",
+      "found": {
+        "D1": "🟠",
+        "D3": "🟡",
+        "D4": "🟠"
+      },
+      "unkeyed": [
+        "🟠 a mistyped email cannot be corrected or resent (real)"
+      ],
+      "false_alarms": 1,
+      "false_alarm_detail": "Blamed 'Email or password is incorrect' for not mentioning confirmation; the account did not exist because of the typo, so the message was accurate.",
+      "project_reads": 0,
+      "tool_calls": 77,
+      "seconds": 167,
+      "cost_usd": 2.19
+    },
+    {
+      "id": "t3",
+      "journey": "new-workspace",
+      "profile": "careful",
+      "habits": [],
+      "status": "COMPLETED",
+      "found": {
+        "D1": "🟡",
+        "D3": "🟡",
+        "D4": "🟠"
+      },
+      "false_alarms": 0,
+      "project_reads": 0,
+      "tool_calls": 46,
+      "seconds": 97,
+      "cost_usd": 1.31
+    },
+    {
+      "id": "t4",
+      "journey": "first-project",
+      "profile": "typical",
+      "habits": [],
+      "status": "COMPLETED after GAVE UP",
+      "found": {
+        "D6": "🟠"
+      },
+      "false_alarms": 0,
+      "project_reads": 0,
+      "tool_calls": 21,
+      "seconds": 52,
+      "cost_usd": 0.81
+    },
+    {
+      "id": "t5",
+      "journey": "invite-teammate",
+      "profile": "typical",
+      "habits": [],
+      "status": "GAVE UP",
+      "found": {
+        "D5": "🟠"
+      },
+      "false_alarms": 0,
+      "project_reads": 0,
+      "tool_calls": 32,
+      "seconds": 73,
+      "cost_usd": 1.07
+    },
+    {
+      "id": "t6",
+      "journey": "join-from-invitation",
+      "profile": "typical",
+      "habits": [
+        "password biscuit7"
+      ],
+      "status": "COMPLETED",
+      "found": {},
+      "clean_area": "C2",
+      "false_alarms": 0,
+      "note": "Three accurate 🟡 observations (rule in helper text, error page clears the name, no welcome); no 🟠 on the clean screen.",
+      "project_reads": 0,
+      "tool_calls": 23,
+      "seconds": 50,
+      "cost_usd": 0.76
+    }
+  ]
+}

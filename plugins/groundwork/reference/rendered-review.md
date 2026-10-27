@@ -1,6 +1,6 @@
 # Rendered review procedure
 
-The shared procedure for reviewers that exercise the running product: `ui-qa` and `ux-persona-reviewer`. They run according to Screen checks in `reference/config.md` or on explicit request. `qa.bundle` and `ux.bundle` control timing; the effective overall mode controls change-scoped coverage. Each agent's own file says what it judges. This file says how to establish the target, keep the environment safe, collect evidence, stay independent, and report.
+The shared procedure for reviewers that exercise the running product: `ui-qa` and `ux-persona-reviewer`. They run according to Screen checks in `reference/config.md` or on explicit request. `qa.bundle` and `ux.bundle` control timing; the effective overall mode controls change-scoped coverage. Each agent's own file says what it judges. `ux-journey-tester` does not read this file: it must not read the project, so the `ux-journey` skill applies these rules for it. This file says how to establish the target, keep the environment safe, collect evidence, stay independent, and report.
 
 `ui-qa` judges the rendered UI against the task's requirements and the design source. `ux-persona-reviewer` judges how easily one persona understands and completes its tasks. Both inspect what a user actually sees; neither reviews code.
 
@@ -87,7 +87,7 @@ Then include:
 
 1. **Target and environment,** with any provenance limits.
 2. **Coverage:** each required check marked PASS, FAIL, or NOT RUN, with a reason for NOT RUN.
-3. **Defects:** severity (🔴/🟠/🟡 as defined in `reference/config.md`), screen and state, reproduction steps, expected versus actual behavior, impact, and an absolute screenshot path. Add observed coordinates when useful. Keep design preferences separate from defects, and label a suspected code cause as an inference.
+3. **Defects:** severity (🔴/🟠/🟡 as defined in `reference/config.md`; usability obstacles use `reference/ux-heuristics.md`), screen and state, reproduction steps, expected versus actual behavior, impact, and an absolute screenshot path. Add observed coordinates when useful. Keep design preferences separate from defects, and label a suspected code cause as an inference.
 4. **Evidence:** absolute paths to screenshots, logs, traces, and test results, and which checks each supports. Keep raw screenshots intact. Private references the user supplied stay outside the repository.
 5. **Blockers,** workarounds used, and unverified assumptions. If none, say so briefly.
 

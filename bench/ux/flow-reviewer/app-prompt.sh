@@ -11,7 +11,7 @@ udid=$3
 label=$4
 
 here=$(cd "$(dirname "$0")" && pwd)
-plugin_root=$(cd "$here/../../plugins/groundwork" && pwd)
+plugin_root=$(cd "$here/../../../plugins/groundwork" && pwd)
 worktrees=${BENCH_WORKTREES:-$HOME/.cache/groundwork-bench/ux-flow}
 repo=${BENCH_REPO:-$worktrees/fixtures-repo}
 mkdir -p "$(dirname "$repo")"
