@@ -1,5 +1,6 @@
 ---
 groundwork: 1
+plugin_version: 0.2.0
 language:
   conversation: ko
   artifacts: en
