@@ -9,7 +9,7 @@
       "summary": "The only sign-up link is a small footer link; the hero button goes to a 'Book a demo' form that ends in 'our sales team will reach out'. The sign-in page has no sign-up link.",
       "severity": "🟡",
       "heuristic": "Discoverability",
-      "note": "Was 🟠. Changed after run r1: the footer link stays visible, and reference/ux-heuristics.md rates a hesitation on a visible path as 🟡. All three variants rated it 🟡."
+      "note": "Was 🟠. Changed after run r1: the footer link stays visible, and reference/ux-heuristics.md rates a hesitation on a visible path as 🟡. All three variants rated it 🟡. In r2, typical-profile sessions gave up here (🟠); the careful session rated it 🟡. The key stays 🟡 for a careful reader; the profile mix shows how many users it stops."
     },
     {
       "id": "D2",
@@ -19,7 +19,7 @@
       "summary": "The password rule (10+ characters with a number) is never shown. A weak password returns 'Something went wrong. Please try again.' and clears every field.",
       "severity": "🟠",
       "heuristic": "Recovery",
-      "note": "No session in r1 reached it: every participant chose a password that met the hidden rule."
+      "note": "No session in r1 reached it. In r2, a typical-profile session with the habit \"biscuit7\" reached it and rated it 🟠."
     },
     {
       "id": "D3",

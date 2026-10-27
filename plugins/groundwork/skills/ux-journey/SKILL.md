@@ -37,7 +37,7 @@ Record the add-on in the `## Add-ons` section as `catalog/addons.md` describes, 
 
 ## 3. Select sessions
 
-Named journeys select those journeys; without names, select every journey. Resolve `--mode` or the configured overall mode. In eco and normal, run each selected journey on its first listed device. In sport, or with `--full`, run every listed device. A release gate always uses `--full`. A source journey also runs on every device its selected continuing journeys need, so each continuing session has a checkpoint from its own device kind.
+Named journeys select those journeys; without names, select every journey. Resolve `--mode` or the configured overall mode. In eco and normal, run each selected journey on its first listed device. In sport, or with `--full`, run every listed device. Each device runs the journey's profile mix from Participant profiles in `skills/ux-journey/references/journey-test.md`, and the moderator assigns each session its habits and slips there. A release gate always uses `--full`. A source journey also runs on every device its selected continuing journeys need, so each continuing session has a checkpoint from its own device kind.
 
 Check each selected journey before launching, and report each problem with the journey, what is wrong, and how to fix it:
 
@@ -71,6 +71,7 @@ Give each participant only:
 - `Plugin root: <path>`.
 - The persona's name, as background. Leave out its goal and `## Persona:` tasks: they name other journeys' steps, and a participant given them goes on to do those too.
 - The journey's Scenario, Start, and Test access lines, with this session's synthetic identity and its own inbox view filled in. A continuing session gets the identity from its checkpoint.
+- Its profile row, and its habits and slips written as habits in the participant's words.
 - Its device or viewport, the URLs or app to open, and its artifact directory.
 
 Never give a participant the Precondition, Milestones, Success, Code map, the `## Persona:` section, other journeys, the diff, or another session's results. They tell it the path, which would turn the session into a walkthrough.

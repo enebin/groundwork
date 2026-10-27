@@ -81,6 +81,7 @@ mode: normal
   3. Confirms the email address
   4. Signs in and creates and names an organization
 - Success: db.json holds an organization whose owner is the session's address.
+- Slips: a weak password; a mistyped email address; signing in before confirming the email
 - Code map: server.js landing → signupForm, /signup → /verify → signinForm, /signin → orgForm, /onboarding/org → dashboard
 
 ## Journey: First project
@@ -104,6 +105,20 @@ mode: normal
   3. Knows whether the invitation went out
 - Success: db.json has an unaccepted invitation for Sam's address in the owner's organization.
 - Code map: server.js dashboard → members → inviteForm, /app/invite
+
+## Journey: Join from invitation
+- Persona: Invited teammate
+- Continues from: New workspace
+- Start: http://<host>:<port>/dev/inbox?to=<address> — signed out, new browser context
+- Precondition: the owner has invited this session's address (setup: sign in as the owner and send the invite)
+- Scenario: Alex, who runs your design studio, said she invited you to the team's Taskfold. Get yourself into the team's space.
+- Test access: Your address is mate-<run>@example.test. Your inbox is the Start page.
+- Milestones:
+  1. Opens the invitation
+  2. Joins with a name and password
+  3. Arrives in the team's space
+- Success: a user with this address belongs to the owner's organization, and the invitation is accepted.
+- Code map: server.js /invite/accept → dashboard
 
 ## Notes
 

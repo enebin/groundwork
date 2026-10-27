@@ -41,6 +41,7 @@ Write values that differ per session as placeholders the moderator fills in: `<h
 - **Success** is an observable end state the moderator can confirm afterwards, on screen or in the test data.
 - **Code map** lists the screens behind the journey, for the moderator's root-cause notes. The participant never sees it.
 - **Continues from** is optional. It names another journey whose end state this journey starts from. See Shared beginnings below.
+- **Slips** is optional: realistic mistakes this journey's screens should survive, such as a weak password, a mistyped email, or signing in before confirming the email. See Participant profiles below.
 
 ## Shared beginnings
 
@@ -70,13 +71,31 @@ Use a checkpoint only when the environment can save and restore that state. Othe
 
 Discovery proposes this split where candidate journeys share their first screens, and the user confirms it with the rest of the journeys.
 
+## Participant profiles
+
+A capable AI reads every word, picks strong passwords, and never mistypes, so it walks past problems that stop many real users. Usability tests are run with typical users, a little below the middle of the range, not with experts. Each session therefore gets a profile that sets how the participant behaves, and the moderator assigns its habits and slips.
+
+| Profile | Reads | Patience | Familiarity | Decides |
+|---|---|---|---|---|
+| `typical` (default) | Headlines, buttons, and field labels; skips helper text, small print, and footers unless stuck | Gives up after two failed tries at the same goal | Has used a few web apps; does not open unlabeled icons or settings to look for things | Clicks the first plausible option |
+| `careful` | Everything on the screen | Three tries | Comfortable with web apps; explores menus | Compares options before choosing |
+| `hurried` | Only buttons and headings | One retry | As `typical` | Takes the shortest-looking path and fills forms quickly |
+
+**Mix per journey.** In eco and normal, each journey runs one `typical` session. In sport or with `--full`, each journey runs three sessions per device: two `typical` and one `careful`. A journey may set its own mix with a `Profiles:` line, for example `typical ×2, hurried`. An obstacle that only `typical` or `hurried` sessions hit is still an obstacle; an obstacle that even `careful` hits is likely to stop most users.
+
+**Habits and slips.** The moderator gives each `typical` and `hurried` session one or two items from the journey's Slips line, or from the error paths discovery found, spread so that different sessions get different ones and every slip runs at least once. Write each as a habit in the participant's words, not as an order to fail: "You use the same short password everywhere: biscuit7", "You type quickly and often swap two letters in your email", "You open the sign-in page before checking your email". `careful` sessions get none. Record each session's profile, habits, and slips in the report, so an obstacle can be traced to the slip that led into it.
+
+**False alarms.** A profile that is too clumsy reports problems that a typical user would not have. When the product has screens known to be clear, or when a `careful` session moved through a screen without hesitation, treat a `typical` or `hurried` obstacle there with suspicion: keep it only when its screenshots show what misled the participant.
+
+A slip can also make a participant blame the wrong thing. After a mistyped email, "Email or password is incorrect" is the truth, not an unclear message. For each obstacle that follows a slip, check what actually happened in the session's data before rating the screen: keep the obstacle when the product gave no way to notice or undo the slip, and drop it when the message was accurate.
+
 ## First-run discovery
 
 When `GROUNDWORK.md` has no `## Journey:` section, or the user asks to redefine journeys, the moderator explores the project and proposes journeys before anything runs. Nothing is written until the user approves.
 
 1. **Read what the product promises.** `project.summary`, the `user` personas and their `## Persona:` sections, `## UI QA notes`, the README, and product docs. With no `user` persona, or when an existing journey names a persona that is not a `user` persona in `review.personas`, draft the missing personas from the product, for the user to approve in step 5.
 2. **Map the screens.** Find every entry point (the landing page, root route, first screen at launch, and links that arrive by email such as invitations and password resets) and the routes or screens a user passes through: marketing pages, sign-up and sign-in by each method, verification, password reset, onboarding, organization or workspace creation, plan or billing selection, invitations, and the first core action. Use the router configuration, page directories, navigation graphs, and end-to-end tests. Note each screen's file.
-3. **Find what a session needs.** How to launch the app and reach its start URL; test accounts and seed scripts; how verification email or SMS codes reach a test inbox (a local mail catcher, a test-mode flag, logged codes); third-party sign-in or payment sandboxes; how to reset the data; and how to save and restore it, for checkpoints.
+3. **Find what a session needs, and what can go wrong.** List the error paths a user could fall into, such as hidden input rules, emails that must be opened in order, or forms that clear on error, as candidate Slips. Then: how to launch the app and reach its start URL; test accounts and seed scripts; how verification email or SMS codes reach a test inbox (a local mail catcher, a test-mode flag, logged codes); third-party sign-in or payment sandboxes; how to reset the data; and how to save and restore it, for checkpoints.
 4. **Draft.** Show the user a flow map, from each entry point to first value, with the screen files on each step and where the flows share screens. Where candidate journeys share a beginning, propose splitting it into its own journey with the branches as `Continues from` journeys, and say how many sessions it saves. List every candidate journey found, one line each: name, persona, entry point, end state, and what it needs to run. Do not cap the list. Mark the ones you recommend keeping, the first-run journey first and then the flows the product depends on most, and say why the others can wait. Then write the recommended ones in the format above. Mark every line that is inferred rather than found in the repository with `[inferred]`. Show the launch steps found in step 3 that `## UI QA notes` does not already hold, and any drafted personas. List what is missing as questions: a blocking gap, such as no way to receive a verification email in a test environment, becomes a question, never a guess.
 5. **Confirm.** Ask the user which candidates to keep, then to approve or edit each kept journey, the drafted personas, and the launch steps, using the client's question tool. Before the user approves a drafted persona, check Screen checks in `reference/config.md`: when a new `user` persona would make a UX check run that does not run now, such as the on-app check in a file without a `ux` mapping, say which check starts and when, so the user approves that too. Apply edits and show the result again until the user approves. A candidate the user does not keep is not written; discovery can propose it again later.
 6. **Record.** Write the approved journeys as `## Journey:` sections in the `GROUNDWORK.md` body. Add approved personas to `review.personas` with `kind: user`, and add approved launch, seed, inbox, reset, and checkpoint steps to `## UI QA notes`, so later runs, including release gates, do not depend on this conversation. Keep unrelated text intact.
@@ -106,7 +125,7 @@ Lead with `UX Journey: <status>`:
 Then:
 
 1. **Summary,** when more than one journey ran: one line per journey with its status, sessions run, and the milestone where most sessions struggled. Obstacles on a screen that several journeys share are listed once, with every journey that hit them.
-2. **Sessions.** Journey, device, environment, build provenance, the synthetic identity used, and for a continuing session the checkpoint it started from.
+2. **Sessions.** Journey, device, profile with its habits and slips, environment, build provenance, the synthetic identity used, and for a continuing session the checkpoint it started from.
 3. **Journey map.** One row per milestone per session: result, actions taken, backtracks, and the participant's ease rating where it applies.
 4. **Obstacles,** most severe first: the milestone, the screen and state, what the participant expected and what happened, the participant's own words from the log, severity from `reference/ux-heuristics.md`, absolute screenshot paths, and how many sessions hit it. Add a suspected cause from the Code map only as a labeled inference.
 5. **What worked.** Moments the participant moved through without hesitation, so a fix does not remove them.

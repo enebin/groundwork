@@ -51,6 +51,29 @@ The answer key was wrong once: D1 (sign-up only in the footer) was keyed 🟠, b
 
 Caveats: one app, one run per session, desktop only, hand-judged. The branch sessions all started from one scripted checkpoint (`session.sh ... workspace`), not from each variant's own sign-up session, so every variant met the same starting state.
 
+## Results (run r2): participant profiles
+
+r1's participants read every word and chose strong passwords, so they walked past problems that stop many people. r2 adds participant profiles: `typical` (the default, a little below the middle: skims, gives up after two tries, does not open unlabeled icons), `careful`, and `hurried`, plus habits and slips the moderator assigns, such as "you use the short password biscuit7". Six sessions of variant A, three at a time; one session walked the clean invitation-acceptance screen to catch false alarms.
+
+| | r1, variant A | r2, profiles |
+|---|---|---|
+| D2 (weak password rejected with no reason) reached | 0 of 1 sign-up sessions | 1 of 1 sessions given that habit |
+| Sessions that gave up somewhere | 1 of 3 | 4 of 6 |
+| Severity of D1 (sign-up only in the footer) | 🟡 | 🟠 in both `typical` sign-ups (they gave up), 🟡 for `careful` |
+| Severity of D6 (New project only in "⋯") | 🟡 | 🟠 (`typical` gave up) |
+| False alarms | 0 | 1 |
+| Reads of the app's code | 0 | 0 |
+| Mean time per session | about 32 min (9 at once) | 96 s (3 at once) |
+| Mean cost per session | $1.98 | $1.35 |
+
+- **Profiles made the participants behave like typical users.** The weak-password habit reached D2, which no r1 session did. `typical` participants gave up where a careful reader only hesitated, so the same defect now shows how many users it stops: the careful session rated the footer-only sign-up 🟡, both typical sessions gave up there.
+- **Slips found a real gap the answer key missed.** A participant who mistyped their email had no way to correct it or resend the confirmation.
+- **The same slip caused the only false alarm.** That participant blamed "Email or password is incorrect" for not mentioning confirmation, but the account did not exist because of the typo, so the message was accurate. The skill now tells the moderator to check what actually happened before rating an obstacle that follows a slip.
+- **The clean screen stayed clean.** On invitation acceptance, the typical participant with the weak-password habit was rejected once, recovered from the stated rule, and reported only accurate 🟡 points.
+- **Running three at a time was about 20 times faster** than nine at once, and cheaper, because sessions no longer waited on one browser window.
+
+Caveats: six sessions, one run each, hand-judged; one session per slip.
+
 ## Running it
 
 Requirements: Claude Code with its built-in browser, Node 18 or later, and `curl`.
@@ -69,4 +92,4 @@ Requirements: Claude Code with its built-in browser, Node 18 or later, and `curl
 | `answer-key.json` | Seeded defects, expected severities, clean areas, and discovery expectations |
 | `agents/` | Variant A and B agent snapshots used in r1 |
 | `session.sh` | Starts one isolated server per session, optionally from the workspace checkpoint |
-| `runs/r1-results.json` | Per-session results, cost, and time |
+| `runs/r1-results.json`, `runs/r2-results.json` | Per-session results, cost, and time |

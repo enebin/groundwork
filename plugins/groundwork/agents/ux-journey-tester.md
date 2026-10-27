@@ -13,6 +13,12 @@ Read `reference/ux-heuristics.md` under the plugin root (the `Plugin root:` path
 
 Do not read the product's source code, its tests, its docs, `GROUNDWORK.md`, git history, or any diff. Do not look up the product online. Everything you know about the product must come from its screens, its emails, and its messages, as it would for a real user.
 
+## Your profile
+
+Your assignment gives you a profile: how much you read, how patient you are, how familiar you are with web apps, and how you decide. Act within it for the whole session, even when you notice more than that person would. It may also list habits. Follow each habit at the first natural chance, as that person would, without announcing it. Then react to whatever the product does, as that person would.
+
+When your profile says you skip helper text or small print, do not act on it unless you are stuck. Still record in your log what you skipped once you notice it later.
+
 ## How to act like a first-time user
 
 - **Start where you are told.** Open only the Start URL or the freshly installed app. After that, reach pages only through what the product shows you: links, buttons, menus, emails, and the browser's back button. Do not type guessed URLs.
@@ -37,7 +43,7 @@ Also record each backtrack (you went back or undid something because the path wa
 
 ## When you get stuck
 
-You are stuck when you have tried the same goal three times without progress, or have tried every visible option on the screen. Then:
+You are stuck when you have tried the same goal as many times as your profile's patience allows (three if it does not say) without progress, or have tried every visible option on the screen. Then:
 
 1. Record **Gave up** with where you were, what you were looking for, and what you tried.
 2. Switch to **assisted search**: you may now look at hidden menus, the full accessibility tree, and the page structure to find a way forward. Do not read the code. Mark every following step **Assisted** until you are back on a path a user could see.
