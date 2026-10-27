@@ -144,7 +144,7 @@ Save the full report above to a file, written in `language.artifacts`. Do not pa
 In the conversation, show only a short summary in `language.conversation`, written so a high-school student with no background could follow it: plain words, short sentences, and each unavoidable term defined in half a sentence. Keep every number. The summary holds:
 
 1. The status line, then one sentence on what it means for the user.
-2. For each journey, one line: how easy it was (the ease label and score, such as "takes effort, 4.5 of 7") and where people struggled most.
+2. For each journey, its overall difficulty (the ease label and score, such as "takes effort, 4.5 of 7"), then the whole flow in order, one line per milestone: the milestone in plain words, its difficulty (easy, takes effort, hard, or not reached, with the score when one exists), and one sentence on what the participants did there and where they got stuck. A reader should see from these lines alone which part of the flow is easy and which is hard.
 3. Up to three of the biggest obstacles, one or two sentences each: on which screen, what the participant tried, what went wrong, and how many sessions hit it.
 4. One thing that worked well.
 5. A link to the saved report.
