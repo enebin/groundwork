@@ -125,10 +125,28 @@ Lead with `UX Journey: <status>`:
 
 Then:
 
-1. **Summary,** when more than one journey ran: one line per journey with its status, sessions run, and the milestone where most sessions struggled. Obstacles on a screen that several journeys share are listed once, with every journey that hit them.
-2. **Sessions.** Journey, device, profile with its habits and slips, environment, build provenance, the synthetic identity used, and for a continuing session the checkpoint it started from.
-3. **Journey map.** One row per milestone per session: result, actions taken, backtracks, and the participant's ease rating where it applies.
-4. **Obstacles,** most severe first: the milestone, the screen and state, what the participant expected and what happened, the participant's own words from the log, severity from `reference/ux-heuristics.md`, absolute screenshot paths, and how many sessions hit it. Add a suspected cause from the Code map only as a labeled inference.
-5. **What worked.** Moments the participant moved through without hesitation, so a fix does not remove them.
-6. **Preferences and unverified assumptions,** kept apart from obstacles.
-7. **Evidence limits.** An AI participant is not a real user: it reads every word, never gets bored, and may know common product patterns better or worse than the target persona. It also rarely mistypes or picks a weak password, so error and recovery paths often go untested; name the ones no session reached, and check them with `ux-review` instead.
+1. **Summary,** when more than one journey ran: one line per journey with its status, ease, sessions run, and the milestone where most sessions struggled. Obstacles on a screen that several journeys share are listed once, with every journey that hit them.
+2. **Flow ease.** How easy each journey was to get through, apart from whether it passed. A journey can PASS and still be hard. For each journey:
+   - **Ease:** the median of the sessions' overall ratings (1 very difficult to 7 very easy), with the range and the number of sessions. Label 6–7 easy, 4–5 takes effort, 1–3 hard.
+   - **Per milestone:** the median rating of the parts the participants named for that milestone, and the friction behind it, summed over sessions: steps taken, hesitations, backtracks, and error messages seen. Name the hardest milestone.
+   - **Where the rating and the log disagree,** such as a 6 with several hesitations and a backtrack, report both and trust the log. An AI participant tends to rate generously.
+3. **Sessions.** Journey, device, profile with its habits and slips, environment, build provenance, the synthetic identity used, and for a continuing session the checkpoint it started from.
+4. **Journey map.** One row per milestone per session: result, steps taken, hesitations, backtracks, and the participant's ease rating where it applies.
+5. **Obstacles,** most severe first: the milestone, the screen and state, what the participant expected and what happened, the participant's own words from the log, severity from `reference/ux-heuristics.md`, absolute screenshot paths, and how many sessions hit it. Add a suspected cause from the Code map only as a labeled inference.
+6. **What worked.** Moments the participant moved through without hesitation, so a fix does not remove them.
+7. **Preferences and unverified assumptions,** kept apart from obstacles.
+8. **Evidence limits.** An AI participant is not a real user: it reads every word, never gets bored, and may know common product patterns better or worse than the target persona. It also rarely mistypes or picks a weak password, so error and recovery paths often go untested; name the ones no session reached, and check them with `ux-review` instead.
+
+### Where the report goes
+
+Save the full report above to a file, written in `language.artifacts`. Do not paste it into the conversation. Use `.groundwork/ux-journey/journey-YYYYMMDD-HHMMSS.md` at the repository root, and create a self-ignoring `.gitignore` containing `*` in that directory if absent. Never overwrite an earlier report.
+
+In the conversation, show only a short summary in `language.conversation`, written so a high-school student with no background could follow it: plain words, short sentences, and each unavoidable term defined in half a sentence. Keep every number. The summary holds:
+
+1. The status line, then one sentence on what it means for the user.
+2. For each journey, one line: how easy it was (the ease label and score, such as "takes effort, 4.5 of 7") and where people struggled most.
+3. Up to three of the biggest obstacles, one or two sentences each: on which screen, what the participant tried, what went wrong, and how many sessions hit it.
+4. One thing that worked well.
+5. A link to the saved report.
+
+Leave out session details, milestone tables, and screenshot paths; they are in the file.
