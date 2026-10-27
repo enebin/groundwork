@@ -14,14 +14,15 @@ This skill writes nothing until the user approves the final preview. Plan mode: 
 
 - **Installed:** `version` in `.claude-plugin/plugin.json` under the plugin root.
 - **Set up with:** `plugin_version` in `GROUNDWORK.md`. When it is absent, the file predates this key. Show the published versions and ask which one the repository was set up with: "Not sure — check every release (Recommended)", plus the versions. Checking every release is safe, because step 3 skips what is already in place.
-- **Latest published:** from the releases of `enebin/groundwork`. Read `https://api.github.com/repos/enebin/groundwork/releases` with `curl`; if that fails, use `gh release list -R enebin/groundwork`. Release tags are `groundwork--v<version>`. Skip drafts and releases whose version is not in the range.
+- **Latest published:** from the releases of `enebin/groundwork`. Read `https://api.github.com/repos/enebin/groundwork/releases?per_page=100` with `curl`, following the `Link` header to later pages; if that fails, use `gh release list -R enebin/groundwork --limit 1000`. Release tags are `groundwork--v<version>`. Skip drafts and releases whose version is not in the range.
 
 Compare versions numerically. Then:
 
-- Latest published is newer than installed: say so, and tell the user to update the plugin first (in Claude Code, `claude plugin update groundwork@groundwork` and a restart). Release notes describe features the installed plugin does not have yet, so offer to continue only up to the installed version.
+- Latest published is newer than installed: say so, and tell the user to update the plugin first: in Claude Code, `claude plugin update groundwork@groundwork` and a restart; in Codex, update it the way it was installed and start a new session. Release notes describe features the installed plugin does not have yet, so offer to continue only up to the installed version.
+- Installed is newer than latest published, such as a build from `develop`: say the installed version has no release notes yet. Continue only up to the latest published version, and treat that version as installed in every later step.
 - Set up with equals installed: say the repository is up to date and stop.
 - Set up with is newer than installed, or `groundwork` (the schema version) is newer than `reference/config.md` knows: stop and ask the user to update the plugin.
-- The releases cannot be read: say why, and stop. Do not reconstruct the changes from memory or from the plugin's files.
+- The releases cannot be read: say why, and stop. Do not reconstruct the changes from memory or from the plugin's files. Name the ways forward: retry later, retry with `gh` installed and logged in, or run `/groundwork:onboarding`, which migrates the whole file without release notes.
 
 ## 2. Read the release notes
 
@@ -44,7 +45,7 @@ Then compare managed rule blocks. For each `<!-- groundwork:begin <id> -->` bloc
 
 ## 4. Choose
 
-Show one table, grouped as above, with the version and one line per item in plain words. Then ask in one interaction which **Can attach** items to add (multi-select, none preselected) and which **Rule text changed** blocks to refresh ("Refresh (Recommended) — keeps the rules in line with what the skills now expect"). Show a block's diff only when the user asks.
+Show one table, grouped as above, with the version and one line per item in plain words. Then ask in one interaction any question a **Needs migration** item requires, using the question its onboarding step asks (for example the UX method when old settings ran UX both from the code and on the app); which **Can attach** items to add (multi-select, none preselected) and which **Rule text changed** blocks to refresh ("Refresh (Recommended) — keeps the rules in line with what the skills now expect"). Show a block's diff only when the user asks.
 
 For each item the user picks, collect only what it needs:
 
@@ -53,9 +54,9 @@ For each item the user picks, collect only what it needs:
 
 ## 5. Final preview
 
-Mandatory. Show the migrations, the chosen items, the refreshed blocks, and each file to change with one line on what changes. Show `plugin_version` moving to the installed version. Show full file contents only when the user asks.
+Mandatory. Show the migrations with their resulting values, the chosen items, the refreshed blocks, and each file to change with one line on what changes. Show `plugin_version` moving to the installed version. Show full file contents only when the user asks.
 
-Write only after approval. Keep every edit inside the keys and managed blocks it concerns; never edit text outside `<!-- groundwork:begin/end -->` markers. Set `plugin_version` to the installed version last, so a failed write leaves the old version and a re-run picks up the same items.
+Write only after approval. In `GROUNDWORK.md`, change only the frontmatter keys an item concerns and the managed `addons` block. In `docs.rules` and `docs.architecture`, never edit text outside `<!-- groundwork:begin/end -->` markers. Set `plugin_version` to the installed version last, so a failed write leaves the old version and a re-run picks up the same items.
 
 ## 6. Finish
 
