@@ -63,7 +63,7 @@ Journeys often start the same way. "Invite a teammate" and "Create a first proje
 
 The checkpoint is the source session's end state, taken after the session ends. Participants never know the milestones, so a session cannot be stopped at one; that is why the shared beginning must be a journey of its own. The checkpoint condition: the moderator takes a checkpoint only from a session whose Success state was confirmed with every milestone Completed or Completed with difficulty. A source session that met it still reports its own 🟠 obstacles and can still FAIL; its continuing journeys run anyway, so one obstacle in a shared beginning does not hide the branches. The checkpoint holds what that user would carry forward: a copy of the session's data (a database dump or snapshot), the signed-in browser storage or the app's data container, the synthetic identity, and the screen it ended on. Each continuing session restores its own copy, so sessions stay independent even though they share a beginning. A checkpoint belongs to one build; any edit to a screen the source journey passes through discards it.
 
-Use a checkpoint only when the environment can save and restore that state. Otherwise write the state as a Precondition with a seed command, or keep the beginning inside the journey. When no source session on a device kind met the checkpoint condition, the journeys that continue from it on that device kind are Not reached, and the report points to the source journey's obstacle.
+Use a checkpoint only when the environment can save and restore that state. Otherwise write the state as a Precondition with a seed command, or keep the beginning inside the journey. When no source session on a device kind met the checkpoint condition, the journeys that continue from it on that device kind do not run. They are Not reached when the source stopped because of the product (a Failed or Assisted milestone, or no Success state), and the report points to the source journey's obstacle. They are Blocked when the source was Blocked or its checkpoint could not be saved or restored.
 
 Discovery proposes this split where candidate journeys share their first screens, and the user confirms it with the rest of the journeys.
 
@@ -71,14 +71,14 @@ Discovery proposes this split where candidate journeys share their first screens
 
 When `GROUNDWORK.md` has no `## Journey:` section, or the user asks to redefine journeys, the moderator explores the project and proposes journeys before anything runs. Nothing is written until the user approves.
 
-1. **Read what the product promises.** `project.summary`, the `user` personas and their `## Persona:` sections, `## UI QA notes`, the README, and product docs. With no `user` persona, draft one or two from the product, for the user to approve in step 5.
+1. **Read what the product promises.** `project.summary`, the `user` personas and their `## Persona:` sections, `## UI QA notes`, the README, and product docs. With no `user` persona, or when an existing journey names a persona that is not a `user` persona in `review.personas`, draft the missing personas from the product, for the user to approve in step 5.
 2. **Map the screens.** Find every entry point (the landing page, root route, first screen at launch, and links that arrive by email such as invitations and password resets) and the routes or screens a user passes through: marketing pages, sign-up and sign-in by each method, verification, password reset, onboarding, organization or workspace creation, plan or billing selection, invitations, and the first core action. Use the router configuration, page directories, navigation graphs, and end-to-end tests. Note each screen's file.
 3. **Find what a session needs.** How to launch the app and reach its start URL; test accounts and seed scripts; how verification email or SMS codes reach a test inbox (a local mail catcher, a test-mode flag, logged codes); third-party sign-in or payment sandboxes; how to reset the data; and how to save and restore it, for checkpoints.
 4. **Draft.** Show the user a flow map, from each entry point to first value, with the screen files on each step and where the flows share screens. Where candidate journeys share a beginning, propose splitting it into its own journey with the branches as `Continues from` journeys, and say how many sessions it saves. List every candidate journey found, one line each: name, persona, entry point, end state, and what it needs to run. Do not cap the list. Mark the ones you recommend keeping, the first-run journey first and then the flows the product depends on most, and say why the others can wait. Then write the recommended ones in the format above. Mark every line that is inferred rather than found in the repository. Show the launch steps found in step 3 that `## UI QA notes` does not already hold, and any drafted personas. List what is missing as questions: a blocking gap, such as no way to receive a verification email in a test environment, becomes a question, never a guess.
-5. **Confirm.** Ask the user which candidates to keep, then to approve or edit each kept journey, the drafted personas, and the launch steps, using the client's question tool. Apply edits and show the result again until the user approves. A candidate the user does not keep is not written; discovery can propose it again later.
+5. **Confirm.** Ask the user which candidates to keep, then to approve or edit each kept journey, the drafted personas, and the launch steps, using the client's question tool. Before the user approves a drafted persona, check Screen checks in `reference/config.md`: when a new `user` persona would make a UX check run that does not run now, such as the on-app check in a file without a `ux` mapping, say which check starts and when, so the user approves that too. Apply edits and show the result again until the user approves. A candidate the user does not keep is not written; discovery can propose it again later.
 6. **Record.** Write the approved journeys as `## Journey:` sections in the `GROUNDWORK.md` body. Add approved personas to `review.personas` with `kind: user`, and add approved launch, seed, inbox, reset, and checkpoint steps to `## UI QA notes`, so later runs, including release gates, do not depend on this conversation. Keep unrelated text intact.
 
-When existing journeys reference screens that no longer exist, report the drift and offer to rerun discovery instead of running a stale journey. Rerunning discovery keeps the existing journeys and proposes only flows not yet covered, unless the user asks to redefine them all.
+When existing journeys reference screens that no longer exist, report the drift and offer to rerun discovery instead of running a stale journey. Rerunning discovery keeps the existing journeys, offers an updated version of each journey whose screens no longer exist, and proposes flows not yet covered, unless the user asks to redefine them all.
 
 ## Results per milestone
 
@@ -88,15 +88,15 @@ The moderator maps each session's log to the milestones:
 - **Completed with difficulty:** reached, but with a 🟠 obstacle on the way.
 - **Failed:** the participant gave up, or reached a wrong end state believing it was right.
 - **Assisted:** reached only after the participant gave up and switched to assisted search (see the agent file). It does not count as completed.
-- **Not reached:** an earlier milestone stopped the session, or the journey it continues from left no checkpoint.
-- **Blocked:** the environment or the configuration, not the product, stopped the session: a crashed server, no test inbox, a missing seed, a persona or launch step that `GROUNDWORK.md` does not hold.
+- **Not reached:** an earlier milestone stopped the session, or the journey it continues from left no checkpoint because of the product.
+- **Blocked:** the environment or the configuration, not the product, stopped the session: a crashed server, no test inbox, a missing seed, a persona or launch step that `GROUNDWORK.md` does not hold, or a source journey that was itself Blocked.
 
 ## Report
 
 Lead with `UX Journey: <status>`:
 
 - **PASS:** every milestone of every session is Completed or Completed with difficulty, each session's Success state was confirmed, and no confirmed 🔴/🟠 obstacle remains.
-- **FAIL:** a milestone Failed or was Assisted, a Success state is missing, or a confirmed 🔴/🟠 obstacle remains.
+- **FAIL:** a milestone Failed, was Assisted, or was Not reached; a session that was not Blocked is missing its Success state; or a confirmed 🔴/🟠 obstacle remains.
 - **BLOCKED:** no product failure is established, but a session could not run or finish because of the environment or missing configuration. Name each missing item and the command or edit that supplies it.
 - **NOT APPLICABLE:** the selected journeys do not exist or the project has no screens, with the reason.
 
