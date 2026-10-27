@@ -40,7 +40,7 @@ awk 'BEGIN{n=0} /^---$/ && n<2 {n++; next} n>=2' "$agent_file" > "$system_prompt
 prompt=$(cat <<EOF
 Plugin root: $plugin_root
 
-Selected personas and tasks: every `user` persona in GROUNDWORK.md — the tasks of each that the change touches.
+Selected personas and tasks: every \`user\` persona in GROUNDWORK.md — the tasks of each that the change touches.
 
 Target: local (local changes against $base_branch)
 Pinned refs: base $base_sha, head $head_sha, clean working tree
