@@ -23,3 +23,13 @@
 - Keep compiler and type-checker warnings at zero. A new warning is a failure.
 - If any verification could not run (missing tool, no simulator), say which one and why in the work result. Report it as unverified. Never report it as passed.
 <!-- groundwork:end implementation -->
+
+## Releases
+
+`/groundwork:release` stops after opening the release PR. In this repository a release also includes the steps below. Do them in order, and follow the account routing rules above before every push and `gh` call.
+
+1. **Version bump.** On `release/<version>`, before opening the PR, commit `Bump version to <version>`. It changes `"version"` in `.claude-plugin/marketplace.json`, `plugins/groundwork/.claude-plugin/plugin.json`, and `plugins/groundwork/.codex-plugin/plugin.json`, and the version badge (alt text and URL) in `README.md` and `README.ko.md`. The release PR is titled `Release <version>`.
+2. **Merge.** Squash-merge the release PR into `main` with the subject `Release <version> (#<PR number>)`.
+3. **Tag and GitHub release.** Create the tag `groundwork--v<version>` on that merge commit and publish a GitHub release from it in one step: `gh release create groundwork--v<version> --target <merge commit> --title "groundwork <version> (beta)"`, with the release notes from the PR as the body. Mark it latest, not as a prerelease. Users' update notice (`plugins/groundwork/hooks/check-update.sh`) reads the version from `plugin.json` on `main`, so it fires as soon as step 2 lands.
+4. **Back-merge.** Merge `main` into `develop` with a merge commit titled `Merge release <version> into develop`, and push `develop`. The version line in `plugins/groundwork/.claude-plugin/plugin.json` usually conflicts; take the released version. After the merge, `git diff origin/main develop` must be empty.
+5. **Clean up.** Leave the `release/<version>` branch as is; earlier releases kept theirs.
