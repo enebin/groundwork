@@ -1,0 +1,234 @@
+{
+ "v2-r1/f1-quick-add-ring": {
+  "found": {
+   "K1": "🟠",
+   "K2": "🟡",
+   "K3": "🔴"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/f3-list-refactor": {
+  "found": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/h3-history-edit": {
+  "found": {
+   "H6": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/f2-clear-today": {
+  "found": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/f4-add-confirm": {
+  "found": {
+   "K8": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/c1-row-extract": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/c2-750-button": {
+  "found": {
+   "C2R": "handoff"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/h1-goal-setting": {
+  "found": {
+   "H1": "🟠",
+   "H2": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/h2-custom-amount": {
+  "found": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/h4-settings-cleanup": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r1/hc-big-refactor": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/f1-quick-add-ring": {
+  "found": {
+   "K1": "🔴",
+   "K2": "🟠",
+   "K3": "🔴"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/f3-list-refactor": {
+  "found": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/h3-history-edit": {
+  "found": {
+   "H6": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/f2-clear-today": {
+  "found": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/f4-add-confirm": {
+  "found": {
+   "K8": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/c1-row-extract": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/c2-750-button": {
+  "found": {
+   "C2R": "handoff"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/h1-goal-setting": {
+  "found": {
+   "H1": "🟠",
+   "H2": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/h2-custom-amount": {
+  "found": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/h4-settings-cleanup": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r2/hc-big-refactor": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/f1-quick-add-ring": {
+  "found": {
+   "K1": "🟠",
+   "K2": "🟠",
+   "K3": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/f3-list-refactor": {
+  "found": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/h3-history-edit": {
+  "found": {
+   "H6": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/f2-clear-today": {
+  "found": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/f4-add-confirm": {
+  "found": {
+   "K8": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/c1-row-extract": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/c2-750-button": {
+  "found": {
+   "C2R": "handoff"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/h1-goal-setting": {
+  "found": {
+   "H1": "🟠",
+   "H2": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/h2-custom-amount": {
+  "found": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/h4-settings-cleanup": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "v2-r3/hc-big-refactor": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "_notes": "f2 partial-failure bug no longer reported as a finding (r1 filed it under Pre-existing, r2 noted it as a bug for code-quality). Handoffs still sometimes cover untouched UI (f3 quick-add row in 3/3, h4 footer wrap is touched UI). Language drift: v2-r1 f3 report in Japanese, v2-r1 h3 in Korean; no drift in 66 earlier runs."
+}

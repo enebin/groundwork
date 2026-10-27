@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.1.2" src="https://img.shields.io/badge/version-0.1.2-6E6C66">
+  <img alt="Version 0.2.0" src="https://img.shields.io/badge/version-0.2.0-6E6C66">
 </p>
 
 <p align="center"><a href="README.md">English</a> · <b>한국어</b></p>
@@ -84,11 +84,29 @@ Claude Code에서는 하루 최대 한 번 GitHub의 새 버전을 확인하고 
 
 각 번들의 장단점과 실제로 문서에 기록되는 상세 규칙은 [`plugins/groundwork/catalog/`](plugins/groundwork/catalog/)에서 볼 수 있습니다.
 
+## 부가기능
+
+온보딩을 마치면 8단계 밖에 **이런 기능도 추가해보세요** 목록이 나옵니다. 원하는 기능을 고르면 설정을 이어갑니다. 여기서 마치고 나중에 `/groundwork:addons`로 다시 열어도 됩니다. 다섯 스킬 모두 Groundwork에 포함되며 Claude Code와 Codex가 같은 파일을 씁니다. 플러그인을 설치하거나 온보딩 추천안을 모두 받아들여도 부가기능이 자동으로 켜지지는 않습니다.
+
+| 스킬 | 하는 일 | 언제 유용한가 |
+|---|---|---|
+| `slack-report` | 작업 내용과 테스트 결과를 Slack에 모읍니다 | 여러 저장소의 진행 상황을 한곳에서 확인할 때 |
+| `handoff` | 끝낸 일·남은 일·다음 시작점을 저장합니다 | 새로운 세션에서 이전 작업을 이어갈 때 |
+| `weekly-summary` | 한 주의 커밋·PR·이슈를 요약합니다 | 주간 보고나 회고를 준비할 때 |
+| `release-notes` | 버전 사이의 변경을 사용자용 릴리스 노트로 정리합니다 | 새 기능·수정 사항·업데이트 시 주의점을 알릴 때 |
+| `release-prep` | 정해진 주기로 릴리스를 준비하고 검증한 뒤 최종 승인을 받습니다 | 배포 전 확인 작업을 매번 직접 챙기기 어려울 때 |
+
+Slack 설정에서는 보고 대상과 수동·자동 보고 여부를 정합니다. 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 자세한 내용은 [연결 안내](plugins/groundwork/skills/slack-report/references/setup.md)를 참고하세요. 자동 보고를 선택하면 두 클라이언트에 저장소용 턴 종료 훅을 설치합니다. 인수인계 노트와 주간 요약은 로컬 파일을 만들며 메시지 전송이나 정기 실행은 따로 요청해야 합니다.
+
+정기 릴리스 준비는 처음에 주기·시간대·배포 대상·자동 정리 범위를 정합니다. 이후에는 diff와 저장소의 버전 규칙으로 다음 버전을 추천하고, 릴리스 노트 작성과 필수 검증까지 마친 뒤 배포 승인 여부만 묻습니다. 사용자가 검증된 배포 대상을 승인해야 실제 배포를 진행합니다. 예약 기능은 현재 클라이언트가 지원하는 도구를 쓰고, 사용할 수 없으면 **예약 안 됨**과 남은 설정을 알려줍니다. 스킬 설치만으로 예약이나 배포가 실행되지는 않습니다.
+
 ## 스킬
 
 | 스킬 | 설명 |
 |---|---|
 | `onboarding` | `GROUNDWORK.md` 초기 설정 및 변경 |
+| `addons` | 부가기능 목록을 보고 원하는 기능의 설정이나 일회성 사용으로 이어가기 |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep` | Slack 보고·인수인계·주간 요약·릴리스 노트·정기 릴리스 준비; 위 부가기능 설명 참고 |
 | `plan` | 큰 작업을 상위 이슈 하나와 세부 단계 이슈들로 쪼개기 |
 | `step` | 단계 하나 실행: 구현 후 확인된 🔴/🟠 이슈가 남지 않을 때까지 검증 → 리뷰 → 수정 반복 |
 | `takeoff` | 끝난 단계를 rebase하고 push한 뒤 PR 열기 |
@@ -106,6 +124,19 @@ Claude Code에서는 하루 최대 한 번 GitHub의 새 버전을 확인하고 
 웹 프로젝트는 대개 브라우저 도구로 화면 요소를 바로 찍어 볼 수 있어서 빠릅니다. 반면 iOS 시뮬레이터나 Android 에뮬레이터는 빌드하고 설치해서 띄우는 시간과 UI 제어 도구의 한계 때문에 시간이 더 걸릴 수 있고 웹이라도 스크린샷 위주로 확인하면 느려질 수 있습니다. 실제 걸리는 시간과 토큰 소모량은 커버리지 범위, 페르소나 수, 사용 도구, 재시도 횟수에 따라 달라집니다.
 
 리뷰에서 나온 지적 사항은 `fixer` 에이전트가 넘겨받아 고칩니다. 깨끗한 컨텍스트에서 새로 시작해 확인된 문제만 고치고 관련 테스트를 다시 돌리기 때문에 원래 작업 중이던 메인 컨텍스트에는 짧은 수정 결과 요약만 남습니다.
+
+## 코드 기반 UX 리뷰 벤치마크
+
+`ux-flow-reviewer`가 코드만 읽고 사용성을 얼마나 잘 판단할까요? 작은 SwiftUI 앱에 결함을 심은 변경 11개로, 앱을 직접 띄우는 `ux-persona-reviewer`와 비교했습니다(Sonnet, 사람이 채점).
+
+| | 코드 기반 (`ux-flow-reviewer`) | 앱 기반 (`ux-persona-reviewer`) |
+|---|---|---|
+| 심어 둔 결함 발견 | 36/39 | 32/32 (화면에서 직접 확인 27) |
+| 오탐 | 0 | 4 |
+| 1회 평균 시간 | 21초 | 126초 |
+| 1회 평균 비용 | $0.17 | 측정 안 됨 |
+
+코드 기반은 약 6배 빠르고, 저장 실패처럼 앱에서 일으키기 어려운 상황도 찾습니다. 앱 기반은 코드로는 의심만 하던 레이아웃 문제를 확인하고, 코드 기반이 모든 실행에서 놓친 숫자 표기 회귀도 잡았습니다. 코드 기반은 매번 돌리고, 앱 기반은 코드 기반이 화면 확인으로 넘긴 항목만 돌리면 둘의 장점을 함께 얻을 수 있습니다. 프롬프트 버전별 비교, 결함별 결과, 다시 돌리는 방법은 [`bench/ux-flow-reviewer/`](bench/ux-flow-reviewer/README.md)에 있습니다.
 
 ## GROUNDWORK.md
 

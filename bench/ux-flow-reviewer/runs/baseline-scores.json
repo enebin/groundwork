@@ -1,0 +1,234 @@
+{
+ "baseline-r1/f1-quick-add-ring": {
+  "found": {
+   "K1": "🟠",
+   "K2": "🟡",
+   "K3": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/f2-clear-today": {
+  "found": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/f3-list-refactor": {
+  "found": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/f4-add-confirm": {
+  "found": {
+   "K8": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/c1-row-extract": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/c2-750-button": {
+  "found": {
+   "C2R": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 1
+ },
+ "baseline-r1/h1-goal-setting": {
+  "found": {
+   "H1": "🟠",
+   "H2": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/h2-custom-amount": {
+  "found": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/h3-history-edit": {
+  "found": {
+   "H6": "🟠"
+  },
+  "false_positive": 1,
+  "out_of_lane": 0
+ },
+ "baseline-r1/h4-settings-cleanup": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r1/hc-big-refactor": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/f1-quick-add-ring": {
+  "found": {
+   "K1": "🟠",
+   "K2": "🟠",
+   "K3": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 1
+ },
+ "baseline-r2/f2-clear-today": {
+  "found": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 1
+ },
+ "baseline-r2/f3-list-refactor": {
+  "found": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/f4-add-confirm": {
+  "found": {
+   "K8": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/c1-row-extract": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/c2-750-button": {
+  "found": {
+   "C2R": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 1
+ },
+ "baseline-r2/h1-goal-setting": {
+  "found": {
+   "H1": "🟠",
+   "H2": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/h2-custom-amount": {
+  "found": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/h3-history-edit": {
+  "found": {
+   "H6": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/h4-settings-cleanup": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r2/hc-big-refactor": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/f1-quick-add-ring": {
+  "found": {
+   "K1": "🟠",
+   "K2": "🟠",
+   "K3": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/f2-clear-today": {
+  "found": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 1
+ },
+ "baseline-r3/f3-list-refactor": {
+  "found": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/f4-add-confirm": {
+  "found": {
+   "K8": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/c1-row-extract": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/c2-750-button": {
+  "found": {
+   "C2R": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 1
+ },
+ "baseline-r3/h1-goal-setting": {
+  "found": {
+   "H1": "🟠",
+   "H2": "🟡"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/h2-custom-amount": {
+  "found": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/h3-history-edit": {
+  "found": {
+   "H6": "🟠"
+  },
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/h4-settings-cleanup": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "baseline-r3/hc-big-refactor": {
+  "found": {},
+  "false_positive": 0,
+  "out_of_lane": 0
+ },
+ "_notes": "out_of_lane: f1 r2 gesture conflict (code-quality); f2 r2/r3 stale list after failed clear (code-quality); c2 truncation reported as a finding instead of a rendered-check handoff. h3 r1 FP: reported the .onAppear->.task swap as stale totals introduced by the change."
+}

@@ -98,6 +98,7 @@ Optional. Skills read only the section that applies to them.
 - `## Release checks` — checks the `release` skill runs before cutting a release, beyond its built-in ones.
 - `## UI QA notes` — how to launch the app for QA, sample data, launch flags, screen-specific checks.
 - `## Notes` — anything else the user added during onboarding that applies to every skill.
+- `## Add-ons` — optional setup choices from `catalog/addons.md`, inside the managed `addons` block. Links to feature settings and actual scheduler state, never credentials. Missing means no recorded setup; all bundled add-on skills remain available on demand. This is separate from `verification.addons`.
 
 ## Value meanings
 

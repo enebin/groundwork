@@ -1,0 +1,436 @@
+[
+ {
+  "run": "app-r1/f1-quick-add-ring",
+  "persona": "Daily water logger",
+  "seconds": 97.4,
+  "tool_calls": 32,
+  "subagent_tokens": 113079,
+  "parallel": 1,
+  "observed": [
+   "K1",
+   "K2"
+  ],
+  "code_inferred": [
+   "K3"
+  ],
+  "severity": {
+   "K1": "🔴",
+   "K2": "🟠",
+   "K3": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Observed that the 250 ml long-press handler never fires; the context menu takes the press."
+ },
+ {
+  "run": "app-r1/h2-custom-amount",
+  "persona": "Daily water logger",
+  "seconds": 143.4,
+  "tool_calls": 40,
+  "subagent_tokens": 125628,
+  "parallel": 1,
+  "observed": [
+   "H4"
+  ],
+  "code_inferred": [
+   "H3"
+  ],
+  "severity": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Confirmed large-text breakage of the quick-add row (code method listed it as a handoff)."
+ },
+ {
+  "run": "app-r1/f2-clear-today",
+  "persona": "Daily water logger",
+  "seconds": 106.1,
+  "tool_calls": 25,
+  "subagent_tokens": 104336,
+  "parallel": 3,
+  "observed": [
+   "K4"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Observed that role: .destructive does not render red in the toolbar. Partial-failure stale list reported from code as a 🟡 (code-quality lane)."
+ },
+ {
+  "run": "app-r1/f3-list-refactor",
+  "persona": "Daily water logger",
+  "seconds": 155.7,
+  "tool_calls": 37,
+  "subagent_tokens": 113950,
+  "parallel": 3,
+  "observed": [
+   "K5",
+   "K6"
+  ],
+  "code_inferred": [
+   "K7"
+  ],
+  "severity": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Reproduced the load failure by corrupting the entries file in the simulator's app container, then restored it."
+ },
+ {
+  "run": "app-r1/f4-add-confirm",
+  "persona": "Daily water logger",
+  "seconds": 209.2,
+  "tool_calls": 63,
+  "subagent_tokens": 146037,
+  "parallel": 3,
+  "observed": [
+   "K8"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "K8": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Spent extra calls on rapid-tap timing that it attributed to automation, not the product. Possibly contaminated: the c1 reviewer sent one tap to this run's simulator without a UDID while f4 was running. Round 2 saw the same lost fast taps without any stray input, so the contamination probably did not cause them."
+ },
+ {
+  "run": "app-r1/c1-row-extract",
+  "persona": "Daily water logger",
+  "seconds": 102.1,
+  "tool_calls": 33,
+  "subagent_tokens": 111465,
+  "parallel": 3,
+  "observed": [],
+  "code_inferred": [],
+  "severity": {},
+  "false_positive": 0,
+  "notes": "PASS. Listed small quick-add buttons and the Goal-met layout shift as pre-existing. Sent one tap to another reviewer's simulator by omitting the UDID."
+ },
+ {
+  "run": "app-r1/h1-goal-setting-daily",
+  "persona": "Daily water logger",
+  "seconds": 128.2,
+  "tool_calls": 43,
+  "subagent_tokens": 132058,
+  "parallel": 3,
+  "observed": [
+   "H1",
+   "H2"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "H1": "🔴",
+   "H2": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Observed that onboarding's 3000 ml goal is discarded, that Goal met shows against a stale goal, and that it flips after relaunch. Could not write screenshots to the artifact directory (sandbox), kept them in the tool-result store."
+ },
+ {
+  "run": "app-r1/c2-750-button",
+  "persona": "Daily water logger",
+  "seconds": 95.3,
+  "tool_calls": 27,
+  "subagent_tokens": 109386,
+  "parallel": 3,
+  "observed": [
+   "C2R"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "C2R": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Confirmed letter-by-letter wrapping at the largest accessibility text size, and unequal wrapped buttons even at the default size."
+ },
+ {
+  "run": "app-r1/h1-goal-setting-weekly",
+  "persona": "Weekly reviewer",
+  "seconds": 155.4,
+  "tool_calls": 37,
+  "subagent_tokens": 133107,
+  "parallel": 3,
+  "observed": [
+   "H1"
+  ],
+  "code_inferred": [
+   "H2"
+  ],
+  "severity": {
+   "H1": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Seeded a past week by writing the app container's entries file, since the UI cannot create past days. H2 named only as not run (Continue disabled with no message, from code)."
+ },
+ {
+  "run": "app-r1/hc-big-refactor-daily",
+  "persona": "Daily water logger",
+  "seconds": 87.5,
+  "tool_calls": 27,
+  "subagent_tokens": 112978,
+  "parallel": 3,
+  "observed": [
+   "HC1"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "HC1": "🟡"
+  },
+  "false_positive": 0,
+  "notes": "Found the '2,000 of 2000 ml' formatting regression that every code-method run missed."
+ },
+ {
+  "run": "app-r1/h3-history-edit-weekly",
+  "persona": "Weekly reviewer",
+  "seconds": 177.6,
+  "tool_calls": 54,
+  "subagent_tokens": 149482,
+  "parallel": 3,
+  "observed": [
+   "H6"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "H6": "🟠"
+  },
+  "false_positive": 2,
+  "notes": "Reported the pre-existing stale History totals as a 🔴 caused by the .onAppear->.task swap, and the pre-existing no-undo swipe delete as 🟠. With no base build to compare, it attributed both to the change."
+ },
+ {
+  "run": "app-r1/hc-big-refactor-weekly",
+  "persona": "Weekly reviewer",
+  "seconds": 175.8,
+  "tool_calls": 44,
+  "subagent_tokens": 136949,
+  "parallel": 3,
+  "observed": [
+   "HC1"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "HC1": "🟡"
+  },
+  "false_positive": 0,
+  "notes": "Found the separator regression. Correctly labeled stale History and no-undo delete as not part of the diff."
+ },
+ {
+  "run": "app-r2/f1-quick-add-ring",
+  "persona": "Daily water logger",
+  "seconds": 97.9,
+  "tool_calls": 33,
+  "subagent_tokens": 116598,
+  "parallel": 3,
+  "observed": [
+   "K1",
+   "K2"
+  ],
+  "code_inferred": [
+   "K3"
+  ],
+  "severity": {
+   "K1": "🔴",
+   "K2": "🟠",
+   "K3": "🟡"
+  },
+  "false_positive": 0,
+  "notes": "Same as round 1: the 250 ml long-press never fires."
+ },
+ {
+  "run": "app-r2/h2-custom-amount",
+  "persona": "Daily water logger",
+  "seconds": 84.0,
+  "tool_calls": 26,
+  "subagent_tokens": 113729,
+  "parallel": 3,
+  "observed": [
+   "H4"
+  ],
+  "code_inferred": [
+   "H3"
+  ],
+  "severity": {
+   "H3": "🟠",
+   "H4": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Again confirmed the large-text breakage of the quick-add row."
+ },
+ {
+  "run": "app-r2/f2-clear-today",
+  "persona": "Daily water logger",
+  "seconds": 62.5,
+  "tool_calls": 19,
+  "subagent_tokens": 101576,
+  "parallel": 3,
+  "observed": [
+   "K4"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "K4": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Build reused cached DerivedData (2 s). Partial-failure bug noted from code as 🟡."
+ },
+ {
+  "run": "app-r2/f4-add-confirm",
+  "persona": "Daily water logger",
+  "seconds": 100.3,
+  "tool_calls": 39,
+  "subagent_tokens": 117327,
+  "parallel": 3,
+  "observed": [
+   "K8"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "K8": "🟡"
+  },
+  "false_positive": 0,
+  "notes": "Rated the extra confirmation 🟡 (still within 'one or two taps'). Build reused cached DerivedData."
+ },
+ {
+  "run": "app-r2/f3-list-refactor",
+  "persona": "Daily water logger",
+  "seconds": 130.0,
+  "tool_calls": 34,
+  "subagent_tokens": 118594,
+  "parallel": 3,
+  "observed": [
+   "K5",
+   "K6"
+  ],
+  "code_inferred": [
+   "K7"
+  ],
+  "severity": {
+   "K5": "🟡",
+   "K6": "🟠",
+   "K7": "🟡"
+  },
+  "false_positive": 0,
+  "notes": "Again forced the load failure by corrupting the container file."
+ },
+ {
+  "run": "app-r2/c1-row-extract",
+  "persona": "Daily water logger",
+  "seconds": 125.6,
+  "tool_calls": 41,
+  "subagent_tokens": 118661,
+  "parallel": 3,
+  "observed": [],
+  "code_inferred": [],
+  "severity": {},
+  "false_positive": 0,
+  "notes": "PASS. Pre-existing observations listed separately."
+ },
+ {
+  "run": "app-r2/c2-750-button",
+  "persona": "Daily water logger",
+  "seconds": 84.2,
+  "tool_calls": 24,
+  "subagent_tokens": 106096,
+  "parallel": 3,
+  "observed": [
+   "C2R"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "C2R": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Confirmed the large-text breakage again; also uneven wrapping at the default size."
+ },
+ {
+  "run": "app-r2/h1-goal-setting-daily",
+  "persona": "Daily water logger",
+  "seconds": 132.0,
+  "tool_calls": 38,
+  "subagent_tokens": 130734,
+  "parallel": 3,
+  "observed": [
+   "H1",
+   "H2"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "H1": "🔴",
+   "H2": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Split H1 into two 🔴 findings (onboarding goal ignored; Settings stale and overwrites it)."
+ },
+ {
+  "run": "app-r2/h1-goal-setting-weekly",
+  "persona": "Weekly reviewer",
+  "seconds": 150.7,
+  "tool_calls": 42,
+  "subagent_tokens": 131940,
+  "parallel": 3,
+  "observed": [
+   "H1",
+   "H2"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "H1": "🟠",
+   "H2": "🟡"
+  },
+  "false_positive": 0,
+  "notes": "Seeded a past week through the container file. Rated the silent disabled Continue 🟡."
+ },
+ {
+  "run": "app-r2/hc-big-refactor-daily",
+  "persona": "Daily water logger",
+  "seconds": 76.3,
+  "tool_calls": 20,
+  "subagent_tokens": 110804,
+  "parallel": 3,
+  "observed": [
+   "HC1"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "HC1": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Found the separator regression again."
+ },
+ {
+  "run": "app-r2/h3-history-edit-weekly",
+  "persona": "Weekly reviewer",
+  "seconds": 153.3,
+  "tool_calls": 46,
+  "subagent_tokens": 143808,
+  "parallel": 3,
+  "observed": [
+   "H6"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "H6": "🟠"
+  },
+  "false_positive": 2,
+  "notes": "Again attributed the pre-existing stale History totals to the .task swap (🟠) and listed the pre-existing no-undo delete as a defect (🟡)."
+ },
+ {
+  "run": "app-r2/hc-big-refactor-weekly",
+  "persona": "Weekly reviewer",
+  "seconds": 199.1,
+  "tool_calls": 54,
+  "subagent_tokens": 153246,
+  "parallel": 1,
+  "observed": [
+   "HC1"
+  ],
+  "code_inferred": [],
+  "severity": {
+   "HC1": "🟠"
+  },
+  "false_positive": 0,
+  "notes": "Found the separator regression; labeled stale History and no-undo delete as pre-existing."
+ }
+]
