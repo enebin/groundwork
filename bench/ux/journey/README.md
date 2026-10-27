@@ -78,9 +78,9 @@ Caveats: six sessions, one run each, hand-judged; one session per slip.
 
 Requirements: Claude Code with its built-in browser, Node 18 or later, and `curl`.
 
-1. Copy the app outside this repository, so its `CLAUDE.md` does not reach the agents: `cp -R app ~/.cache/groundwork-bench/ux-journey/taskfold`, then `git init` and commit there. For a run on recorded journeys, replace its `GROUNDWORK.md` with `GROUNDWORK.recorded.md`.
+1. Copy the app outside this repository, so its `CLAUDE.md` does not reach the agents: `mkdir -p ~/.cache/groundwork-bench/ux-journey && rm -rf ~/.cache/groundwork-bench/ux-journey/taskfold && cp -R app ~/.cache/groundwork-bench/ux-journey/taskfold`, then `git init` and commit there. Set `BENCH_WORKTREES` to use another directory; `session.sh` reads it too. For a run on recorded journeys, replace its `GROUNDWORK.md` with `GROUNDWORK.recorded.md`.
 2. Start one server per session: `./session.sh <run> <id> <port> [workspace]`. `workspace` seeds an owner with an organization for branch journeys; sign the browser in with `/dev/login?email=lead-<run>@example.test` as setup.
-3. Dispatch one subagent per session that reads and follows the variant's agent file, with the assignment fields shown in `runs/r1-results.json` and the recorded journeys. Give each its own `s<N>.localhost` host and tab.
+3. Dispatch one subagent per session that reads and follows the variant's agent file. Build each assignment as step 5 of `plugins/groundwork/skills/ux-journey/SKILL.md` says (persona name, profile, habits, Scenario, Start, Test access, device, artifact directory), from the recorded journeys; `runs/*-results.json` lists each session's profile and habits. Give each its own `s<N>.localhost` host and tab.
 4. Score each report against `answer-key.json`, check each session's `db.json` for the journey's Success line, and count code reads in the subagent transcripts.
 
 ## Files

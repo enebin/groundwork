@@ -30,7 +30,7 @@ Journeys live in the `GROUNDWORK.md` body, one `## Journey: <name>` section each
 
 Write values that differ per session as placeholders the moderator fills in: `<host>`, `<port>`, `<run>`, and `<data>` for the data directory.
 
-- **Persona** names a `user` persona from `review.personas`, so its goal and `## Persona:` section give the participant's background.
+- **Persona** names a `user` persona from `review.personas`. The participant gets only its name as background; its goal and `## Persona:` tasks stay with the moderator, because a participant given them goes on to do those too.
 - **Devices** lists the viewport sizes or simulators to run. Each device is a separate participant session.
 - **Start** is where the session begins and in what state. A first-run journey starts signed out with no stored data.
 - **Precondition** is what must already exist before the participant starts, when a clean state is not enough and no other journey produces it: for an invited teammate, an organization that has sent an invitation to this session's address. Write it with the seed or setup command that creates it. The participant never sees this line; it meets the precondition only as a user would, for example as an invitation email.
@@ -41,6 +41,7 @@ Write values that differ per session as placeholders the moderator fills in: `<h
 - **Success** is an observable end state the moderator can confirm afterwards, on screen or in the test data.
 - **Code map** lists the screens behind the journey, for the moderator's root-cause notes. The participant never sees it.
 - **Continues from** is optional. It names another journey whose end state this journey starts from. See Shared beginnings below.
+- **Profiles** is optional: the profile mix for this journey, such as `typical ×2, hurried`. See Participant profiles below.
 - **Slips** is optional: realistic mistakes this journey's screens should survive, such as a weak password, a mistyped email, or signing in before confirming the email. See Participant profiles below.
 
 ## Shared beginnings
@@ -81,7 +82,7 @@ A capable AI reads every word, picks strong passwords, and never mistypes, so it
 | `careful` | Everything on the screen | Three tries | Comfortable with web apps; explores menus | Compares options before choosing |
 | `hurried` | Only buttons and headings | One retry | As `typical` | Takes the shortest-looking path and fills forms quickly |
 
-**Mix per journey.** In eco and normal, each journey runs one `typical` session. In sport or with `--full`, each journey runs three sessions per device: two `typical` and one `careful`. A journey may set its own mix with a `Profiles:` line, for example `typical ×2, hurried`. An obstacle that only `typical` or `hurried` sessions hit is still an obstacle; an obstacle that even `careful` hits is likely to stop most users.
+**Mix per journey.** In eco and normal, each journey runs one `typical` session. In sport or with `--full`, each journey runs three sessions per device: two `typical` and one `careful`. A journey's `Profiles:` line, for example `typical ×2, hurried`, replaces the sport and `--full` mix; eco and normal run one session with the first profile it names. A profile name other than `typical`, `careful`, or `hurried` is a configuration problem. An obstacle that only `typical` or `hurried` sessions hit is still an obstacle; an obstacle that even `careful` hits is likely to stop most users.
 
 **Habits and slips.** The moderator gives each `typical` and `hurried` session one or two items from the journey's Slips line, or from the error paths discovery found, spread so that different sessions get different ones and every slip runs at least once. Write each as a habit in the participant's words, not as an order to fail: "You use the same short password everywhere: biscuit7", "You type quickly and often swap two letters in your email", "You open the sign-in page before checking your email". `careful` sessions get none. Record each session's profile, habits, and slips in the report, so an obstacle can be traced to the slip that led into it.
 

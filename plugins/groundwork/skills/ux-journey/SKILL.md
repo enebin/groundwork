@@ -37,12 +37,13 @@ Record the add-on in the `## Add-ons` section as `catalog/addons.md` describes, 
 
 ## 3. Select sessions
 
-Named journeys select those journeys; without names, select every journey. Resolve `--mode` or the configured overall mode. In eco and normal, run each selected journey on its first listed device. In sport, or with `--full`, run every listed device. Each device runs the journey's profile mix from Participant profiles in `skills/ux-journey/references/journey-test.md`, and the moderator assigns each session its habits and slips there. A release gate always uses `--full`. A source journey also runs on every device its selected continuing journeys need, so each continuing session has a checkpoint from its own device kind.
+Named journeys select those journeys (quote names with spaces, for example `/groundwork:ux-journey "New workspace" "First project"`); without names, select every journey. Resolve `--mode` or the configured overall mode. In eco and normal, run each selected journey on its first listed device. In sport, or with `--full`, run every listed device. Each device runs the journey's profile mix from Participant profiles in `skills/ux-journey/references/journey-test.md`, and the moderator assigns each session its habits and slips there. A release gate always uses `--full`. A source journey also runs on every device its selected continuing journeys need, so each continuing session has a checkpoint from its own device kind.
 
 Check each selected journey before launching, and report each problem with the journey, what is wrong, and how to fix it:
 
 - It has Start, Scenario, Milestones, and Success lines. A journey without Continues from also has Persona, Devices, Test access, and Reset lines; only a journey with Continues from may inherit those four, as Shared beginnings in `skills/ux-journey/references/journey-test.md` allows. Fix: add the line.
 - Its Persona, its own or inherited, is a `user` persona in `review.personas`. Fix: correct the journey's Persona line, or add the persona to `review.personas` with `kind: user`. Adding a `user` persona can start other UX checks; Screen checks in `reference/config.md` says which.
+- A Profiles line names only `typical`, `careful`, or `hurried`. Fix: correct the line.
 - A Continues from names an existing journey, the chain has no cycle, and its Devices are a subset of the source's. Fix: correct the line.
 - `## UI QA notes` says how to launch the app. Fix: add the launch steps there, or rerun with `--discover`.
 
@@ -70,7 +71,7 @@ Give each participant only:
 
 - `Plugin root: <path>`.
 - The persona's name, as background. Leave out its goal and `## Persona:` tasks: they name other journeys' steps, and a participant given them goes on to do those too.
-- The journey's Scenario, Start, and Test access lines, with this session's synthetic identity and its own inbox view filled in. A continuing session gets the identity from its checkpoint.
+- The journey's Scenario, Start, and Test access lines, with this session's synthetic identity and its own inbox view filled in. A continuing session that inherits Test access gets the identity from its checkpoint; one with its own Test access gets a fresh identity from that line.
 - Its profile row, and its habits and slips written as habits in the participant's words.
 - Its device or viewport, the URLs or app to open, and its artifact directory.
 
