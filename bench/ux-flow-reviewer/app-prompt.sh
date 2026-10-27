@@ -14,6 +14,10 @@ here=$(cd "$(dirname "$0")" && pwd)
 plugin_root=$(cd "$here/../../plugins/groundwork" && pwd)
 worktrees=${BENCH_WORKTREES:-$HOME/.cache/groundwork-bench/ux-flow}
 repo=${BENCH_REPO:-$worktrees/fixtures-repo}
+mkdir -p "$(dirname "$repo")"
+# Parallel first runs would otherwise see .git before the fetch finishes and miss the branches.
+until mkdir "$repo.lock" 2>/dev/null; do sleep 1; done
+trap 'rmdir "$repo.lock" 2>/dev/null || true' EXIT
 if [ ! -d "$repo/.git" ]; then
   git init -q "$repo"
   git -C "$repo" fetch -q "$here/fixtures.bundle" 'refs/heads/*:refs/heads/*'
@@ -25,6 +29,7 @@ worktree="$worktrees/$fixture"
 if [ ! -d "$worktree" ]; then
   git -C "$repo" worktree add -q --detach "$worktree" "$branch"
 fi
+rmdir "$repo.lock"; trap - EXIT
 
 base_sha=$(git -C "$repo" rev-parse --short "$(key base)")
 subject=$(git -C "$repo" log -1 --format=%s "$branch")
