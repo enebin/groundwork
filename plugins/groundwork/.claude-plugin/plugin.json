@@ -1,6 +1,6 @@
 {
   "name": "groundwork",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Choose repository workflows through GROUNDWORK.md, then run planning, step loops, review, QA, and releases. Optional shared skills add Slack reports, handoff notes, weekly summaries, release notes, scheduled release preparation, and journey usability tests.",
   "author": {
     "name": "Kai Lee"
