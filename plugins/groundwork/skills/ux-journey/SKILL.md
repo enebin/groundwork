@@ -18,24 +18,35 @@ Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for
 
 If the project has no screens, report `UX Journey: NOT APPLICABLE` with the reason and stop.
 
+Questions and setup happen only when the user invoked this skill directly. When another skill runs it, such as a release gate or a scheduled `release-prep`, never ask and never start discovery: report anything that needs the user as `UX Journey: BLOCKED`, naming what is missing and the command that fixes it.
+
 Before launching anything, explain the cost: each session builds or starts the app, starts from a clean state, and walks every screen of a journey, so it takes longer and uses more tokens than `ux-review`. Each extra device adds a session.
 
 ## 2. Define journeys on first run
 
-Run first-run discovery from `ux/journey-test.md` when no `## Journey:` section exists, when `--discover` is given, or when a journey's screens no longer exist. Discovery ends only with the user's approval; never run a journey the user has not confirmed.
+Run first-run discovery from `ux/journey-test.md` when no `## Journey:` section exists, when `--discover` is given, or when a journey's screens no longer exist. Discovery ends only with the user's approval; never run a journey the user has not confirmed. When run by another skill, report a missing or stale journey as BLOCKED with the journey, the missing screen, and the recovery `/groundwork:ux-journey --discover`.
 
 When this skill was opened from the add-on menu, or discovery just wrote the first journeys, also ask whether the journey test should gate releases:
 
 - **Only on request** (`manual`): nothing runs automatically.
 - **Before every release** (`release`): `/groundwork:release` runs every journey on every listed device before cutting a release, and a FAIL or BLOCKED stops it.
 
-Write the choice to `ux.journey` in the frontmatter, and record the add-on in the `## Add-ons` section as `catalog/addons.md` describes, linking the `## Journey:` sections instead of copying them. Then ask whether to run the journeys now. Setup alone runs nothing.
+Write the choice to `ux.journey` only when the frontmatter already has a `ux` mapping. A file without one still runs on legacy UX behavior, and a `ux` mapping that holds only `journey` would make it invalid (Screen checks in `reference/config.md`). In that case, write nothing for `manual`, because absent already means manual. For `release`, tell the user to run `/groundwork:onboarding` first to migrate the `ux` mapping, keep the journey test manual for now, and say that rerunning this setup afterwards turns on the gate.
+
+Record the add-on in the `## Add-ons` section as `catalog/addons.md` describes, linking the `## Journey:` sections instead of copying them. Then ask whether to run the journeys now. Setup alone runs nothing.
 
 ## 3. Select sessions
 
-Named journeys select those journeys; without names, select every journey. Resolve `--mode` or the configured overall mode. In eco and normal, run each selected journey on its first listed device. In sport, or with `--full`, run every listed device. A release gate always uses `--full`.
+Named journeys select those journeys; without names, select every journey. Resolve `--mode` or the configured overall mode. In eco and normal, run each selected journey on its first listed device. In sport, or with `--full`, run every listed device. A release gate always uses `--full`. A source journey also runs on every device its selected continuing journeys need, so each continuing session has a checkpoint from its own device kind.
 
-Check each selected journey before launching: its Persona is a `user` persona in `review.personas`, and it has Start, Scenario, Milestones, and Success lines. Report a malformed journey as BLOCKED with the missing line, and continue with the others.
+Check each selected journey before launching, and report each problem with the journey, what is wrong, and how to fix it:
+
+- It has Start, Scenario, Milestones, and Success lines. Devices, Test access, Reset, and Persona may be inherited, as Shared beginnings in `ux/journey-test.md` allows. Fix: add the line.
+- Its Persona, its own or inherited, is a `user` persona in `review.personas`. Fix: add the persona there with `kind: user`, or rerun with `--discover`.
+- A Continues from names an existing journey, the chain has no cycle, and its Devices are a subset of the source's. Fix: correct the line.
+- `## UI QA notes` says how to launch the app. Fix: add the launch steps there, or rerun with `--discover`.
+
+A journey with a problem is BLOCKED; continue with the others.
 
 Order the sessions by Continues from: a journey runs after the journey it continues from, and a continuing journey whose source is not selected adds that source to the run. Before launching, show the session list: each journey, its devices, which sessions start from a checkpoint, and the total number of sessions. When the user invoked the skill directly with no journey names and more than one journey is selected, let them narrow the list first. A release gate runs the whole list without asking.
 
@@ -45,11 +56,11 @@ Establish the target as `reference/rendered-review.md` describes: the worktree, 
 
 Every session starts from the journey's Start state: signed out, no stored data, a new browser context or a freshly installed app. Give each session its own synthetic identity from the Test access line, its own artifact directory outside tracked source, and its own device or browser context.
 
-Follow the isolation rules in `reference/rendered-review.md`. Sign-up and setup create data, so sessions that run at the same time each need their own database or dataset. When that is not available, run sessions one after another and run the journey's Reset between them. If a session cannot start from a clean Start state, mark it BLOCKED instead of reusing an earlier session's account or data.
+Follow the isolation rules in `reference/rendered-review.md`; the participant does not read them, so this step is where they are applied. Sign-up and setup create data, so sessions that run at the same time each need their own database or dataset. When that is not available, run sessions one after another and run the journey's Reset between them. Parallel sessions also need their own inbox, or an inbox view filtered to their own address (for example a mail catcher's search URL for that recipient); give the participant that view as its inbox. When inboxes cannot be separated, run the sessions that receive email one after another. If a session cannot start from a clean Start state, mark it BLOCKED instead of reusing an earlier session's account or data.
 
 Then create the journey's Precondition in that session's environment with its seed or setup command, using that session's synthetic identity. When no command exists, create it yourself through the product as setup, not as part of the test, and record how. Never let a session continue in another session's live environment; one session's actions must not change another's state.
 
-For a journey that continues from another, follow Shared beginnings in `ux/journey-test.md`: after the source session ends and its Success state is confirmed, save a checkpoint, then restore a separate copy for each continuing session on the same device kind. Dispatch continuing sessions only after their checkpoint exists. If the environment cannot save and restore that state, tell the user and mark the continuing journey BLOCKED rather than starting it from a guessed state.
+For a journey that continues from another, follow Shared beginnings in `ux/journey-test.md`: after the source session ends and meets the checkpoint condition there, save a checkpoint, then restore a separate copy for each continuing session on the same device kind. Dispatch continuing sessions only after their checkpoint exists. If the environment cannot save and restore that state, tell the user and mark the continuing journey BLOCKED rather than starting it from a guessed state.
 
 ## 5. Dispatch participants
 
@@ -59,7 +70,7 @@ Give each participant only:
 
 - `Plugin root: <path>`.
 - The persona's name and goal from `review.personas`, as background.
-- The journey's Scenario, Start, and Test access lines, with this session's synthetic identity filled in. A continuing session gets the identity from its checkpoint.
+- The journey's Scenario, Start, and Test access lines, with this session's synthetic identity and its own inbox view filled in. A continuing session gets the identity from its checkpoint.
 - Its device or viewport, the URLs or app to open, and its artifact directory.
 
 Never give a participant the Precondition, Milestones, Success, Code map, the `## Persona:` section, other journeys, the diff, or another session's results. They tell it the path, which would turn the session into a walkthrough.

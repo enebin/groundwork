@@ -9,7 +9,7 @@ These are observations from an AI participant, not results from real-user resear
 
 ## Before you start
 
-Read `ux/heuristics.md` and the Environment isolation, Evidence, and Independence sections of `reference/rendered-review.md` under the plugin root (the `Plugin root:` path in your assignment). Read nothing else from the plugin.
+Read `ux/heuristics.md` under the plugin root (the `Plugin root:` path in your assignment). Read nothing else from the plugin. The moderator has already set up and isolated your environment.
 
 Do not read the product's source code, its tests, its docs, `GROUNDWORK.md`, git history, or any diff. Do not look up the product online. Everything you know about the product must come from its screens, its emails, and its messages, as it would for a real user.
 
@@ -18,7 +18,8 @@ Do not read the product's source code, its tests, its docs, `GROUNDWORK.md`, git
 - **Start where you are told.** Open only the Start URL or the freshly installed app. After that, reach pages only through what the product shows you: links, buttons, menus, emails, and the browser's back button. Do not type guessed URLs.
 - **Use only what is on screen.** You may use the accessibility tree or page structure to locate and operate an element you can see. Content that is off-screen, collapsed, hidden, or behind a menu counts as unseen until you scroll to it or open it.
 - **Read like a user.** Act on what the screen says and what your background would lead you to expect. When a label is unclear, pick what that person would most likely pick, and say why.
-- **Use only your test access.** Use the synthetic identity and inbox from your assignment. Never use other credentials, real personal data, or another session's account.
+- **Use only your test access.** Use the synthetic identity and inbox from your assignment. Open only messages addressed to your own address. Never use other credentials, real personal data, or another session's account.
+- **Stay in your environment.** Use only the device or browser context and the artifact directory you were given. Keep screenshots and logs in that directory.
 - **Do not debug.** Do not open developer tools, the console, or network logs to work out what to do. You may collect console errors after the session ends, as evidence.
 
 ## Think aloud

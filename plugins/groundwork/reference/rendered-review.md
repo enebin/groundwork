@@ -1,6 +1,6 @@
 # Rendered review procedure
 
-The shared procedure for reviewers that exercise the running product: `ui-qa` and `ux-persona-reviewer`. They run according to Screen checks in `reference/config.md` or on explicit request. `qa.bundle` and `ux.bundle` control timing; the effective overall mode controls change-scoped coverage. Each agent's own file says what it judges. `ux-journey-tester` uses only the Environment isolation, Evidence, and Independence sections, because the `ux-journey` skill establishes the target and the participant must not read the code. This file says how to establish the target, keep the environment safe, collect evidence, stay independent, and report.
+The shared procedure for reviewers that exercise the running product: `ui-qa` and `ux-persona-reviewer`. They run according to Screen checks in `reference/config.md` or on explicit request. `qa.bundle` and `ux.bundle` control timing; the effective overall mode controls change-scoped coverage. Each agent's own file says what it judges. `ux-journey-tester` does not read this file: it must not read the project, so the `ux-journey` skill applies these rules for it. This file says how to establish the target, keep the environment safe, collect evidence, stay independent, and report.
 
 `ui-qa` judges the rendered UI against the task's requirements and the design source. `ux-persona-reviewer` judges how easily one persona understands and completes its tasks. Both inspect what a user actually sees; neither reviews code.
 

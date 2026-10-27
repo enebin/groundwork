@@ -96,7 +96,7 @@ Optional. Skills read only the section that applies to them.
 
 - `## Review focus: <reviewer>` — repository-specific checks for one reviewer, such as `## Review focus: architecture`. The reviewer adds these to its own checklist. They narrow where to look; the documents in `docs` stay the standard.
 - `## Persona: <name>` — the tasks a UX persona performs, when `review.personas[].goal` is not enough.
-- `## Journey: <name>` — an end-to-end journey for the `ux-journey` add-on: persona, devices, start, scenario, test access, reset, milestones, success, and code map. The format is in `ux/journey-test.md`.
+- `## Journey: <name>` — an end-to-end journey for the `ux-journey` add-on: persona, devices, start, precondition, scenario, test access, reset, milestones, success, code map, and continues from. The format is in `ux/journey-test.md`.
 - `## Release checks` — checks the `release` skill runs before cutting a release, beyond its built-in ones.
 - `## UI QA notes` — how to launch the app for QA, sample data, launch flags, screen-specific checks.
 - `## Notes` — anything else the user added during onboarding that applies to every skill.
