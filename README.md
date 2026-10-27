@@ -125,6 +125,19 @@ Web projects are usually fast to check since browser tools can inspect DOM eleme
 
 Confirmed review issues are handed off to the `fixer` agent. Because it starts in a fresh context, fixes the issues, and re-runs the relevant tests on its own, your main working context only receives a short summary of what was fixed.
 
+## Code-based UX review benchmark
+
+How well can `ux-flow-reviewer` judge usability from the code alone? A benchmark of 11 seeded changes to a small SwiftUI app compares it with the app-based `ux-persona-reviewer` (Sonnet, hand-judged):
+
+| | Code-based (`ux-flow-reviewer`) | App-based (`ux-persona-reviewer`) |
+|---|---|---|
+| Seeded defects found | 36/39 | 32/32 (27 seen on screen) |
+| False positives | 0 | 4 |
+| Mean time per run | 21 s | 126 s |
+| Mean cost per run | $0.17 | not measured |
+
+The code-based reviewer is about 6× faster and finds failure paths the app cannot easily trigger. The app-based reviewer confirms layout risks and caught a number-format regression that every code-based run missed. Running the code-based review on every change and the app-based review only on what it hands off covers both. Prompt-version comparisons, per-defect results, and how to rerun it are in [`bench/ux-flow-reviewer/`](bench/ux-flow-reviewer/README.md).
+
 ## GROUNDWORK.md
 
 The full config specification lives in [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md). Config keys are only ever added — existing keys are never renamed or removed. If the structure ever needs to change, the schema version is bumped and onboarding migrates your existing file automatically.

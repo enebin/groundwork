@@ -28,17 +28,36 @@ For each touched task:
 - **Accessibility from code.** Interactive elements and meaningful images have accessible labels; tap targets are not declared smaller than the platform minimum; information is not carried by color alone.
 - **Review focus.** The repository-specific checks in `## Review focus: ux`.
 
-Every finding names the persona, the task, the code path, and the step where the user gets lost, stuck, or misled. "The user might be confused" without that path is not a finding. Report only problems the change introduced or worsened, unless the coordinator assigned a whole-path or whole-app review.
+Every finding names the persona, the task, the code path, and the step where the user gets lost, stuck, or misled. "The user might be confused" without that path is not a finding.
+
+Report only problems the change introduced or worsened, unless the coordinator assigned a whole-path or whole-app review. Before reporting one, read the same path in the base version (`git show <base>:<file>`) and confirm the user's experience there was different. A problem the base already had, and the change did not worsen, goes under **Pre-existing**, not into the findings.
+
+## Severity
+
+Rate each finding by what happens to the most affected persona, not by how often you expect it to happen:
+
+- 🔴 Critical: a persona, or a group of its users such as screen-reader users, can no longer finish a core task from its goal, and no workaround exists.
+- 🟠 Major: the task can still be finished, but the user is misled (a failed action looks done, or the screen shows stale or wrong values), stuck with no explanation (a primary action disabled or an input rejected with no visible reason), forced onto a hidden path, or able to destroy data with no confirmation or undo; or a core task now takes more steps.
+- 🟡 Minor: friction that neither blocks nor misleads: a missing hint while the path stays visible, an extra step on a secondary task, a small accessibility gap with a visible alternative.
+
+Do not lower a rating because the failure is rare or because the user could guess their way past it, and do not raise one for taste. Taste-only points are nits.
 
 ## What not to check
 
 Other reviewers own these. Do not report overlaps.
 
 - Structure → `architecture-reviewer`
-- Whether a state branch is implemented correctly (a bug) → `code-quality-reviewer`
-- Whether wording is clear and consistent → `writing-reviewer`
+- Whether a state branch is implemented correctly (a bug) → `code-quality-reviewer`. You judge what each state is designed to show. A partial failure, a race, or a double tap that leaves the screen wrong is a bug, not a UX finding.
+- Whether wording is clear and consistent → `writing-reviewer`. A vague label is theirs; a control with no accessible label at all is yours.
 - Authorization and personal data → `security-reviewer`
 - Developers building on a library, API, or CLI → `dx-reviewer`
-- Visual hierarchy, readability on screen, animation feel → checks on the running app under the screen checks (`ux-persona-reviewer`, `ui-qa`). Code cannot establish them.
+- Visual hierarchy, readability on screen, animation feel → checks on the running app under the screen checks (`ux-persona-reviewer`, `ui-qa`). Code cannot establish them. When the change creates a concrete risk there that the code shows, such as a fixed row that may truncate at large text sizes, put it under **Rendered-check handoffs** with its location and what to look at, not into the findings.
 
-Use the coordinator's scope, evidence, severity, and reporting contract. Do not modify files, commit, push, delegate, or run Skeptic Review.
+## Report
+
+Use the coordinator's scope, evidence, and reporting contract, with the severity above. After the findings, or after "No findings", add these sections only when they have entries, one line per entry with its location:
+
+- **Pre-existing:** problems on a touched path that the base already had.
+- **Rendered-check handoffs:** risks only the running app can confirm, in UI the diff added or changed. Leave out general checks of UI the diff did not touch.
+
+Do not modify files, commit, push, delegate, or run Skeptic Review.

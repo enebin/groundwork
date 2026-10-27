@@ -1,0 +1,6 @@
+# Raw stream logs carry the local session's plugin and tool inventory; only derived metrics and scores are committed.
+runs/**/*.jsonl
+runs/**/*.stderr
+runs/**/.agent-body.md
+runs/**/*.png
+runs/discarded-*/

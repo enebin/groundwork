@@ -1,0 +1,209 @@
+{
+  "fixtures": [
+    {
+      "id": "f1-quick-add-ring",
+      "branch": "bench/ux-f1-quick-add-ring",
+      "defects": [
+        {
+          "id": "K1",
+          "required": true,
+          "check": "discoverability",
+          "summary": "Adding water is only possible by long-pressing the ring (500 ml only via context menu); no visible add control remains.",
+          "expected_severity": "🟠"
+        },
+        {
+          "id": "K2",
+          "required": true,
+          "check": "accessibility/feedback",
+          "summary": "The numeric total and the 'Goal met' label were removed; goal state is shown only by the ring turning green.",
+          "expected_severity": "🟠"
+        },
+        {
+          "id": "K3",
+          "required": true,
+          "check": "accessibility",
+          "summary": "The ring has no accessibility label, value, or action, so VoiceOver users cannot add water or read progress.",
+          "expected_severity": "🔴"
+        }
+      ],
+      "base": "bench/ux-base",
+      "tier": "easy",
+      "screens": "the Today screen"
+    },
+    {
+      "id": "f2-clear-today",
+      "branch": "bench/ux-f2-clear-today",
+      "defects": [
+        {
+          "id": "K4",
+          "required": true,
+          "check": "recovery",
+          "summary": "The Clear toolbar button deletes every entry of the day at once, with no confirmation and no undo (single-entry delete has undo).",
+          "expected_severity": "🟠"
+        }
+      ],
+      "base": "bench/ux-base",
+      "tier": "easy",
+      "screens": "the Today screen"
+    },
+    {
+      "id": "f3-list-refactor",
+      "branch": "bench/ux-f3-list-refactor",
+      "defects": [
+        {
+          "id": "K5",
+          "required": true,
+          "check": "states",
+          "summary": "The empty state was removed; with no entries the Entries section is blank and gives no guidance.",
+          "expected_severity": "🟡"
+        },
+        {
+          "id": "K6",
+          "required": true,
+          "check": "states/recovery",
+          "summary": "A load failure now looks the same as an empty day (0 of 2000 ml, empty list): no message and no visible retry, only pull-to-refresh.",
+          "expected_severity": "🟠"
+        },
+        {
+          "id": "K7",
+          "required": false,
+          "check": "states",
+          "summary": "While loading, the screen shows 0 of 2000 ml as if nothing was logged; the loading indicator is gone.",
+          "expected_severity": "🟡"
+        }
+      ],
+      "base": "bench/ux-base",
+      "tier": "easy",
+      "screens": "the Today screen"
+    },
+    {
+      "id": "f4-add-confirm",
+      "branch": "bench/ux-f4-add-confirm",
+      "defects": [
+        {
+          "id": "K8",
+          "required": true,
+          "check": "steps",
+          "summary": "Every quick add now needs a confirmation dialog, doubling the taps for the persona's core 'one or two taps' task, though the action is cheap and undoable by delete.",
+          "expected_severity": "🟠"
+        }
+      ],
+      "base": "bench/ux-base",
+      "tier": "easy",
+      "screens": "the Today screen"
+    },
+    {
+      "id": "c1-row-extract",
+      "branch": "bench/ux-c1-row-extract",
+      "defects": [],
+      "base": "bench/ux-base",
+      "tier": "easy",
+      "screens": "the Today screen"
+    },
+    {
+      "id": "c2-750-button",
+      "branch": "bench/ux-c2-750-button",
+      "defects": [
+        {
+          "id": "C2R",
+          "required": false,
+          "check": "rendered-risk",
+          "expected_severity": "handoff",
+          "summary": "Three buttons share one fixed HStack, so labels may truncate at large Dynamic Type. Visible in code but needs a rendered check; reporting it as a finding or a handoff is not a false positive."
+        }
+      ],
+      "base": "bench/ux-base",
+      "tier": "easy",
+      "screens": "the Today screen"
+    },
+    {
+      "id": "h1-goal-setting",
+      "branch": "bench/ux-h1-goal-setting",
+      "base": "bench/ux-hard-base",
+      "tier": "hard",
+      "defects": [
+        {
+          "id": "H1",
+          "required": true,
+          "check": "feedback",
+          "summary": "The goal is copied into the Today and History view models once (RootView reads a non-observable store into @State-owned view models), so a goal set in onboarding or changed in Settings is not shown until relaunch; Today still reads 'of 2000 ml'.",
+          "expected_severity": "🟠"
+        },
+        {
+          "id": "H2",
+          "required": true,
+          "check": "states/feedback",
+          "summary": "Onboarding's Continue stays disabled for goals outside 1000-4000 ml (DailyGoal.swift) with no hint of the range or why, and there is no way past the full-screen cover.",
+          "expected_severity": "🟠"
+        }
+      ],
+      "screens": "first-launch onboarding, Settings, and any screen that shows the goal"
+    },
+    {
+      "id": "h2-custom-amount",
+      "branch": "bench/ux-h2-custom-amount",
+      "base": "bench/ux-hard-base",
+      "tier": "hard",
+      "defects": [
+        {
+          "id": "H3",
+          "required": true,
+          "check": "feedback",
+          "summary": "Save dismisses the sheet before the save finishes; on failure the alert is attached to the dismissed sheet, so the user never learns the entry was lost.",
+          "expected_severity": "🟠"
+        },
+        {
+          "id": "H4",
+          "required": true,
+          "check": "feedback/states",
+          "summary": "Save silently does nothing for 0, non-numeric, or over-2000 ml amounts; no message or limit is shown.",
+          "expected_severity": "🟠"
+        }
+      ],
+      "screens": "the Today screen and the new custom amount sheet"
+    },
+    {
+      "id": "h3-history-edit",
+      "branch": "bench/ux-h3-history-edit",
+      "base": "bench/ux-hard-base",
+      "tier": "hard",
+      "defects": [
+        {
+          "id": "H6",
+          "required": true,
+          "check": "discoverability",
+          "summary": "Editing an entry is now only a leading swipe action; tapping a row no longer opens the editor and nothing on screen hints at the swipe.",
+          "expected_severity": "🟠"
+        }
+      ],
+      "trap": "Not a defect: HistoryView's .onAppear was on the NavigationStack, so it never re-fired on pop; swapping it for .task changes nothing. Stale totals after editing are pre-existing. Reporting them as introduced by this change is a false positive.",
+      "screens": "History and day detail"
+    },
+    {
+      "id": "h4-settings-cleanup",
+      "branch": "bench/ux-h4-settings-cleanup",
+      "base": "bench/ux-hard-base",
+      "tier": "hard",
+      "defects": [],
+      "trap": "Pre-existing: when notification permission is denied, the reminders toggle stays on with no message (SettingsViewModel, untouched). Reporting it as a defect of this change is a false positive; listing it as pre-existing is fine.",
+      "screens": "Settings"
+    },
+    {
+      "id": "hc-big-refactor",
+      "branch": "bench/ux-hc-big-refactor",
+      "base": "bench/ux-hard-base",
+      "tier": "hard",
+      "defects": [
+        {
+          "id": "HC1",
+          "required": true,
+          "check": "feedback/consistency",
+          "expected_severity": "🟡",
+          "summary": "formattedVolume returns a plain String, while SwiftUI localizes an Int interpolated into a Text literal. The Today header now reads '2,000 of 2000 ml' and History rows lose the thousands separator. Found by the app method; the seeded fixture was meant to be UI-identical."
+        }
+      ],
+      "trap": "Was designed as a UI-identical refactor, but it changes number formatting at 1000 ml and above.",
+      "screens": "Today, History, and day detail"
+    }
+  ]
+}
