@@ -44,7 +44,7 @@ onboarding 会问八个问题，每个问题都给出推荐答案，并把你的
 
 在 Claude Code 中，groundwork 每天最多检查一次 GitHub 上的新版本，每个新版本只提醒一次。更新时运行 `claude plugin update groundwork@groundwork`，然后重启 Claude Code。
 
-可选：安装 [skeptic-review](https://github.com/enebin/skeptic-review)，在审查结果交给你之前再核实一遍。
+可选：安装 [skeptic-review](https://github.com/enebin/skeptic-review)，在审查结果交给你之前再核实一遍。未安装时，审查结果会显示 `SkepticReview: OFF`。
 
 ## 做第一个功能
 
@@ -60,6 +60,8 @@ onboarding 会问八个问题，每个问题都给出推荐答案，并把你的
 4. 修复经确认的问题，反复进行，直到没有严重问题为止。
 5. 如果启用了界面检查，接着检查改动过的界面。
 6. 汇报完成的内容，并询问是否提交。
+
+如果仓库还没有任何提交，或者构建和测试命令尚未确认，groundwork 会先提出一个以搭建基础结构为第一步的简短计划，等你批准后再继续。
 
 满意之后再说：
 
@@ -94,7 +96,8 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | "审查一下我的改动。" | `review` |
 | "看看新用户能不能顺利完成注册。" | `ux-journey`（在运行中的应用里执行） |
 | "在应用里检查一下设置页面。" | `ui-qa` |
-| "准备 1.2.0 版本的发布。" | `release` |
+| "发布 1.2.0 版本。" | `release` |
+| "每周五准备一次发布。" | `release-prep` |
 | "总结一下这周。" | `weekly-summary` |
 | "今天先到这里，留个记录方便下次继续。" | `handoff` |
 
@@ -155,7 +158,7 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | `ux-journey` | 让首次使用的用户在运行中的应用上走完整个流程，并报告卡住的地方 |
 | `release-prep` | 按固定周期准备并验证发布，然后请求最终批准 |
 
-各功能的设置方法见[附加功能目录](plugins/groundwork/catalog/addons.md)。
+Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slack 设置说明](plugins/groundwork/skills/slack-report/references/setup.md)。开启自动报告后，会为两个客户端安装仓库级的 Stop 钩子。
 
 <details>
 <summary><b>全部技能</b></summary>

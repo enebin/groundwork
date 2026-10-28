@@ -44,7 +44,7 @@ Onboarding asks eight questions, recommends an answer for each, and saves your c
 
 In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
 
-Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you.
+Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you. Without it, reviews show `SkepticReview: OFF`.
 
 ## Your first feature
 
@@ -60,6 +60,8 @@ That one sentence is the whole request. With the default setup, groundwork then:
 4. Fixes confirmed findings and repeats until no serious issues remain.
 5. Runs screen checks on the changed screens, if enabled.
 6. Reports what it did and asks whether to commit.
+
+In a repository with no commits yet, or whose build and test commands are not confirmed, groundwork first proposes a short plan that starts with a setup step, and waits for your approval.
 
 When you are happy with it:
 
@@ -94,7 +96,8 @@ These are examples; any wording that means the same works.
 | "Review my changes." | `review` |
 | "Can new users get through sign-up?" | `ux-journey` on the running app |
 | "Check the settings screen on the app." | `ui-qa` |
-| "Prepare release 1.2.0." | `release` |
+| "Release 1.2.0." | `release` |
+| "Prepare a release every Friday." | `release-prep` |
 | "Summarize this week." | `weekly-summary` |
 | "I'm stopping here. Leave a note for next time." | `handoff` |
 
@@ -155,7 +158,7 @@ Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse 
 | `ux-journey` | Has a first-time user walk a whole journey on the running app and reports where they get stuck |
 | `release-prep` | Prepares and verifies releases on a schedule, then asks for final approval |
 
-Setup details for each are in the [add-on catalog](plugins/groundwork/catalog/addons.md).
+Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setup](plugins/groundwork/skills/slack-report/references/setup.md). Turning on automatic Slack reports installs repository-local Stop hooks for both clients.
 
 <details>
 <summary><b>All skills</b></summary>

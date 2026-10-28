@@ -44,7 +44,7 @@ Claude Code:
 
 Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해, 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `claude plugin update groundwork@groundwork`를 실행한 뒤 Claude Code를 재시작하면 됩니다.
 
-선택 사항: [skeptic-review](https://github.com/enebin/skeptic-review)를 함께 설치하면 리뷰어가 잡은 내용을 사용자에게 보여 주기 전에 실제로 맞는 지적인지 한 번 더 걸러 줍니다.
+선택 사항: [skeptic-review](https://github.com/enebin/skeptic-review)를 함께 설치하면 리뷰어가 잡은 내용을 사용자에게 보여 주기 전에 실제로 맞는 지적인지 한 번 더 걸러 줍니다. 설치하지 않으면 리뷰 결과에 `SkepticReview: OFF`로 표시됩니다.
 
 ## 첫 기능 만들기
 
@@ -60,6 +60,8 @@ Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해,
 4. 리뷰에서 확인된 문제를 고치고, 중대한 지적이 남지 않을 때까지 반복합니다.
 5. 화면 검사를 켜 두었다면 바뀐 화면도 점검합니다.
 6. 작업 내용을 정리해 보여 주고 커밋할지 묻습니다.
+
+아직 커밋이 없거나 빌드·테스트 명령이 확인되지 않은 레포에서는, 기본 구조를 세팅하는 단계로 시작하는 짧은 계획을 먼저 보여 주고 승인을 기다립니다.
 
 결과가 마음에 들면 이렇게 말합니다.
 
@@ -94,7 +96,8 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | "내가 바꾼 코드 리뷰해 줘." | `review` |
 | "신규 사용자가 가입까지 잘 가는지 봐 줘." | `ux-journey` (실제 앱에서 실행) |
 | "앱에서 설정 화면 확인해 줘." | `ui-qa` |
-| "1.2.0 릴리스 준비해 줘." | `release` |
+| "1.2.0 릴리스해 줘." | `release` |
+| "매주 금요일마다 릴리스 준비해 줘." | `release-prep` |
 | "이번 주 정리해 줘." | `weekly-summary` |
 | "오늘은 여기까지. 다음에 이어서 할 수 있게 남겨 줘." | `handoff` |
 
@@ -155,7 +158,7 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | `ux-journey` | 처음 온 사용자가 실제 앱에서 전체 여정을 끝까지 해 보고, 막힌 곳을 알려 줍니다 |
 | `release-prep` | 정해진 주기로 릴리스를 준비하고 검증한 뒤 최종 승인을 받습니다 |
 
-각 기능의 설정 방법은 [부가기능 카탈로그](plugins/groundwork/catalog/addons.md)에 있습니다.
+Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 자세한 내용은 [Slack 연결 안내](plugins/groundwork/skills/slack-report/references/setup.md)를 참고하세요. 자동 보고를 켜면 두 클라이언트에 저장소용 턴 종료 훅을 설치합니다.
 
 <details>
 <summary><b>전체 스킬</b></summary>
