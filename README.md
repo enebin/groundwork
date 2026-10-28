@@ -9,40 +9,20 @@
   <img alt="Version 0.3.0" src="https://img.shields.io/badge/version-0.3.0-6E6C66">
 </p>
 
-<p align="center"><b>English</b> · <a href="README.ko.md">한국어</a></p>
-
-**groundwork** is a Claude Code and Codex plugin that sets up how AI coding agents work in your repository — issue tracking, workflow, branch and release strategy, architecture, AI code review, and UI QA — and keeps your workflow running that way.
-
-Running `/groundwork:onboarding` walks you through eight choices. Each choice is a **bundle**: a set of rules and skills designed to work together, complete with pros, cons, token cost, and a recommendation tailored to your repo. Your choices are saved to `GROUNDWORK.md`. Core implementation and testing rules go into `AGENTS.md` alongside your chosen rules, and architecture rules go into `ARCHITECTURE.md`. Every other groundwork skill reads these files, so the plugin adapts to whatever repo it's in.
-
-It works best on a fresh `git init`:
-
-- a side project you just started
-- an assignment due at 9 a.m. tomorrow
-- a hackathon project where you just want a quick prototype
-- a quick throwaway repo only you will ever see
-
-Set it up before your first commit so you start with rules, code reviews, and QA in place instead of `final_v2_REAL.py`. It works on existing repos too — it asks the same questions and recommends options based on your existing code and setup.
-
-Before asking the first question, onboarding shows all eight steps and its recommended setup at a glance:
+<p align="center"><b>Set it up once. Then just say what to build.</b></p>
 
 <p align="center">
-  <img src="assets/overview.svg" alt="Onboarding in an empty repository: every step with its recommended bundle, before the first question." width="100%">
+  <a href="#install">Install</a> &ensp;·&ensp;
+  <a href="#your-first-feature">Your first feature</a> &ensp;·&ensp;
+  <a href="#what-you-can-ask-for">What you can ask for</a> &ensp;·&ensp;
+  <a href="README.ko.md">한국어</a>
 </p>
 
-At each step, you can compare the pros, cons, and token usage of each option:
+<br>
 
-<p align="center">
-  <img src="assets/choices.svg" alt="Onboarding step 3 of 8: workflow bundles compared by pros, cons, and token cost, with the recommended bundle first." width="100%">
-</p>
+**groundwork** is a Claude Code and Codex plugin that decides, once, how AI coding agents work in your repository: issue tracking, workflow, branches and releases, architecture, code review, and UI checks. After that, you ask for a feature in plain words, and the agent files the issue, implements, tests, reviews, and fixes it the way you chose. It stops only where a person should decide.
 
-## How it works
-
-<p align="center">
-  <img src="assets/how-it-works.svg" alt="Onboarding writes GROUNDWORK.md, AGENTS.md, and ARCHITECTURE.md; every groundwork skill and reviewer agent follows them." width="100%">
-</p>
-
-Claude Code and Codex share the exact same set of skills; only the plugin manifests differ.
+There are no commands to learn. Every skill can be started in plain words, in any language.
 
 ## Install
 
@@ -53,17 +33,85 @@ Claude Code:
 /plugin install groundwork@groundwork
 ```
 
-Then run onboarding in the repo you want to set up:
+Then, in the repository you want to set up, say:
 
+```text
+Set up groundwork for this repo.
 ```
-/groundwork:onboarding
+
+Onboarding asks eight questions, recommends an answer for each, and saves your choices to `GROUNDWORK.md`. Every other skill reads that file.
+
+groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
+
+Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you.
+
+## Your first feature
+
+```text
+Add a sign-in screen.
 ```
 
-In Claude Code, groundwork checks GitHub for updates at most once a day and notifies you once per new release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
+That one sentence is the whole request. With the default setup, groundwork then:
 
-Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you. If it isn't installed, reviews show `SkepticReview: OFF`.
+1. Files an issue for the request and creates a branch in its own worktree.
+2. Implements it, with tests written alongside.
+3. Runs your build and tests, then the reviewers you chose, in parallel.
+4. Fixes what the reviewers confirm, and repeats until no serious finding is left.
+5. Checks the changed screens when your setup asks for it.
+6. Reports what it did and offers a commit.
 
-## What onboarding sets up
+When you are happy with it:
+
+```text
+Push it and open a PR.
+```
+
+groundwork rebases, verifies again, pushes, and opens the PR. With auto-merge on, it also waits for CI, merges, and cleans up the branch.
+
+A job too large for one PR is split into steps first; you approve the plan, and each step then runs the same way.
+
+### Where it stops for you
+
+groundwork never decides these on its own:
+
+- **Approving a plan** for a job split into several steps.
+- **Approving a design document**, in the design-first workflow.
+- **Pushing and opening a PR.** It waits until you ask in so many words.
+- **Merging**, unless you turned on auto-merge.
+- **Releasing.** A release starts only when you ask, and scheduled release prep waits for your Yes before publishing.
+
+## What you can ask for
+
+These are examples; any wording that means the same works.
+
+| You say | What runs |
+|---|---|
+| "Add dark mode." / "Fix the crash on the settings screen." | `step`: issue → implement → test → review → fix |
+| "This is big. Split it into issues." | `plan`, then `step` for each part |
+| "Push it and open a PR." | `takeoff`, then `autoland` if auto-merge is on |
+| "The PR is merged. Clean up." | `landing` |
+| "Review my changes." | `review` |
+| "Can new users get through sign-up?" | `ux-journey` on the running app |
+| "Check the settings screen on the app." | `ui-qa` |
+| "Prepare release 1.2.0." | `release` |
+| "Summarize this week." | `weekly-summary` |
+| "I'm stopping here. Leave a note for next time." | `handoff` |
+
+You can still type a skill by name, such as `/groundwork:step`, when you want to be exact.
+
+## Set it up once
+
+Before the first question, onboarding shows every step and its recommended setup at a glance:
+
+<p align="center">
+  <img src="assets/overview.svg" alt="Onboarding in an empty repository: every step with its recommended bundle, before the first question." width="100%">
+</p>
+
+Each choice is a **bundle**: rules and skills that work together, shown with pros, cons, and token cost.
+
+<p align="center">
+  <img src="assets/choices.svg" alt="Onboarding step 3 of 8: workflow bundles compared by pros, cons, and token cost, with the recommended bundle first." width="100%">
+</p>
 
 | Step | Category | Options | New project default |
 |---|---|---|---|
@@ -73,80 +121,65 @@ Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to 
 | 4 | Release strategy | develop + release, main only; merge style | develop + release |
 | 5 | Architecture | unidirectional, mvvm, layered-service, layered-web, none | recommended based on stack |
 | 6 | Review | app, sdk, service, product, light | recommended based on project type |
-| 7 | Screen checks | UX: every PR, before release, manual; from the code or on the app. QA: every PR, before release, manual | UX: every PR, from the code. QA: manual |
+| 7 | Screen checks | UX and QA: every PR, before release, or manual | UX: every PR, from the code. QA: manual |
 | 8 | Custom rules | free text | none |
 
-Before the first question, you'll see a table of recommendations tailored to your repo, and you can accept all of them at once if you want. That said, since these choices stick around, it's worth going through them one by one.
+It works best on a fresh `git init`, such as a side project, a hackathon prototype, or an assignment due tomorrow, so you start with rules, reviews, and QA in place. On an existing repository it asks the same questions and recommends answers from your code.
 
-Testing isn't an optional toggle — it's built into implementation. Onboarding detects your repo's build/test commands and applicable checks, previews them for you, and writes the [default implementation rules](plugins/groundwork/reference/implementation.md) into `AGENTS.md`.
+Commit `GROUNDWORK.md` and the docs onboarding writes. Teammates only need to install the plugin to work under the same rules. To change a choice later, say so; to pick up new features after a plugin update, say "update groundwork".
 
-`eco / normal / sport` is a separate preset that controls overall thoroughness, defaulting to `normal`. Much like a model's reasoning-effort setting, it adjusts verification depth, review iterations, and screen-check scope together (without changing the model itself). For screen checks, `eco` and `normal` check only the screens a change may affect, and `sport` checks every screen. You can override it per run with `--mode` or tweak individual settings later. When screen checks run is still governed by the frequencies you chose in step 7.
+<p align="center">
+  <img src="assets/how-it-works.svg" alt="Onboarding writes GROUNDWORK.md, AGENTS.md, and ARCHITECTURE.md; every groundwork skill and reviewer agent follows them." width="100%">
+</p>
 
-You can browse the pros, cons, and exact rules written by each bundle in [`plugins/groundwork/catalog/`](plugins/groundwork/catalog/).
+## What runs behind a request
+
+- **Tests are part of implementation**, not an option. Onboarding finds your build and test commands and writes the [implementation rules](plugins/groundwork/reference/implementation.md) into `AGENTS.md`.
+- **Reviewers** for architecture, code quality, security, writing, and developer experience run in parallel on each change. Confirmed findings go to a `fixer` agent in a fresh context, so your conversation receives only a short summary.
+- **Screen checks** test whether each user persona can finish its tasks, from the code or on the running app, and check the rendered UI against requirements. See [screen checks](plugins/groundwork/catalog/screen-checks.md) and how the [UX checks compare](plugins/groundwork/reference/ux-checks.md). In a [benchmark](bench/ux/flow-reviewer/README.md), the code-based UX review found 36 of 39 seeded defects at about a tenth of the app-based review's cost.
+- **Thoroughness** is one preset, `eco`, `normal` (default), or `sport`, that sets verification depth, review rounds, and screen-check scope together. Say "use sport mode for this one" to change it for a single request.
+
+A review does not replace your own judgment, and checks on the running app can take a long time and many tokens.
 
 ## Optional add-ons
 
-After setup, onboarding shows **You might also find these useful** outside the eight steps. Pick a feature to continue its setup, or finish and return later with `/groundwork:addons`. All six skills ship with Groundwork and use the same files in Claude Code and Codex. Nothing starts automatically when the plugin is installed or when all onboarding recommendations are accepted.
+Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse them.
 
-| Skill | What it does | When it helps |
-|---|---|---|
-| `slack-report` | Collect work changes and test results in Slack | Follow several repositories from one place |
-| `handoff` | Save completed work, remaining work, and the next starting point | Resume in a new session without rebuilding context |
-| `weekly-summary` | Summarize a week's commits, PRs, and issues | Prepare a weekly update or retrospective |
-| `release-notes` | Turn a revision range into user-facing release notes | Explain features, fixes, and upgrade requirements |
-| `ux-journey` | Have a first-time user walk a whole journey (landing page → sign-up → organization setup) on the running app and report where they get stuck | Before a launch or release, or after changing first-run screens |
-| `release-prep` | Prepare and verify releases on a chosen cadence, then request final approval | Keep releases moving without repeating the checklist |
+| Add-on | What it does |
+|---|---|
+| `slack-report` | Sends work changes and test results to Slack |
+| `handoff` | Saves what is done, what is left, and where to start next |
+| `weekly-summary` | Summarizes a week's commits, PRs, and issues |
+| `release-notes` | Turns a range of commits into user-facing release notes |
+| `ux-journey` | Has a first-time user walk a whole journey on the running app and reports where they get stuck |
+| `release-prep` | Prepares and verifies releases on a schedule, then asks for final approval |
 
-Slack setup asks for the destination and on-demand or automatic reporting. Credentials stay in `~/.config/slack-report/`, outside Git; see [connection setup](plugins/groundwork/skills/slack-report/references/setup.md). Automatic reporting is opt-in and installs repository-local Stop hooks for both clients. Handoff notes and weekly summaries create local drafts; they do not send messages or schedule themselves.
+Setup details for each are in the [add-on catalog](plugins/groundwork/catalog/addons.md).
 
-The journey usability test explores the project on first use, proposes journeys from the entry point to first value, and writes them to `GROUNDWORK.md` only after you confirm them. Each session is a fresh participant agent that never sees the code: it gets only a scenario and test access, thinks aloud at every step, and rates how easy each part felt. The skill moderates, checks each journey's success state, and reports per-milestone results with screenshots. It runs on request, or before every release if you choose that during setup.
-
-Scheduled release preparation asks for cadence, timezone, destination, and allowed cleanup once. It recommends the next version from the diff and the repository's version policy, prepares the release notes, and runs required checks before asking only whether to approve that release. Publication waits for a human Yes tied to the verified candidate. Scheduling uses the current client's supported tools; when none is available, setup reports **not scheduled** and supplies the missing setup step. Installing the skill never creates a schedule or publishes a release.
-
-## Skills
+<details>
+<summary><b>All skills</b></summary>
 
 | Skill | Description |
 |---|---|
 | `onboarding` | Initialize or update `GROUNDWORK.md` |
-| `update` | After a plugin update, apply migrations and pick new features from the release notes, without redoing onboarding |
+| `update` | After a plugin update, apply migrations and pick new features from the release notes |
 | `addons` | Browse optional features and continue their setup or one-off use |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey` | Optional reporting, session handoff, summaries, release preparation, and journey usability tests; see above |
 | `plan` | Break a large task into a parent issue and smaller step issues |
 | `step` | Run a single step: implement, then loop through verify → review → fix until no confirmed 🔴/🟠 issues remain |
 | `takeoff` | Rebase, push, and open the PR for a finished step |
 | `landing`, `rejoin` | Clean up after a merge, or move a branch out of its worktree |
-| `release`, `autoland` | Cut a release and auto-merge once CI passes |
-| `review-and-fix`, `commit-push` | Fast, lightweight quick workflow |
-| `review` | Run selected reviewers in parallel and combine their findings |
-| `ux-review` | Usability review from the perspective of chosen user personas, from the code or on the app (runs per screen checks or on demand) |
-| `ui-qa` | Launch the app to check UI behaviors automated tests can't cover (runs per screen checks or on demand) |
+| `release`, `autoland` | Cut a release, and merge once CI passes |
+| `review-and-fix`, `commit-push` | The quick workflow |
+| `review` | Run the selected reviewers in parallel and combine their findings |
+| `ux-review` | Usability review from chosen user personas, from the code or on the app |
+| `ui-qa` | Launch the app to check UI behavior automated tests can't cover |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey` | Optional add-ons; see above |
 
-Five code reviewers can run on every change: `architecture-reviewer`, `code-quality-reviewer`, `security-reviewer`, `writing-reviewer`, and `dx-reviewer`. `dx-reviewer` traces developer tasks directly through the code, looking for friction from the perspective of developers using your library, HTTP/RPC API, or CLI. `ux-flow-reviewer` does the same for end-user journeys (extra steps, missing state handling, dead ends); it joins every review round when you pick code-based UX on every PR in step 7. Alongside their built-in checklists, each reviewer also checks repo-specific criteria under `## Review focus: <reviewer>` in `GROUNDWORK.md`.
-
-UI changes are verified on every run by UI tests that capture screenshots, which the implementing agent opens and inspects directly. [Screen checks](plugins/groundwork/catalog/screen-checks.md) go further, in two parts. UX checks whether each user persona can finish its tasks, either from the code (fast, may be less accurate) or on the simulator or browser (slow, closest to real use). QA launches the app and checks the rendered UI against requirements and the design source. Each runs on every PR (`continuous`), before releases (`release`), or only when requested (`manual`). Checks on the running app can take a long time and use many tokens. Anything automated tests can't reliably verify is tracked in `docs/ui-coverage.md`. [UX checks](plugins/groundwork/reference/ux-checks.md) compares the code-based review, the app-based review, and the journey test.
-
-Web projects are usually fast to check since browser tools can inspect DOM elements directly. iOS simulators and Android emulators can take longer due to build, install, and launch times as well as UI automation limits; web QA can also be slower if it relies heavily on screenshots. Actual time and token usage depend on coverage scope, number of personas, tooling, and retries.
-
-Confirmed review issues are handed off to the `fixer` agent. Because it starts in a fresh context, fixes the issues, and re-runs the relevant tests on its own, your main working context only receives a short summary of what was fixed.
-
-## Code-based UX review benchmark
-
-How well can `ux-flow-reviewer` judge usability from the code alone? A benchmark of 11 seeded changes to a small SwiftUI app compares it with the app-based `ux-persona-reviewer` (Sonnet, hand-judged):
-
-| | Code-based (`ux-flow-reviewer`) | App-based (`ux-persona-reviewer`) |
-|---|---|---|
-| Seeded defects found | 36/39 | 32/32 (27 seen on screen) |
-| False positives | 0 | 4 |
-| Mean time per run | 21 s | 126 s |
-| Mean cost per run | $0.17 | $1.79 |
-
-The code-based reviewer is about 6× faster and 10× cheaper, and finds failure paths the app cannot easily trigger. The app-based reviewer confirms layout risks and caught a number-format regression that every code-based run missed. Running the code-based review on every change and the app-based review only on what it hands off covers both. Prompt-version comparisons, per-defect results, and how to rerun it are in [`bench/ux/flow-reviewer/`](bench/ux/flow-reviewer/README.md).
+</details>
 
 ## GROUNDWORK.md
 
-The full config specification lives in [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md). Config keys are only ever added — existing keys are never renamed or removed. If the structure ever needs to change, the schema version is bumped and onboarding migrates your existing file automatically. After updating the plugin, run `/groundwork:update` (in Codex, ask it to use groundwork update): it reads the release notes since your setup, applies required migrations, and lets you pick which new features to add.
-
-Commit `GROUNDWORK.md` and the docs generated by onboarding to your repo. Teammates just need to install the plugin to work under the exact same rules — no need for everyone to run onboarding again.
+The full specification is in [`plugins/groundwork/reference/config.md`](plugins/groundwork/reference/config.md). Keys are only ever added, never renamed or removed. When the structure must change, the schema version is bumped and onboarding migrates your file.
 
 ## License
 
