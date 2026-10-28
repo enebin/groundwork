@@ -15,7 +15,8 @@
   <a href="#install">Install</a> &ensp;·&ensp;
   <a href="#your-first-feature">Your first feature</a> &ensp;·&ensp;
   <a href="#what-you-can-ask-for">What you can ask for</a> &ensp;·&ensp;
-  <a href="README.ko.md">한국어</a>
+  <a href="README.ko.md">한국어</a> &ensp;·&ensp;
+  <a href="README.zh-CN.md">简体中文</a>
 </p>
 
 <br>

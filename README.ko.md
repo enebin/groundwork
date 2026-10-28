@@ -15,7 +15,8 @@
   <a href="#설치">설치</a> &ensp;·&ensp;
   <a href="#첫-기능-만들기">첫 기능 만들기</a> &ensp;·&ensp;
   <a href="#이렇게-말하면-됩니다">이렇게 말하면 됩니다</a> &ensp;·&ensp;
-  <a href="README.md">English</a>
+  <a href="README.md">English</a> &ensp;·&ensp;
+  <a href="README.zh-CN.md">简体中文</a>
 </p>
 
 <br>
