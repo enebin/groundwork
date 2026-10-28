@@ -108,7 +108,7 @@ You can still type a skill by name, such as `/groundwork:step`, when you want to
 Before the first question, onboarding shows every step and its recommended setup at a glance:
 
 <p align="center">
-  <img src="assets/overview.svg" alt="Onboarding in an empty repository: every step with its recommended bundle, before the first question." width="100%">
+  <img src="assets/overview.svg" alt="Onboarding goes through eight questions and recommends an answer for each. The answers collect in a draft GROUNDWORK.md that is saved only after you approve." width="100%">
 </p>
 
 Each choice is a **bundle**: rules and skills that work together, shown with pros, cons, and token cost.

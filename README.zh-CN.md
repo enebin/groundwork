@@ -108,7 +108,7 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 在问第一个问题之前，onboarding 会先一览展示所有步骤和推荐配置：
 
 <p align="center">
-  <img src="assets/overview.svg" alt="在空仓库中运行 onboarding：在第一个问题之前展示每个步骤及其推荐方案。" width="100%">
+  <img src="assets/overview.svg" alt="onboarding 依次完成 8 个问题，并为每个问题推荐一个答案。答案汇总到 GROUNDWORK.md 草稿中，只有在你批准后才会保存。" width="100%">
 </p>
 
 每个选项都是一个**方案包**：一组相互配合的规则和技能，并附有优缺点和 token 成本。

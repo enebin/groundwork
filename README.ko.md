@@ -108,7 +108,7 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 질문을 시작하기 전에 전체 단계와 추천 구성을 한눈에 먼저 보여 줍니다.
 
 <p align="center">
-  <img src="assets/overview.svg" alt="빈 레포에서의 onboarding: 첫 질문 전에 모든 단계와 추천 번들을 보여 줍니다." width="100%">
+  <img src="assets/overview.svg" alt="onboarding이 8개 질문을 차례로 거치며 질문마다 추천 답을 보여 줍니다. 답은 GROUNDWORK.md 초안에 모이고 승인한 뒤에만 저장됩니다." width="100%">
 </p>
 
 각 선택지는 **번들** 단위입니다. 서로 맞물려 돌아가는 규칙과 스킬을 묶어 둔 세트로, 장단점과 토큰 비용이 함께 나옵니다.
