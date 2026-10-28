@@ -87,6 +87,6 @@ For each session:
 
 Then merge across sessions and journeys: combine obstacles that share a screen and cause, keeping every session's and journey's attribution, and count how many sessions hit each one. Use the Code map to add a suspected cause only as a labeled inference.
 
-Report as `skills/ux-journey/references/journey-test.md` says. A participant that failed to run, or a missing session, never becomes PASS.
+Report as `skills/ux-journey/references/journey-test.md` says: save the full report, with flow ease next to the status, to a file, and show only the plain-language summary and the file link in the conversation. When another skill ran this one, return the status line, the summary, and the file path to it. A participant that failed to run, or a missing session, never becomes PASS.
 
 After a fix, rerun the affected journeys from a clean state on the new build, and discard checkpoints taken before it. Never carry a PASS across edits to the screens a journey passes through.
