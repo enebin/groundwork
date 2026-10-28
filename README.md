@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.3.0" src="https://img.shields.io/badge/version-0.3.0-6E6C66">
+  <img alt="Version 0.3.1" src="https://img.shields.io/badge/version-0.3.1-6E6C66">
 </p>
 
 <p align="center"><b>Set it up once. Then just say what to build.</b></p>
