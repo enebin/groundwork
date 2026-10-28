@@ -21,9 +21,9 @@
 
 <br>
 
-**groundwork** is a Claude Code and Codex plugin that decides, once, how AI coding agents work in your repository: issue tracking, workflow, branches and releases, architecture, code review, and UI checks. After that, you ask for a feature in plain words, and the agent files the issue, implements, tests, reviews, and fixes it the way you chose. It stops only where a person should decide.
+**groundwork** is a Claude Code and Codex plugin that sets, once, how AI coding agents work in your repository: issue tracking, workflow, branches and releases, architecture, code review, and screen checks. After that, you ask for a feature in plain words, and the agent files the issue, implements the change, writes and runs tests, reviews it, and fixes what the reviewers find. It stops only where a person should decide.
 
-There are no commands to learn. Every skill can be started in plain words, in any language.
+There are no commands to learn. You can run every skill in plain words, in any language.
 
 ## Install
 
@@ -42,7 +42,7 @@ Set up groundwork for this repo.
 
 Onboarding asks eight questions, recommends an answer for each, and saves your choices to `GROUNDWORK.md`. Every other skill reads that file.
 
-groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
+In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
 
 Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you.
 
@@ -55,11 +55,11 @@ Add a sign-in screen.
 That one sentence is the whole request. With the default setup, groundwork then:
 
 1. Files an issue for the request and creates a branch in its own worktree.
-2. Implements it, with tests written alongside.
-3. Runs your build and tests, then the reviewers you chose, in parallel.
-4. Fixes what the reviewers confirm, and repeats until no serious finding is left.
-5. Checks the changed screens when your setup asks for it.
-6. Reports what it did and offers a commit.
+2. Implements the change and writes tests alongside it.
+3. Runs your build and tests, then runs your chosen reviewers in parallel.
+4. Fixes confirmed findings and repeats until no serious issues remain.
+5. Runs screen checks on the changed screens, if enabled.
+6. Reports what it did and asks whether to commit.
 
 When you are happy with it:
 
@@ -69,17 +69,17 @@ Push it and open a PR.
 
 groundwork rebases, verifies again, pushes, and opens the PR. With auto-merge on, it also waits for CI, merges, and cleans up the branch.
 
-A job too large for one PR is split into steps first; you approve the plan, and each step then runs the same way.
+A job too large for one PR is split into steps first; once you approve the plan, each step runs the same way.
 
 ### Where it stops for you
 
 groundwork never decides these on its own:
 
-- **Approving a plan** for a job split into several steps.
-- **Approving a design document**, in the design-first workflow.
-- **Pushing and opening a PR.** It waits until you ask in so many words.
-- **Merging**, unless you turned on auto-merge.
-- **Releasing.** A release starts only when you ask, and scheduled release prep waits for your Yes before publishing.
+- **Plan approval:** when a large job is split into multiple steps.
+- **Design approval:** before implementation in the `design-first` workflow.
+- **Pushing and opening a PR:** waits until you explicitly ask.
+- **Merging:** waits for you, unless auto-merge is on.
+- **Releasing:** starts only when you ask, and scheduled release prep waits for your approval before publishing.
 
 ## What you can ask for
 
@@ -122,12 +122,12 @@ Each choice is a **bundle**: rules and skills that work together, shown with pro
 | 4 | Release strategy | develop + release, main only; merge style | develop + release |
 | 5 | Architecture | unidirectional, mvvm, layered-service, layered-web, none | recommended based on stack |
 | 6 | Review | app, sdk, service, product, light | recommended based on project type |
-| 7 | Screen checks | UX and QA: every PR, before release, or manual | UX: every PR, from the code. QA: manual |
+| 7 | Screen checks | UX (from code or on app) and QA: every PR, before release, or manual | UX: every PR, from the code. QA: manual |
 | 8 | Custom rules | free text | none |
 
-It works best on a fresh `git init`, such as a side project, a hackathon prototype, or an assignment due tomorrow, so you start with rules, reviews, and QA in place. On an existing repository it asks the same questions and recommends answers from your code.
+It works best on a fresh `git init`, such as a side project, a hackathon prototype, or an assignment due tomorrow, so you start with rules, reviews, and QA in place. On an existing repository, it asks the same questions and recommends answers from your code.
 
-Commit `GROUNDWORK.md` and the docs onboarding writes. Teammates only need to install the plugin to work under the same rules. To change a choice later, say so; to pick up new features after a plugin update, say "update groundwork".
+Commit `GROUNDWORK.md` and the docs onboarding writes. Teammates only need to install the plugin to work under the same rules. To change a setting later, just ask; to pick up new features after a plugin update, say "update groundwork".
 
 <p align="center">
   <img src="assets/how-it-works.svg" alt="Onboarding writes GROUNDWORK.md, AGENTS.md, and ARCHITECTURE.md; every groundwork skill and reviewer agent follows them." width="100%">
@@ -138,7 +138,7 @@ Commit `GROUNDWORK.md` and the docs onboarding writes. Teammates only need to in
 - **Tests are part of implementation**, not an option. Onboarding finds your build and test commands and writes the [implementation rules](plugins/groundwork/reference/implementation.md) into `AGENTS.md`.
 - **Reviewers** for architecture, code quality, security, writing, and developer experience run in parallel on each change. Confirmed findings go to a `fixer` agent in a fresh context, so your conversation receives only a short summary.
 - **Screen checks** test whether each user persona can finish its tasks, from the code or on the running app, and check the rendered UI against requirements. See [screen checks](plugins/groundwork/catalog/screen-checks.md) and how the [UX checks compare](plugins/groundwork/reference/ux-checks.md). In a [benchmark](bench/ux/flow-reviewer/README.md), the code-based UX review found 36 of 39 seeded defects at about a tenth of the app-based review's cost.
-- **Thoroughness** is one preset, `eco`, `normal` (default), or `sport`, that sets verification depth, review rounds, and screen-check scope together. Say "use sport mode for this one" to change it for a single request.
+- **Thoroughness** is controlled by a single preset—`eco`, `normal` (default), or `sport`—that sets verification depth, review rounds, and screen-check scope together. Say "use sport mode for this one" to change it for a single request.
 
 A review does not replace your own judgment, and checks on the running app can take a long time and many tokens.
 
