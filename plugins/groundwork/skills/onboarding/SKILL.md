@@ -189,18 +189,20 @@ Write only after approval. Apply requested changes and show the preview again.
 
 ## 6. Finish
 
-- When every approved file was written, open the message with this banner in a `text` code block, copied exactly, so the end of setup is easy to spot. If a write failed or was declined, skip the banner, name each file that is missing, and say to run onboarding again.
+- When every approved file was written, open the message with this banner in a `text` code block, copied exactly, so the end of setup is easy to spot. Keep the banner ASCII-only: do not replace its characters with Unicode block characters, which can render with gaps or uneven widths across fonts. If a write failed or was declined, skip the banner, name each file that is missing, and say to run onboarding again.
 
   ```text
-  ▄▀▀▀▀ █▀▀▀▀ ▀▀█▀▀ █   █ █▀▀▀▄
-  ▀▄▄▄  █▄▄▄    █   █   █ █▄▄▄▀
-      █ █       █   █   █ █
-  ▀▀▀▀  ▀▀▀▀▀   ▀    ▀▀▀  ▀
+   #### ##### ##### #   # ####
+  #     #       #   #   # #   #
+   ###  ####    #   #   # ####
+      # #       #   #   # #
+  ####  #####   #    ###  #
 
-  █▀▀▀▄ ▄▀▀▀▄ █▄  █ █▀▀▀▀ █
-  █   █ █   █ █ ▀▄█ █▄▄▄  █
-  █   █ █   █ █   █ █     ▀
-  ▀▀▀▀   ▀▀▀  ▀   ▀ ▀▀▀▀▀ ▀
+  ####   ###  #   # ##### #
+  #   # #   # ##  # #     #
+  #   # #   # # # # ####  #
+  #   # #   # #  ## #
+  ####   ###  #   # ##### #
   ```
 
 - Report what was written, in a short list.
