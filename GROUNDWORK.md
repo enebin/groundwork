@@ -86,6 +86,10 @@ mode: normal
 - Keep the English and Korean READMEs, skill help, plugin manifests, and configuration examples consistent with the actual behavior.
 - Errors must name the missing prerequisite and a recovery action; never silently guess required configuration.
 
+## Release checks
+
+- Re-check each runner in `plugins/groundwork/catalog/runners/` whose tool is installed at a newer version than its `Verified with:` line, as "Runner catalog" in `AGENTS.md` says.
+
 ## Notes
 
 - GitHub closes issues on merge: no — integration branch is not the default branch.
