@@ -8,7 +8,7 @@ If a key a skill needs is missing, stop and name the key. Do not fall back to a 
 
 ## Compatibility
 
-The file is a public contract: other people's repositories hold it. Before 1.0, a beta release may still change a value's meaning; the release notes say so, and `onboarding` migrates the file. Keys are only ever added. A key is never renamed or removed, and a value never changes meaning. When a breaking change is unavoidable, bump `groundwork` (the schema version) and teach `onboarding` to migrate the old shape. `update` applies migrations and new features release by release, from `plugin_version` to the installed plugin version, without repeating onboarding. A skill that reads a `groundwork` version newer than it knows stops and asks the user to update the plugin.
+The file is a public contract: other people's repositories hold it. Before 1.0, a beta release may still change a value's meaning; the release notes say so, and `onboarding` migrates the file. Keys are only ever added. A key is never renamed or removed, and a value never changes meaning. When a breaking change is unavoidable, bump `groundwork` (the schema version) and teach `onboarding` to migrate the old shape. `update` applies migrations and new features release by release, from `plugin_version` to the installed plugin version, without repeating onboarding; when an update brings more than 8 choices, it sends the user to `onboarding` instead. A skill that reads a `groundwork` version newer than it knows stops and asks the user to update the plugin.
 
 ## Shape
 
