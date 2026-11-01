@@ -114,6 +114,8 @@ Ask only the follow-ups the chosen bundle triggers (see the catalog), each with 
 - `dx` in the bundle: developer personas (`kind: developer`). Recommend one, drawn from the step 2 answer; the user can add more. End-user personas come in step 7.
 - Quick workflow: review trigger.
 
+Then ask who runs the reviewers: "The agent you are using (Recommended)" or "Advanced: run chosen reviewers on an external CLI model". Keep an existing `review.external` as the recommendation on re-runs. For the advanced choice, ask which of the chosen reviewers to move and the model id, run `copilot --version`, and if it fails, say the GitHub Copilot CLI is needed and keep those reviewers on the current agent unless the user still wants the entry. Write `review.external` as External runners in `reference/config.md` describes, and show it in the final preview.
+
 Do not ask the Skeptic policy. Write the bundle's default, or keep an existing `review.skeptic` on re-runs, and show it in the final preview. Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
 For an existing repository with its own reviewers or review rules, draft a `## Review focus: <key>` section for each chosen reviewer from them, show the drafts, and ask "Use the drafts (Recommended)" or "Edit".
