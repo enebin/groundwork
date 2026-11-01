@@ -78,6 +78,7 @@ review:
     - name: "Habit tracker user"
       goal: "Record today's habits in a few taps"
       kind: user                         # user (end user of the product) | developer (builds on its API, library, or CLI); default user
+  external: {}                           # optional; e.g. writing: { runner: copilot, model: gemini-4-argon } runs that key on an external CLI model
 
 qa:
   bundle: manual                         # manual | release | continuous — when ui-qa runs on the running app
@@ -121,6 +122,17 @@ All of these read code. Every key except `ux` runs on every change when listed i
 The `fixer` agent is not a reviewer either: the `step` skill hands it each round's confirmed findings, so fixes and their test runs stay out of the step's own context.
 
 In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spawn a fresh subagent and tell it to read and follow `agents/<agent>.md` under the plugin root.
+
+### External runners
+
+`review.external` is optional. Absent, every reviewer runs on the agent running the review. Each entry maps a reviewer key to `{ runner, model }`, and only listed keys move; the rest stay on the current agent. It does not change which keys run (`review.reviewers`, the `ux` mapping, or `--only`), so an entry for a key that does not run has no effect.
+
+- `runner`: `copilot`, the GitHub Copilot CLI, is the only runner. It must be installed and signed in where the review runs.
+- `model`: a model id that runner accepts, such as `gemini-4-argon`. `copilot help config` lists them.
+
+The external model reads the reviewer's instructions, the change, and repository files, with read-only file tools only: no shell, no file writes, no web or MCP tools. Its findings go through Skeptic Review and the report like any other reviewer's, labeled with the runner and model. When the runner is missing, signed out, rate-limited, or returns nothing, that key is reported as not run; it never falls back to the current agent. Without shell the external model cannot read git history, so reviewers that use it, such as `code-quality` and `security`, see less context than on the current agent. Only `writing` has been tried on an external runner so far.
+
+`mode` does not change the external model or its reasoning effort.
 
 ### Review bundles
 

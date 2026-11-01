@@ -12,7 +12,7 @@ Paths below are relative to the plugin root, two directories above this skill's 
 
 ## 1. Read the configuration
 
-Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.reviewers`, `review.skeptic`, `docs.rules`, and, in local mode, `branches.integration`. Read `ux.bundle` and `ux.method` when the `ux` mapping is present (Screen checks in `reference/config.md`); `ux` also needs `review.personas`.
+Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.reviewers`, `review.skeptic`, `docs.rules`, and, in local mode, `branches.integration`. Read `ux.bundle` and `ux.method` when the `ux` mapping is present (Screen checks in `reference/config.md`); `ux` also needs `review.personas`. Read `review.external` when present (External runners in `reference/config.md`). If an entry names a key that is not a reviewer key, has a missing `runner` or one other than `copilot`, or has no `model`, stop. Name the entry and field, list the allowed values (the reviewer keys, runner `copilot`, model ids from `copilot help config`), and tell the user to fix or remove the entry in `GROUNDWORK.md`.
 
 Read the rules document before starting.
 
@@ -50,7 +50,7 @@ In path mode, every selected reviewer whose area the path contains applies.
 
 ## 5. Run the reviewers in parallel
 
-Launch every applicable reviewer **at the same time, in one message**. In Claude Code, use the agent `groundwork:<agent>` from the table in `reference/config.md`. In Codex, spawn a fresh subagent per reviewer and tell it to read and follow `agents/<agent>.md` under the plugin root. Keep the current model settings. Do not give a reviewer another reviewer's conclusions. If delegation is unavailable, report that limitation instead of claiming independent reviews ran.
+Launch every applicable reviewer **at the same time, in one message**. In Claude Code, use the agent `groundwork:<agent>` from the table in `reference/config.md`. In Codex, spawn a fresh subagent per reviewer and tell it to read and follow `agents/<agent>.md` under the plugin root. Keep the current model settings. Do not give a reviewer another reviewer's conclusions. If delegation is unavailable, report that limitation instead of claiming independent reviews ran. A key listed in `review.external` runs on its external runner instead (below), launched in the same message.
 
 ### Code reviewers
 
@@ -88,6 +88,34 @@ Severity:
 - 🟡 Minor: worth fixing; does not block merge
 ```
 
+### External runners
+
+For a key in `review.external`, launch a driver subagent instead of the reviewer: a general-purpose agent in Claude Code, a fresh subagent in Codex. The driver only relays; the external model does the review. Give the driver the `Plugin root` line, the key, its agent from `reference/config.md`, the model, the prompt you would give that reviewer, and these instructions:
+
+```
+You relay a review to an external model. Do not review the change yourself, and do not add, drop, or reword findings.
+
+1. Create one prompt file with `mktemp` in the system temporary directory. Write into it, in order:
+   - the body of agents/<agent>.md under the plugin root;
+   - the reviewer prompt you were given, with "Use only read-only git commands." replaced by "You cannot run commands. The change is below.";
+   - the output of the "View the change" command, or "none — review whole files";
+   - in PR mode, each changed file's content at the head (`git show <head SHA>:<path>`), with a note that the working tree does not match the change.
+2. From the repository root, run the command below with a timeout of at least 10 minutes. An external review often takes longer than a default 2-minute command timeout.
+   copilot -p "Read <prompt file> and follow it. Reply only with the findings and coverage limits, in the output format it gives." --model <model> -s --available-tools view grep glob
+3. Delete the prompt file, whatever the result.
+4. If `copilot` is not found, exits non-zero, times out, or prints none of findings, coverage limits, or "No findings", reply only `NOT RUN: <reason>`, quoting the first line of its error output, then one recovery line:
+   - not found: install the GitHub Copilot CLI, or remove the key from `review.external` to run it on the current agent;
+   - signed out or not authorized: run `copilot login`;
+   - unknown model: pick an id from `copilot help config`;
+   - rate-limited or timed out: retry later;
+   - anything else: run the command by hand to see the full error.
+5. Otherwise reply with its findings and its coverage limits, changing only their layout to match the output format.
+```
+
+`view`, `grep`, and `glob` are Copilot's read-only tools. `--available-tools` hides every other tool from the model, including shell, file writes, web access, and MCP servers. Do not add tools. Keep shell off even for git: options such as `git diff --output=<file>` write files, so a git-only allowance is not read-only.
+
+A `NOT RUN` reply is a coverage limit for that key, as in step 6. Report it with its recovery line. Do not run the key on the current agent instead.
+
 ## 6. Merge code findings
 
 - Merge findings that share a `file:line` or a root cause. Keep the highest supported severity and list every source reviewer.
@@ -117,7 +145,7 @@ Start with one Skeptic Review status line:
 Then, in this order:
 
 1. **Conclusion** in one or two sentences: whether anything blocks merge. Incomplete or blocked coverage cannot establish that the change is safe to merge.
-2. **Findings.** CONFIRMED findings by severity. Prefix each title with `[CONFIRMED]` and the reviewer key, such as `[CONFIRMED] [code-quality]`. When Skeptic Review is OFF, list first-pass 🔴/🟠 here prefixed `[UNVERIFIED]` instead, and do not treat them as confirmed.
+2. **Findings.** CONFIRMED findings by severity. Prefix each title with `[CONFIRMED]` and the reviewer key, such as `[CONFIRMED] [code-quality]`. A key run on an external runner also names the runner and model, such as `[CONFIRMED] [writing · copilot gemini-4-argon]`, everywhere the key appears in the report. When Skeptic Review is OFF, list first-pass 🔴/🟠 here prefixed `[UNVERIFIED]` instead, and do not treat them as confirmed.
 3. **Needs confirmation.** High-impact UNVERIFIED findings, each with one line on what could not be confirmed.
 4. **Unverified minor.** In `blocking` mode, every 🟡, prefixed `[UNVERIFIED]` and the reviewer key. These were not sent to Skeptic Review.
 5. **Trade-offs,** if any.
