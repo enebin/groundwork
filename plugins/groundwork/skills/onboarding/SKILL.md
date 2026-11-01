@@ -29,7 +29,7 @@ Read-only. Record what you find; it decides the recommendations.
 - Files: build manifests (`Package.swift`, `*.xcodeproj`, `project.yml`, `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `build.gradle*`, ...), CI workflows, `AGENTS.md`, `CLAUDE.md`, an architecture document, a design reference.
 - Git: remotes, branches (`develop`?), whether there are any commits.
 - Existing agent setup: `.claude/skills`, `.claude/agents`, `.claude/commands`, `.agents/skills`, `.codex/`. Note each item that overlaps a groundwork skill or agent.
-- Existing `GROUNDWORK.md`: if present, this is a re-run. Its values become the recommendations, and the user only changes what they want. If its `groundwork` version is older than `reference/config.md`, migrate it as part of this run and say what changed. A `workflow.bundle: flight` becomes `step-loop` with `workflow.worktree: true`, which keeps one worktree per issue; say so, and set `review.trigger` to `per-round`, as every step workflow uses. If the user only wants what a newer plugin version added, suggest `/groundwork:update` instead: it asks only about the changes.
+- Existing `GROUNDWORK.md`: if present, this is a re-run. Its values become the recommendations, and the user only changes what they want. If its `groundwork` version is older than `reference/config.md`, migrate it as part of this run and say what changed. A `workflow.bundle: flight` becomes `step-loop` with `workflow.worktree: true`, which keeps one worktree per issue; say so, and set `review.trigger` to `per-round`, as every step workflow uses. If the user only wants what a newer plugin version added, suggest `/groundwork:update` instead: it asks only about the changes. Do not suggest it when update sent the user here because the update brought too many changes; go through every step.
 
 Tell the user in two or three lines what you found. For an empty repository, say plainly that it is empty and that the recommendations will come from the next answer.
 
@@ -77,6 +77,8 @@ Reassure the user: this setting only affects stored artifacts. Conversation with
 
 ### Step 2 — Issue tracker
 
+Before the options, tell the user why issues are worth recording. The coding agent reads an issue's history to learn what happened before and after a change, which helps it write better code. A recorded issue also keeps planned work from being forgotten.
+
 Options: local files (Recommended for a new project: no setup, start now; can move to a real tracker later), GitHub Projects, Linear, Jira. For an existing repository whose skills or history show a tracker in use, recommend that tracker instead.
 
 Then follow the "Setup" section of `catalog/trackers/<type>.md`: detect, ask its sub-questions (each with a recommendation), and verify access with one read-only call. Creating anything remote (a GitHub repository, a project, labels) is an outward action: confirm it separately right before doing it. When a permission is missing, tell the user the command to run themselves; never switch or log in accounts on their behalf.
@@ -111,6 +113,8 @@ Ask only the follow-ups the chosen bundle triggers (see the catalog), each with 
 
 - `dx` in the bundle: developer personas (`kind: developer`). Recommend one, drawn from the step 2 answer; the user can add more. End-user personas come in step 7.
 - Quick workflow: review trigger.
+
+Then ask who runs the reviewers: "The agent you are using (Recommended)" or "Advanced: run chosen reviewers on an external CLI model". Keep an existing `review.external` as the recommendation on re-runs. For the advanced choice, ask which of the chosen reviewers to move and, in plain words, which model each should use. Check which runners in `catalog/runners/` are installed and say which runner and model each description would pick today. If none is installed or nothing fits, name the runners groundwork supports and keep those reviewers on the current agent unless the user still wants the entry. Write `review.external` as External runners in `reference/config.md` describes, and show it in the final preview.
 
 Do not ask the Skeptic policy. Write the bundle's default, or keep an existing `review.skeptic` on re-runs, and show it in the final preview. Mention that Skeptic Review is a separate plugin; if it is not installed, reviews report `SkepticReview: OFF`.
 
@@ -189,18 +193,20 @@ Write only after approval. Apply requested changes and show the preview again.
 
 ## 6. Finish
 
-- When every approved file was written, open the message with this banner in a `text` code block, copied exactly, so the end of setup is easy to spot. If a write failed or was declined, skip the banner, name each file that is missing, and say to run onboarding again.
+- When every approved file was written, open the message with this banner in a `text` code block, copied exactly, so the end of setup is easy to spot. Keep the banner ASCII-only: do not replace its characters with Unicode block characters, which can render with gaps or uneven widths across fonts. If a write failed or was declined, skip the banner, name each file that is missing, and say to run onboarding again.
 
   ```text
-  ▄▀▀▀▀ █▀▀▀▀ ▀▀█▀▀ █   █ █▀▀▀▄
-  ▀▄▄▄  █▄▄▄    █   █   █ █▄▄▄▀
-      █ █       █   █   █ █
-  ▀▀▀▀  ▀▀▀▀▀   ▀    ▀▀▀  ▀
+   #### ##### ##### #   # ####
+  #     #       #   #   # #   #
+   ###  ####    #   #   # ####
+      # #       #   #   # #
+  ####  #####   #    ###  #
 
-  █▀▀▀▄ ▄▀▀▀▄ █▄  █ █▀▀▀▀ █
-  █   █ █   █ █ ▀▄█ █▄▄▄  █
-  █   █ █   █ █   █ █     ▀
-  ▀▀▀▀   ▀▀▀  ▀   ▀ ▀▀▀▀▀ ▀
+  ####   ###  #   # ##### #
+  #   # #   # ##  # #     #
+  #   # #   # # # # ####  #
+  #   # #   # #  ## #
+  ####   ###  #   # ##### #
   ```
 
 - Report what was written, in a short list.

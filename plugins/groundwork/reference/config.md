@@ -8,7 +8,7 @@ If a key a skill needs is missing, stop and name the key. Do not fall back to a 
 
 ## Compatibility
 
-The file is a public contract: other people's repositories hold it. Before 1.0, a beta release may still change a value's meaning; the release notes say so, and `onboarding` migrates the file. Keys are only ever added. A key is never renamed or removed, and a value never changes meaning. When a breaking change is unavoidable, bump `groundwork` (the schema version) and teach `onboarding` to migrate the old shape. `update` applies migrations and new features release by release, from `plugin_version` to the installed plugin version, without repeating onboarding. A skill that reads a `groundwork` version newer than it knows stops and asks the user to update the plugin.
+The file is a public contract: other people's repositories hold it. Before 1.0, a beta release may still change a value's meaning; the release notes say so, and `onboarding` migrates the file. Keys are only ever added. A key is never renamed or removed, and a value never changes meaning. When a breaking change is unavoidable, bump `groundwork` (the schema version) and teach `onboarding` to migrate the old shape. `update` applies migrations and new features release by release, from `plugin_version` to the installed plugin version, without repeating onboarding; when an update brings more than 8 choices, it sends the user to `onboarding` instead. A skill that reads a `groundwork` version newer than it knows stops and asks the user to update the plugin.
 
 ## Shape
 
@@ -78,6 +78,7 @@ review:
     - name: "Habit tracker user"
       goal: "Record today's habits in a few taps"
       kind: user                         # user (end user of the product) | developer (builds on its API, library, or CLI); default user
+  external: {}                           # optional; e.g. writing: "latest high-end Gemini" runs that key on an installed CLI model matching the words
 
 qa:
   bundle: manual                         # manual | release | continuous — when ui-qa runs on the running app
@@ -121,6 +122,16 @@ All of these read code. Every key except `ux` runs on every change when listed i
 The `fixer` agent is not a reviewer either: the `step` skill hands it each round's confirmed findings, so fixes and their test runs stay out of the step's own context.
 
 In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spawn a fresh subagent and tell it to read and follow `agents/<agent>.md` under the plugin root.
+
+### External runners
+
+`review.external` is optional. Absent, every reviewer runs on the agent running the review. Each entry maps a reviewer key to a plain-words description of the model to use, such as `"latest high-end Gemini"`, `"codex, the strongest GPT"`, or an exact model id. Only listed keys move; the rest stay on the current agent. It does not change which keys run (`review.reviewers`, the `ux` mapping, or `--only`), so an entry for a key that does not run has no effect.
+
+At each review, the driver checks which runners in `catalog/runners/` are installed, reads their model lists, and picks the runner and model that fit the description. Only runners with a catalog file are ever used, because each file records a command whose read-only limits were checked: the external model never writes files and has no web or MCP tools. The pick can change when a runner's model list changes; the report names the runner and model each time, and an exact id keeps it fixed.
+
+Its findings go through Skeptic Review and the report like any other reviewer's. When nothing installed fits, or the runner is missing, signed out, rate-limited, or returns nothing, that key is reported as not run with a recovery line; it never falls back to the current agent. A runner that cannot run commands (Commands: none in its file) cannot read git history, so reviewers that use it, such as `code-quality`, `security`, and `ux`, see less context there than on the current agent. Only `writing` has been tried on an external runner so far.
+
+`mode` does not change the external model or its reasoning effort.
 
 ### Review bundles
 

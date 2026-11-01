@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.3.1" src="https://img.shields.io/badge/version-0.3.1-6E6C66">
+  <img alt="Version 0.3.2" src="https://img.shields.io/badge/version-0.3.2-6E6C66">
 </p>
 
 <p align="center"><b>Set it up once. Then just say what to build.</b></p>
@@ -108,7 +108,7 @@ You can still type a skill by name, such as `/groundwork:step`, when you want to
 Before the first question, onboarding shows every step and its recommended setup at a glance:
 
 <p align="center">
-  <img src="assets/overview.svg" alt="Onboarding in an empty repository: every step with its recommended bundle, before the first question." width="100%">
+  <img src="assets/overview.svg" alt="Onboarding goes through eight questions and recommends an answer for each. The answers collect in a draft GROUNDWORK.md that is saved only after you approve." width="100%">
 </p>
 
 Each choice is a **bundle**: rules and skills that work together, shown with pros, cons, and token cost.

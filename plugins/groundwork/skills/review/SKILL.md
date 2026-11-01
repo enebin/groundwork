@@ -12,7 +12,7 @@ Paths below are relative to the plugin root, two directories above this skill's 
 
 ## 1. Read the configuration
 
-Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.reviewers`, `review.skeptic`, `docs.rules`, and, in local mode, `branches.integration`. Read `ux.bundle` and `ux.method` when the `ux` mapping is present (Screen checks in `reference/config.md`); `ux` also needs `review.personas`.
+Read `GROUNDWORK.md` at the repository root and follow `reference/config.md` for missing files, missing keys, and schema versions. This skill needs `review.reviewers`, `review.skeptic`, `docs.rules`, and, in local mode, `branches.integration`. Read `ux.bundle` and `ux.method` when the `ux` mapping is present (Screen checks in `reference/config.md`); `ux` also needs `review.personas`. Read `review.external` when present (External runners in `reference/config.md`). If an entry names a key that is not a reviewer key, or its value is not a non-empty string, stop. Name the entry, list the reviewer keys, say the value is a plain-words description of the model to use, and tell the user to fix or remove the entry in `GROUNDWORK.md`.
 
 Read the rules document before starting.
 
@@ -50,7 +50,7 @@ In path mode, every selected reviewer whose area the path contains applies.
 
 ## 5. Run the reviewers in parallel
 
-Launch every applicable reviewer **at the same time, in one message**. In Claude Code, use the agent `groundwork:<agent>` from the table in `reference/config.md`. In Codex, spawn a fresh subagent per reviewer and tell it to read and follow `agents/<agent>.md` under the plugin root. Keep the current model settings. Do not give a reviewer another reviewer's conclusions. If delegation is unavailable, report that limitation instead of claiming independent reviews ran.
+Launch every applicable reviewer **at the same time, in one message**. In Claude Code, use the agent `groundwork:<agent>` from the table in `reference/config.md`. In Codex, spawn a fresh subagent per reviewer and tell it to read and follow `agents/<agent>.md` under the plugin root. Keep the current model settings. Do not give a reviewer another reviewer's conclusions. If delegation is unavailable, report that limitation instead of claiming independent reviews ran. A key listed in `review.external` runs on its external runner instead (below), launched in the same message.
 
 ### Code reviewers
 
@@ -88,6 +88,37 @@ Severity:
 - 🟡 Minor: worth fixing; does not block merge
 ```
 
+### External runners
+
+For a key in `review.external`, launch a driver subagent instead of the reviewer: a general-purpose agent in Claude Code, a fresh subagent in Codex. The driver picks a command-line tool and model, then relays; the external model does the review. Give the driver the `Plugin root` line, the key, its agent from `reference/config.md`, the description from `review.external`, the prompt you would give that reviewer, and these instructions:
+
+```
+You relay a review to an external model. Do not review the change yourself, and do not add, drop, or reword findings.
+
+1. Choose the runner and model.
+   - Each file in catalog/runners/ under the plugin root is a runner. Use only those; never build a command for a tool without a file there.
+   - Run each runner's Detect check. For each installed runner, read its model list as its Models section says. If the Models command fails, that runner failed; keep its first error line.
+   - Then take the first case that applies:
+     a. No runner is installed: reply only `NOT RUN: no supported command-line tool is installed`, the tool each runner file describes (such as "GitHub Copilot CLI"), and the recovery "install one of these tools, or remove review.external.<key> from GROUNDWORK.md".
+     b. The description names a runner that is not installed: reply only `NOT RUN: <runner> is not installed`, with the "not found" recovery from its Failures table. Do not switch to another runner.
+     c. The description names a runner that failed: reply only `NOT RUN: <runner>: <reason>`, quoting its error line, with the matching recovery from its Failures table.
+     d. A runner that did not fail has a fitting model: pick the runner and model that best fit the description. A named runner or model id wins; otherwise judge from each runner's Models guidance.
+     e. Some runner failed: reply only `NOT RUN: <runner>: <reason>` for each failed runner, quoting its error line, with the matching recovery from its Failures table.
+     f. Otherwise nothing fits: reply only `NOT RUN: no installed model fits "<description>"`, the installed runners with their models, and the recovery "change review.external.<key> in GROUNDWORK.md to one of these models, install a runner that offers a fitting model, or remove the key".
+2. Create one prompt file with `mktemp` in the system temporary directory. Write into it, in order:
+   - `Plugin root: <path>`;
+   - agents/<agent>.md under the plugin root, without its frontmatter;
+   - the reviewer prompt you were given, with its "View the change" line replaced by "The change is below." and, when the runner's Commands are none, "Use only read-only git commands." replaced by "You cannot run commands.";
+   - the output of the "View the change" command and, in local mode, each untracked file in the list, or "none — review whole files";
+   - in PR mode, each added, modified, or renamed text file's content at the head (`git show <head SHA>:<path>`), and a "Read files" note that other files opened from disk show the working tree, not the PR head.
+3. Run the runner's Run command with that file and model, as its Run section says. Set the timeout on your command tool itself; a `timeout` command is not available everywhere.
+4. Read the run's output where the runner's Run section says it goes (stdout or an output file). Then delete the prompt file and any output file, whatever the result.
+5. If the run failed as the runner's Failures section defines, timed out, or produced none of findings, coverage limits, or "No findings", reply only `NOT RUN: <runner> <model>: <reason>`, quoting the first error line, then the matching recovery from the Failures table, or "run the command by hand to see the full error".
+6. Otherwise reply with a first line `Runner: <runner> <model>`, then the findings and coverage limits from the output you read, changing only their layout to match the output format.
+```
+
+A `NOT RUN` reply is a coverage limit for that key, as in step 6. Report it with its recovery line. Do not run the key on the current agent instead.
+
 ## 6. Merge code findings
 
 - Merge findings that share a `file:line` or a root cause. Keep the highest supported severity and list every source reviewer.
@@ -117,7 +148,7 @@ Start with one Skeptic Review status line:
 Then, in this order:
 
 1. **Conclusion** in one or two sentences: whether anything blocks merge. Incomplete or blocked coverage cannot establish that the change is safe to merge.
-2. **Findings.** CONFIRMED findings by severity. Prefix each title with `[CONFIRMED]` and the reviewer key, such as `[CONFIRMED] [code-quality]`. When Skeptic Review is OFF, list first-pass 🔴/🟠 here prefixed `[UNVERIFIED]` instead, and do not treat them as confirmed.
+2. **Findings.** CONFIRMED findings by severity. Prefix each title with `[CONFIRMED]` and the reviewer key, such as `[CONFIRMED] [code-quality]`. A key run on an external runner also names the runner and model from the driver's `Runner:` line, such as `[CONFIRMED] [writing · copilot gemini-4-argon]`, everywhere the key appears in the report, and Coverage shows the description it was chosen from. When Skeptic Review is OFF, list first-pass 🔴/🟠 here prefixed `[UNVERIFIED]` instead, and do not treat them as confirmed.
 3. **Needs confirmation.** High-impact UNVERIFIED findings, each with one line on what could not be confirmed.
 4. **Unverified minor.** In `blocking` mode, every 🟡, prefixed `[UNVERIFIED]` and the reviewer key. These were not sent to Skeptic Review.
 5. **Trade-offs,** if any.

@@ -1,6 +1,6 @@
 ---
 name: update
-description: Brings a repository already set up with groundwork up to the installed plugin version. Reads the release notes between the version the repository was set up with and the installed one, applies required migrations, lets the user pick which new features to attach, and refreshes rule blocks whose text changed. Does not repeat onboarding. Use after updating the plugin, or for "what's new in groundwork", "update groundwork", or "upgrade GROUNDWORK.md".
+description: Brings a repository already set up with groundwork up to the installed plugin version. Reads the release notes between the version the repository was set up with and the installed one, applies required migrations, lets the user pick which new features to attach, and refreshes rule blocks whose text changed. Does not repeat onboarding, except that it points to onboarding when an update brings more than 8 choices. Use after updating the plugin, or for "what's new in groundwork", "update groundwork", or "upgrade GROUNDWORK.md".
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob, Skill, AskUserQuestion
 ---
 
@@ -42,6 +42,8 @@ Check each item against this repository's current `GROUNDWORK.md`, rules documen
 When an item is unclear, read the skill or catalog entry it describes before sorting it. Do not invent an item the notes do not contain.
 
 Then compare managed rule blocks. For each `<!-- groundwork:begin <id> -->` block in `docs.rules` and `docs.architecture` whose text comes from a plugin file (`implementation` from `reference/implementation.md`, `minimal-structure` and the architecture contract from `catalog/architecture/`, and catalog rule sets for the chosen bundles), compare it with that file's current text for this repository's choices. Each block that differs is a **Rule text changed** item. Skip blocks built from the user's own answers, such as onboarding step 8 rules, review focus sections, and `## Add-ons`.
+
+Then count the **Needs migration** and **Can attach** items. When there are more than 8, there are too many changes to recommend one by one. Say so with the count, list the items by group so the user knows what is new, and tell the user to run `/groundwork:onboarding` in full to apply them, not to come back to update. Onboarding keeps the current values as recommendations, offers new settings in its steps, and lists new add-ons after setup. Stop without writing anything. Items that need no choice (Comes automatically, Already in place) and Rule text changed blocks do not count.
 
 ## 4. Choose
 
