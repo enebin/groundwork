@@ -1,6 +1,6 @@
 # Architecture
 
-<!-- groundwork:begin minimal-structure -->
+<!-- groundwork:begin minimal-structure source=29022c97efb2 -->
 ## Minimal structure
 
 These rules apply to every part of the codebase. The sections after this one add rules for the chosen architecture.

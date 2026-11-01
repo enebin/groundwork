@@ -9,7 +9,7 @@
 - Read `GROUNDWORK.md` before using groundwork workflows.
 <!-- groundwork:end project-rules -->
 
-<!-- groundwork:begin implementation -->
+<!-- groundwork:begin implementation source=c1858f713221 -->
 ### Implementation and tests
 
 - A type that holds or transitions state is not merged without tests. Test each input for the normal path, the ignored case, the failure case, and a completion that arrives late. Pure logic (formatters, resolvers, parsers) is tested the same way. Display-only views are exempt.
@@ -28,7 +28,7 @@
 
 `/groundwork:release` stops after opening the release PR. In this repository a release also includes the steps below: step 1 happens during `/groundwork:release`, between pushing `release/<version>` and opening the PR, and steps 2 to 5 follow after the skill stops. Do them in order, and follow the account routing rules above before every push and `gh` call.
 
-1. **Version bump.** On `release/<version>`, before opening the PR, commit `Bump version to <version>`. It changes `"version"` in `.claude-plugin/marketplace.json`, `plugins/groundwork/.claude-plugin/plugin.json`, and `plugins/groundwork/.codex-plugin/plugin.json`, and the version badge (alt text and URL) in `README.md` and `README.ko.md`. The release PR is titled `Release <version>`.
+1. **Version bump.** On `release/<version>`, before opening the PR, commit `Bump version to <version>`. It changes `"version"` in `.claude-plugin/marketplace.json`, `plugins/groundwork/.claude-plugin/plugin.json`, and `plugins/groundwork/.codex-plugin/plugin.json`, and the version badge (alt text and URL) in `README.md` and `README.ko.md`. The release PR is titled `Release <version>`. The same commit adds the release to `plugins/groundwork/CHANGES.json`: one item per release-note bullet, with its `section` and a `kind` that `update` sorts by. `auto` is a change with nothing to set, and every bug fix. `attach` is a new choice, with the `key` it sets in `GROUNDWORK.md` or the `addons` it offers. `migrate` is an Upgrading note, with the `key` it needs, or with `values` when only those values need it. The release notes in the PR body are the output of `python3 plugins/groundwork/skills/update/scan.py --notes <version>`.
 2. **Merge.** Squash-merge the release PR into `main` with the subject `Release <version> (#<PR number>)`.
 3. **Tag and GitHub release.** Create the tag `groundwork--v<version>` on that merge commit and publish a GitHub release from it in one step: `gh release create groundwork--v<version> --target <merge commit> --title "groundwork <version> (beta)"`, with the release notes from the PR as the body. Mark it latest, not as a prerelease. Users' update notice (`plugins/groundwork/hooks/check-update.sh`) reads the version from `plugin.json` on `main`, so it fires as soon as step 2 lands.
 4. **Back-merge.** Fetch, then merge `origin/main` into `develop` with a merge commit titled `Merge release <version> into develop`, and push `develop`. The version line in `plugins/groundwork/.claude-plugin/plugin.json` usually conflicts; take the released version. After the merge, `git merge-base --is-ancestor origin/main develop` must succeed and the five version fields on `develop` must equal the released version. `git diff origin/main develop` is empty only when nothing else merged into `develop` after the release branch was cut.
