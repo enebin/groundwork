@@ -14,9 +14,9 @@ This skill writes nothing until the user approves the final preview. Plan mode: 
 
 Run `python3 <plugin root>/skills/update/scan.py <repository root>`. It reads `CHANGES.json` at the plugin root, which lists every release's items with what each one concerns, and needs no network. It prints one JSON report:
 
-- `installed`, `set_up_with` (`plugin_version` in `GROUNDWORK.md`; null when the file predates the key, and then every release is checked), `target` (the installed version, or the latest release in `CHANGES.json` when the installed build is newer, such as one from `develop`), and `schema`.
+- `installed`, `latest_known` (the newest release in `CHANGES.json`), `set_up_with` (`plugin_version` in `GROUNDWORK.md`; null when the file predates the key, and then every release is checked), `target` (the installed version, or the latest release in `CHANGES.json` when the installed build is newer, such as one from `develop`), and `schema`.
 - `status`: `not-set-up` (no `GROUNDWORK.md`: tell the user to run `/groundwork:onboarding` and stop), `plugin-older-than-setup` (stop and ask the user to update the plugin), `up-to-date` (say so and stop), or `ok`.
-- `items`: each release item after `set_up_with`, up to `target`, oldest first, with its version, section, and group.
+- `items`: each release item after `set_up_with`, up to `target`, oldest first, with its version, section, group, `text` (the release-note line), and the `key` or `addons` it concerns.
 - `blocks`: each managed block in `docs.rules` and `docs.architecture`, with its status.
 
 Also stop and ask the user to update the plugin when `schema` is newer than `reference/config.md` knows. If the script cannot run (no `python3`), say why and stop; name `/groundwork:onboarding` as the way forward, which migrates the whole file.
@@ -40,7 +40,7 @@ Each managed block has one status:
 - `changed`: a **Rule text changed** item.
 - `unstamped-same`: the block matches the current source but its marker has no `source` hash yet. Add the hash when writing; no question.
 - `unstamped`: an older marker without a hash, whose text differs from the English source. Compare it once with the source for this repository's choices, as translated into `language.artifacts`. Only a difference in meaning makes it a **Rule text changed** item; otherwise add the hash when writing.
-- `unknown`: the id names no plugin source. Skip blocks built from the user's answers, such as `project-rules`, onboarding step 8 rules, review focus sections, and `addons`. For any other, such as a block written under an older id, compare it as for `unstamped`.
+- `unknown`: the id names no plugin source. Skip it: it holds the user's answers (such as `project-rules`, onboarding step 8 rules, review focus sections, and `addons`) or an add-on's own text (such as `slack-report`). Compare it as for `unstamped` only when its text is plainly one of the plugin's rule sets written under an older id.
 
 Then count the choices: the report's `choices` (Needs migration and Can attach items). When there are more than 8, there are too many changes to recommend one by one. Say so with the count, list the items by group so the user knows what is new, and tell the user to run `/groundwork:onboarding` in full to apply them, not to come back to update. Onboarding keeps the current values as recommendations, offers new settings in its steps, and lists new add-ons after setup. Stop without writing anything. Items that need no choice (Comes automatically, Already in place) and Rule text changed blocks do not count.
 
@@ -57,7 +57,7 @@ For each item the user picks, collect only what it needs:
 
 Mandatory. Show the migrations with their resulting values, the chosen items, the refreshed blocks, and each file to change with one line on what changes. Show `plugin_version` moving to the report's `target`. Show full file contents only when the user asks.
 
-Write only after approval. In `GROUNDWORK.md`, change only the frontmatter keys an item concerns and the managed `addons` block. In `docs.rules` and `docs.architecture`, never edit text outside `<!-- groundwork:begin/end -->` markers. Write each refreshed or stamped block's marker as `<!-- groundwork:begin <id> source=<hash> -->`, with the `source` the report gives, as step 5 of `skills/onboarding/SKILL.md` says. Set `plugin_version` to `target` last, so a failed write leaves the old version and a re-run picks up the same items.
+Write only after approval. In `GROUNDWORK.md`, change only the frontmatter keys an item concerns and the managed `addons` block. In `docs.rules` and `docs.architecture`, never edit text outside `<!-- groundwork:begin/end -->` markers. Write each refreshed or stamped block's marker as `<!-- groundwork:begin <id> source=<hash> -->`, with the `source` the report gives, as the Final review section of `skills/onboarding/SKILL.md` says. Set `plugin_version` to `target` last, so a failed write leaves the old version and a re-run picks up the same items.
 
 ## 5. Finish
 

@@ -136,19 +136,46 @@ class ScanTests(unittest.TestCase):
             "<!-- groundwork:begin project-rules -->\nOwn rules\n<!-- groundwork:end project-rules -->",
             f"<!-- groundwork:begin implementation source={current} -->\nTranslated text\n<!-- groundwork:end implementation -->",
             "<!-- groundwork:begin api-contract source=000000000000 -->\n### API\n<!-- groundwork:end api-contract -->",
+            "<!-- groundwork:begin implementation -->\nOlder translated text\n<!-- groundwork:end implementation -->",
         ]))
         self.write(self.repo / "ARCHITECTURE.md",
                    "<!-- groundwork:begin mvvm -->\n## State\n\n```\nView -> Model\n```\n<!-- groundwork:end mvvm -->\n")
 
         report = scan.scan(self.repo)
 
-        self.assertEqual({block["id"]: block["status"] for block in report["blocks"]}, {
-            "project-rules": "unknown",
-            "implementation": "same",
-            "api-contract": "changed",
-            "mvvm": "unstamped-same",
-        })
+        self.assertEqual([(block["id"], block["status"]) for block in report["blocks"]], [
+            ("project-rules", "unknown"),
+            ("implementation", "same"),
+            ("api-contract", "changed"),
+            ("implementation", "unstamped"),
+            ("mvvm", "unstamped-same"),
+        ])
         self.assertEqual(report["status"], "ok")
+
+    def test_given_only_an_unstamped_block_differs_when_scanned_then_not_up_to_date(self):
+        self.write(self.repo / "GROUNDWORK.md", config(plugin_version="0.3.0"))
+        self.write(self.repo / "AGENTS.md",
+                   "<!-- groundwork:begin implementation -->\nOlder text\n<!-- groundwork:end implementation -->\n")
+
+        self.assertEqual(scan.scan(self.repo)["status"], "ok")
+
+    def test_given_null_or_empty_plugin_version_when_scanned_then_checks_every_release(self):
+        for value in ("null", ""):
+            with self.subTest(value=value):
+                self.write(self.repo / "GROUNDWORK.md", config(plugin_version=value or " "))
+
+                report = scan.scan(self.repo)
+
+                self.assertIsNone(report["set_up_with"])
+                self.assertEqual({item["version"] for item in report["items"]}, {"0.2.0", "0.3.0"})
+
+    def test_given_installed_build_newer_than_changes_when_set_up_with_it_then_up_to_date(self):
+        self.write(self.plugin / ".claude-plugin/plugin.json", json.dumps({"version": "0.4.0"}))
+        self.write(self.repo / "GROUNDWORK.md", config(plugin_version="0.4.0"))
+
+        report = scan.scan(self.repo)
+
+        self.assertEqual((report["target"], report["status"]), ("0.3.0", "up-to-date"))
 
     def test_given_section_without_fence_when_sources_listed_then_it_has_no_hash(self):
         self.assertEqual(set(scan.sources()), {"implementation", "mvvm", "api-contract"})

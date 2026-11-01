@@ -66,8 +66,9 @@ def frontmatter(text):
 
 
 def scalar(text, key):
-    match = re.search(rf"^{re.escape(key)}:\s*([^\s#]+)", text, re.M)
-    return match.group(1).strip("\"'") if match else None
+    match = re.search(rf"^{re.escape(key)}:[ \t]*([^\s#]+)", text, re.M)
+    value = match.group(1).strip("\"'") if match else None
+    return None if value in {None, "", "null", "~"} else value
 
 
 def nested_scalar(text, parent, key):
@@ -212,7 +213,7 @@ def scan(root):
     blocks = block_report(root, config, source_bodies())
     choices = sum(item["group"] in {"needs_migration", "can_attach"} for item in items)
     stale_blocks = any(block["status"] not in {"same", "unknown"} for block in blocks)
-    up_to_date = set_up_with == target and not stale_blocks
+    up_to_date = set_up_with is not None and version_key(set_up_with) >= version_key(target) and not stale_blocks
     return {
         **report,
         "status": "up-to-date" if up_to_date else "ok",
