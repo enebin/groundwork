@@ -33,3 +33,12 @@
 3. **Tag and GitHub release.** Create the tag `groundwork--v<version>` on that merge commit and publish a GitHub release from it in one step: `gh release create groundwork--v<version> --target <merge commit> --title "groundwork <version> (beta)"`, with the release notes from the PR as the body. Mark it latest, not as a prerelease. Users' update notice (`plugins/groundwork/hooks/check-update.sh`) reads the version from `plugin.json` on `main`, so it fires as soon as step 2 lands.
 4. **Back-merge.** Fetch, then merge `origin/main` into `develop` with a merge commit titled `Merge release <version> into develop`, and push `develop`. The version line in `plugins/groundwork/.claude-plugin/plugin.json` usually conflicts; take the released version. After the merge, `git merge-base --is-ancestor origin/main develop` must succeed and the five version fields on `develop` must equal the released version. `git diff origin/main develop` is empty only when nothing else merged into `develop` after the release branch was cut.
 5. **Clean up.** Leave the `release/<version>` branch as is; earlier releases kept theirs.
+
+## Runner catalog
+
+Each file in `plugins/groundwork/catalog/runners/` lets reviews run on one command-line tool. Its `Verified with:` line names the tool version and date its read-only limits were last checked. Treat the files as stale whenever the tools change.
+
+- **When to re-check.** Before each release, for every runner whose tool is installed at a newer version than its `Verified with:` line. Also when a tool's release notes change a flag the file uses, or when a review reports `NOT RUN` with an error the file's Failures table does not cover.
+- **How to check.** Run the file's Run command with a probe prompt that asks the model to create a file in the repository, run `touch` on another path in the repository, and read a repository file. The runner passes only when neither file appears and the read succeeds. Also run its Models command and make sure the Models section still describes the output.
+- **After the check.** Update the file's command, Models, and Failures to match, and set `Verified with:` to the version and date checked. When a runner can no longer be kept read-only, delete its file instead of loosening it.
+- **New runners.** Add a file only after this check passes on the installed tool. Never add one from documentation alone.
