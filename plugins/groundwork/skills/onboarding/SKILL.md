@@ -77,6 +77,8 @@ Reassure the user: this setting only affects stored artifacts. Conversation with
 
 ### Step 2 — Issue tracker
 
+Before the options, tell the user why issues are worth recording. The coding agent reads an issue's history to learn what happened before and after a change, which helps it write better code. A recorded issue also keeps planned work from being forgotten.
+
 Options: local files (Recommended for a new project: no setup, start now; can move to a real tracker later), GitHub Projects, Linear, Jira. For an existing repository whose skills or history show a tracker in use, recommend that tracker instead.
 
 Then follow the "Setup" section of `catalog/trackers/<type>.md`: detect, ask its sub-questions (each with a recommendation), and verify access with one read-only call. Creating anything remote (a GitHub repository, a project, labels) is an outward action: confirm it separately right before doing it. When a permission is missing, tell the user the command to run themselves; never switch or log in accounts on their behalf.
