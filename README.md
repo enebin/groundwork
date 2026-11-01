@@ -42,7 +42,7 @@ Set up groundwork for this repo.
 
 Onboarding asks eight questions, recommends an answer for each, and saves your choices to `GROUNDWORK.md`. Every other skill reads that file.
 
-In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
+In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code. Then say "update groundwork" in each set-up repository; this step needs `python3`.
 
 Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you. Without it, reviews show `SkepticReview: OFF`.
 

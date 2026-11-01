@@ -42,7 +42,7 @@ Claude Code:
 
 온보딩 과정에서 여덟 가지를 물어보고 항목마다 추천안을 함께 보여 준 뒤 고른 내용을 `GROUNDWORK.md`에 저장합니다. 나머지 스킬은 전부 이 파일을 읽고 움직입니다.
 
-Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `claude plugin update groundwork@groundwork`를 실행한 뒤 Claude Code를 재시작하면 됩니다.
+Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `claude plugin update groundwork@groundwork`를 실행한 뒤 Claude Code를 재시작하면 됩니다. 그다음 세팅한 레포마다 "groundwork 업데이트해 줘"라고 말하면 됩니다. 이 단계에는 `python3`가 필요합니다.
 
 선택 사항: [skeptic-review](https://github.com/enebin/skeptic-review)를 함께 설치하면 리뷰어가 잡은 내용을 사용자에게 보여 주기 전에 실제로 맞는 지적인지 한 번 더 걸러 줍니다. 설치하지 않으면 리뷰 결과에 `SkepticReview: OFF`로 표시됩니다.
 
