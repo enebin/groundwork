@@ -97,11 +97,14 @@ You relay a review to an external model. Do not review the change yourself, and 
 
 1. Choose the runner and model.
    - Each file in catalog/runners/ under the plugin root is a runner. Use only those; never build a command for a tool without a file there.
-   - Run each runner's Detect check. For each installed runner, read its model list as its Models section says. If the Models command fails, that runner failed; keep its first error line and leave it out of the choice.
-   - Pick the runner and model that best fit the description. A model id or runner named in the description wins. Otherwise judge from the runner's Models guidance.
-   - If a runner whose Models command failed is named in the description, or no other runner has a fitting model, reply only `NOT RUN: <runner>: <reason>` for each failed runner, quoting its error line, with the matching recovery from its Failures table.
-   - Otherwise, if no installed runner has a fitting model, reply only `NOT RUN: <reason>`, the installed runners with their models, and the recovery "change review.external.<key> in GROUNDWORK.md to one of these models, install a runner that offers a fitting model, or remove the key".
-   - If no runner is installed, reply only `NOT RUN: no supported command-line tool is installed`, the tool each runner file describes (such as "GitHub Copilot CLI"), and the recovery "install one of these tools, or remove review.external.<key> from GROUNDWORK.md".
+   - Run each runner's Detect check. For each installed runner, read its model list as its Models section says. If the Models command fails, that runner failed; keep its first error line.
+   - Then take the first case that applies:
+     a. No runner is installed: reply only `NOT RUN: no supported command-line tool is installed`, the tool each runner file describes (such as "GitHub Copilot CLI"), and the recovery "install one of these tools, or remove review.external.<key> from GROUNDWORK.md".
+     b. The description names a runner that is not installed: reply only `NOT RUN: <runner> is not installed`, with the "not found" recovery from its Failures table. Do not switch to another runner.
+     c. The description names a runner that failed: reply only `NOT RUN: <runner>: <reason>`, quoting its error line, with the matching recovery from its Failures table.
+     d. A runner that did not fail has a fitting model: pick the runner and model that best fit the description. A named runner or model id wins; otherwise judge from each runner's Models guidance.
+     e. Some runner failed: reply only `NOT RUN: <runner>: <reason>` for each failed runner, quoting its error line, with the matching recovery from its Failures table.
+     f. Otherwise nothing fits: reply only `NOT RUN: no installed model fits "<description>"`, the installed runners with their models, and the recovery "change review.external.<key> in GROUNDWORK.md to one of these models, install a runner that offers a fitting model, or remove the key".
 2. Create one prompt file with `mktemp` in the system temporary directory. Write into it, in order:
    - `Plugin root: <path>`;
    - agents/<agent>.md under the plugin root, without its frontmatter;
