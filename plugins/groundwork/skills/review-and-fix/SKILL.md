@@ -38,6 +38,7 @@ From the report, keep:
 
 - `[CONFIRMED]` findings at or above the threshold.
 - When the report says `SkepticReview: OFF`, the `[UNVERIFIED]` findings at or above the threshold, marked as unverified.
+- Every line under **Copy edits**, whatever the threshold. Leave out an edit marked replaced only when you keep its finding.
 
 Only problems in the change count. Pre-existing code outside the diff is out of scope. Skip 🟡 findings that are only about test code style.
 
@@ -51,19 +52,22 @@ List what you kept:
 
 [2] 🟠 Major — <file:line>
     <one-line summary>
+
+[3] Copy edit — <file:line>
+    "<original>" → "<edit>"
 ```
 
-If the list is empty, report that no review fixes are needed and continue to step 5 without a fix confirmation. Otherwise ask whether to fix them. Raise trade-offs and high-impact items from "Needs confirmation" separately; do not act on them without the user's answer.
+If the list is empty, report that no review fixes are needed and continue to step 5 without a fix confirmation. Otherwise ask whether to fix them. Raise trade-offs, high-impact items from "Needs confirmation", and **Missing copy** separately; do not act on them without the user's answer.
 
 ## 4. Fix
 
-For each item, read the file and the code around the finding, then fix it in the file's existing style. If the fix is unclear or needs a structural change that cannot be applied safely, skip it and tell the user why.
+For each item, read the file and the code around the finding, then fix it in the file's existing style. Apply a copy edit verbatim at its listed `file:line`. Change another copy only when it is the same string in the same context, such as the same key in another locale file, and tell the user about other matches instead of rewriting them. If the fix is unclear or needs a structural change that cannot be applied safely, skip it and tell the user why.
 
 ## 5. Verify
 
 Resolve the effective overall mode from `--mode` or `mode` and follow Modes in `reference/config.md`. Verify the complete implementation, including a no-findings path: run affected tests while fixing and every `verification.commands` entry before completion. For changed `verification.ui_paths`, run affected UI tests and inspect their screenshots; run the full UI suite at finish, and in sport each round. Reuse only results matching the current build. Update the coverage ledger. Do not move on until required checks pass; fix failures at the root cause.
 
-If `review.trigger` is `per-round`, review again (step 2) and repeat until nothing at or above the threshold remains. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`), or as soon as a round fixes nothing, and ask the user how to proceed.
+If `review.trigger` is `per-round`, review again (step 2) with `--no-copy-edit`, since this run already applied the copy edits, and repeat until nothing at or above the threshold remains. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`), or as soon as a round fixes nothing, and ask the user how to proceed.
 
 After the final verification and review fixes, apply the after-implementation gate from Screen checks in `reference/config.md` when a check on the running app resolves to continuous. Pass the effective mode and the complete implementation diff, not just review fixes. Run this even with no review findings. FAIL or BLOCKED prevents completion and commit/push; follow the QA repair/recheck limit. If no review fixes or QA ledger edits were made, report the result and stop without committing or pushing. Otherwise include the verified ledger edits with the fixes.
 
