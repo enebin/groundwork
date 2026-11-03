@@ -1,0 +1,68 @@
+{
+  "releases": [
+    {
+      "version": "0.1.0",
+      "items": []
+    },
+    {
+      "version": "0.1.1",
+      "items": [
+        {"section": "New features", "kind": "auto", "text": "Start a tracked change directly from a request, with planning when the work needs it."},
+        {"section": "New features", "kind": "attach", "key": "qa.bundle", "text": "Choose manual, pre-release, or continuous UI and UX checks."},
+        {"section": "New features", "kind": "attach", "key": "mode", "text": "Adjust review effort per task."},
+        {"section": "New features", "kind": "auto", "text": "Receive Claude Code update notices for future releases."},
+        {"section": "Bug fixes", "kind": "auto", "text": "Finish onboarding with grouped questions, fewer repeated prompts, and a concise settings summary."},
+        {"section": "Bug fixes", "kind": "auto", "text": "Keep parallel tasks isolated in worktrees and focus later review rounds on fixes."},
+        {"section": "Upgrading", "kind": "migrate", "key": "workflow.bundle", "values": ["flight"], "text": "Run onboarding again to refresh existing repository rules and migrate legacy flight workflows."},
+        {"section": "Upgrading", "kind": "auto", "text": "Existing 0.1.0 installations need one manual update before future update notices become available."}
+      ]
+    },
+    {
+      "version": "0.1.2",
+      "items": [
+        {"section": "New features", "kind": "attach", "key": "ux.method", "text": "Choose separate schedules for UX reviews and UI QA, and review usability from the code or in the running app."},
+        {"section": "New features", "kind": "auto", "text": "See a clear completion message after onboarding successfully saves your configuration."},
+        {"section": "Upgrading", "kind": "migrate", "key": "ux", "text": "Run onboarding again to migrate existing screen-check settings and choose how UX reviews run."},
+        {"section": "Upgrading", "kind": "migrate", "key": "ux", "text": "QA frequency now controls UI QA only; UX reviews have their own frequency and method. Existing configurations keep their previous UX triggers until onboarding migrates them. If you previously used both code-based and on-app UX checks, onboarding asks which method to keep."}
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "items": [
+        {"section": "New features", "kind": "attach", "addons": ["slack-report", "handoff", "weekly-summary", "release-notes", "release-prep"], "text": "After onboarding, optionally set up extra workflows: Slack work reports, session handoff notes, weekly summaries, release notes, and scheduled release preparation. Browse them later with `/groundwork:addons`."},
+        {"section": "New features", "kind": "auto", "text": "Code-based UX reviews are more precise: findings follow a clear severity scale, problems that existed before the change are listed separately, layout risks that need the running app are handed off instead of reported as findings, and bugs and wording are left to the reviewers that own them."}
+      ]
+    },
+    {
+      "version": "0.3.0",
+      "items": [
+        {"section": "New features", "kind": "attach", "addons": ["ux-journey"], "text": "Journey usability tests (add-on): an AI participant that has never seen the code walks a whole journey on the running app, such as landing page → sign-up → organization setup, and reports where it hesitates, gets lost, or gives up. Participants act as typical users with assigned habits and slips, and the first run proposes journeys for you to confirm. It can also gate every release."},
+        {"section": "New features", "kind": "auto", "text": "`/groundwork:update` applies the changes from a new plugin release to an existing setup, asking only about what changed instead of rerunning onboarding."}
+      ]
+    },
+    {
+      "version": "0.3.1",
+      "items": [
+        {"section": "New features", "kind": "auto", "text": "Journey usability tests now show how easy each journey felt, not only whether it passed: an overall ease rating, the effort at each milestone, and the hardest step. The full report is saved to a file, and the conversation shows a short plain-language summary with a link to it."}
+      ]
+    },
+    {
+      "version": "0.3.2",
+      "items": [
+        {"section": "New features", "kind": "attach", "key": "review.external", "text": "Reviews can run chosen reviewers on another model through a command-line tool installed on your machine: the GitHub Copilot CLI or the Codex CLI. Describe the model in plain words under `review.external` in `GROUNDWORK.md`, for example `writing: \"latest high-end Gemini\"`. At each review, groundwork picks a matching installed tool and model, keeps that model read-only, and labels its findings with the tool and model it used. Its findings are verified like any other reviewer's. When no installed model fits or the tool fails, the reviewer is reported as not run with a fix to try; it is never silently replaced. So far this has been tried with the writing reviewer."},
+        {"section": "New features", "kind": "auto", "text": "Onboarding's review step asks who runs the reviewers. The agent you are using stays the recommended choice; an external model is offered as an advanced option."},
+        {"section": "New features", "kind": "auto", "text": "When a plugin update brings more than 8 new choices, `update` lists them and sends you to onboarding to set them up, instead of asking about each one."},
+        {"section": "New features", "kind": "auto", "text": "Onboarding's issue tracker step explains why keeping issue records helps."},
+        {"section": "Bug fixes", "kind": "auto", "text": "The banner shown when onboarding finishes renders correctly."}
+      ]
+    },
+    {
+      "version": "0.3.3",
+      "items": [
+        {"section": "New features", "kind": "auto", "text": "The writing review now edits copy instead of only judging it. One pass checks changed copy against what the product actually does, and another rewrites each changed string against your writing rules with a one-line reason, plus up to three pieces of missing copy. The step workflow applies the rewrites, `review-and-fix` lists them with its other fixes, and missing copy waits for you. With `review.external.writing` set, only the rewrite runs on the external model."},
+        {"section": "New features", "kind": "auto", "text": "`update` runs faster: it sorts the changes in each release with a local scan instead of downloading and reading every release note. It needs `python3`."},
+        {"section": "Bug fixes", "kind": "auto", "text": "Reviews run on the Codex CLI no longer hang until the timeout with newer Codex CLI versions, which wait for input when no terminal is attached."}
+      ]
+    }
+  ]
+}

@@ -13,6 +13,7 @@ Read `GROUNDWORK.md` at the repository root, `docs.rules`, and `skills/step/SKIL
 ## Fix
 
 - Fix only the listed findings. Leave other problems you notice for the report, unfixed.
+- Apply each listed copy edit verbatim at its listed `file:line`. Do not reword it. Change another copy only when the list names it or it is the same string in the same context, such as the same key in another locale file. Report other matches instead of rewriting them. Its location is the listed line or, when other fixes moved it, the same string in the code around it. Skip an edit only when the string is gone from there or applying it would break a placeholder, and report why.
 - Follow each finding's suggestion unless the code shows a better fix for the same defect. Say so when you diverge.
 - When a fix changes behavior, add or adjust the test that proves it, as `docs.rules` requires. A test that passes both before and after the fix proves nothing; check that it fails without the fix when you can.
 - A finding you cannot fix without a decision the assignment does not give (a product choice, a trade-off, a change outside the step's scope) stays unfixed. Report why.
@@ -30,6 +31,7 @@ Return only this, so the caller's context stays small:
 ```
 Fixer: DONE | PARTIAL | BLOCKED
 - Fixed: <one line per finding: finding title — what changed, file:line>
+- Copy edits: <n> applied; not applied: <ID — why>; other matches left: <ID — file:line> (or "none")
 - Not fixed: <finding title — why> (or "none")
 - Verify: <commands run and pass/fail; UI tests run or `not rerun — no UI change`>
 - Screens: <screenshot paths and what they showed / not applicable>

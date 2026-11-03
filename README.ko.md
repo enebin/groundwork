@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.3.2" src="https://img.shields.io/badge/version-0.3.2-6E6C66">
+  <img alt="Version 0.3.3" src="https://img.shields.io/badge/version-0.3.3-6E6C66">
 </p>
 
 <p align="center"><b>한 번 세팅하고 그다음엔 만들 것만 말하세요.</b></p>
@@ -42,7 +42,7 @@ Claude Code:
 
 온보딩 과정에서 여덟 가지를 물어보고 항목마다 추천안을 함께 보여 준 뒤 고른 내용을 `GROUNDWORK.md`에 저장합니다. 나머지 스킬은 전부 이 파일을 읽고 움직입니다.
 
-Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `claude plugin update groundwork@groundwork`를 실행한 뒤 Claude Code를 재시작하면 됩니다.
+Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `claude plugin update groundwork@groundwork`를 실행한 뒤 Claude Code를 재시작하면 됩니다. 그다음 세팅한 레포마다 "groundwork 업데이트해 줘"라고 말하면 됩니다. 이 단계에는 `python3`가 필요합니다.
 
 선택 사항: [skeptic-review](https://github.com/enebin/skeptic-review)를 함께 설치하면 리뷰어가 잡은 내용을 사용자에게 보여 주기 전에 실제로 맞는 지적인지 한 번 더 걸러 줍니다. 설치하지 않으면 리뷰 결과에 `SkepticReview: OFF`로 표시됩니다.
 
@@ -139,7 +139,7 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 ## 요청 뒤에서 도는 것
 
 - **테스트는 구현의 기본 단계**입니다. 켜고 끄는 옵션이 아닙니다. 온보딩이 레포의 빌드·테스트 명령을 찾아 [구현 규칙](plugins/groundwork/reference/implementation.md)을 `AGENTS.md`에 적어 둡니다.
-- **리뷰어**는 아키텍처, 코드 품질, 보안, 문구, 개발자 경험을 변경이 생길 때마다 동시에 점검합니다. 확인된 지적은 깨끗한 컨텍스트에서 시작하는 `fixer` 에이전트가 고치기 때문에, 대화에는 짧은 요약만 남습니다.
+- **리뷰어**는 아키텍처, 코드 품질, 보안, 문구, 개발자 경험을 변경이 생길 때마다 동시에 점검합니다. 확인된 지적은 깨끗한 컨텍스트에서 시작하는 `fixer` 에이전트가 고치기 때문에, 대화에는 짧은 요약만 남습니다. 문구 리뷰는 바뀐 문구마다 첨삭도 합니다. step 흐름은 첨삭을 따로 묻지 않고 반영합니다. `review-and-fix`는 다른 수정과 함께 보여 주고 묻습니다. 빠진 문구 제안은 사용자가 정합니다.
 - **화면 검사**는 사용자 페르소나가 작업을 끝낼 수 있는지를 코드 또는 실제 앱으로 확인하고 화면이 요구사항에 맞는지 봅니다. [화면 검사](plugins/groundwork/catalog/screen-checks.md)와 [UX 검사 비교](plugins/groundwork/reference/ux-checks.md)를 참고하세요. [벤치마크](bench/ux/flow-reviewer/README.md)에서 코드 기반 UX 리뷰는 심어 둔 결함 39개 중 36개를 찾았고 비용은 앱 기반 리뷰의 약 10분의 1이었습니다.
 - **작업 강도**는 `eco`, `normal`(기본), `sport` 프리셋 하나로 검증 깊이, 리뷰 반복 횟수, 화면 검사 범위를 함께 조절합니다. "이번 건 sport 모드로 해 줘"처럼 요청할 때 한 번만 바꿔서 실행할 수도 있습니다.
 

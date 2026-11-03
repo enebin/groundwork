@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.3.2" src="https://img.shields.io/badge/version-0.3.2-6E6C66">
+  <img alt="Version 0.3.3" src="https://img.shields.io/badge/version-0.3.3-6E6C66">
 </p>
 
 <p align="center"><b>Set it up once. Then just say what to build.</b></p>
@@ -42,7 +42,7 @@ Set up groundwork for this repo.
 
 Onboarding asks eight questions, recommends an answer for each, and saves your choices to `GROUNDWORK.md`. Every other skill reads that file.
 
-In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code.
+In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code. Then say "update groundwork" in each set-up repository; this step needs `python3`.
 
 Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you. Without it, reviews show `SkepticReview: OFF`.
 
@@ -139,7 +139,7 @@ Commit `GROUNDWORK.md` and the docs onboarding writes. Teammates only need to in
 ## What runs behind a request
 
 - **Tests are part of implementation**, not an option. Onboarding finds your build and test commands and writes the [implementation rules](plugins/groundwork/reference/implementation.md) into `AGENTS.md`.
-- **Reviewers** for architecture, code quality, security, writing, and developer experience run in parallel on each change. Confirmed findings go to a `fixer` agent in a fresh context, so your conversation receives only a short summary.
+- **Reviewers** for architecture, code quality, security, writing, and developer experience run in parallel on each change. Confirmed findings go to a `fixer` agent in a fresh context, so your conversation receives only a short summary. The writing review also rewrites each changed string; the step loop applies those copy edits without asking, `review-and-fix` lists them with its other fixes, and suggested missing copy waits for you.
 - **Screen checks** test whether each user persona can finish its tasks, from the code or on the running app, and check the rendered UI against requirements. See [screen checks](plugins/groundwork/catalog/screen-checks.md) and how the [UX checks compare](plugins/groundwork/reference/ux-checks.md). In a [benchmark](bench/ux/flow-reviewer/README.md), the code-based UX review found 36 of 39 seeded defects at about a tenth of the app-based review's cost.
 - **Thoroughness** is controlled by a single preset—`eco`, `normal` (default), or `sport`—that sets verification depth, review rounds, and screen-check scope together. Say "use sport mode for this one" to change it for a single request.
 

@@ -1,7 +1,7 @@
 ---
 name: review
 description: Reviews a change with the reviewers listed in GROUNDWORK.md, in parallel. Merges code findings, verifies them with Skeptic Review, and reports rendered UX and UI QA results separately. Reports only; does not modify code.
-argument-hint: "[<PR number> | <path>] [--only <keys>] [--since <tree> --fixes <file>]"
+argument-hint: "[<PR number> | <path>] [--only <keys>] [--since <tree> --fixes <file>] [--no-copy-edit]"
 ---
 
 # Review
@@ -23,6 +23,7 @@ Split the arguments on whitespace.
 - `--only <key,...>` narrows the run to those reviewer keys from `reference/config.md`. Stop and say so if a key is unknown. Without it, run every key in `review.reviewers`, plus `ux` when a present `ux` mapping is `continuous` with `code`. A legacy file without a `ux` mapping runs `ux` only when it is listed in `review.reviewers`.
 - `architecture` never runs when `architecture.bundle` is `none`; if `--only` names it, stop and say there is no standard to judge against. `ux` needs at least one entry in `review.personas`.
 - `--since <tree> --fixes <file>` makes a **follow-up review** in local mode: only what changed since the working-tree snapshot `<tree>`, judged against the findings listed in `<file>` as fixed since then. Both flags go together. Stop and say so if either is given without the other, or with PR or path mode.
+- `--no-copy-edit` skips the `writing` copy edit for this run; the fact check still runs. Callers pass it on later rounds of the same change, whose earlier copy edits were already applied.
 - If the first remaining token is a number, use **PR mode**. If it is a path, use **path mode**. With none, use **local mode**. Reject anything else, or an ambiguous target.
 
 ## 3. Decide what to review
@@ -41,7 +42,7 @@ Report the target, pinned refs, and file list. If there is nothing to review, re
 For each selected key, decide whether the change gives it anything to judge. Record `NOT APPLICABLE` with a concrete reason for those that do not apply; they do not run.
 
 - `architecture`, `code-quality`, `security`: apply to any code change.
-- `writing`: applies when user-facing copy changed, or behavior changed in a way that makes existing wording wrong.
+- `writing`: runs in two parts, each decided on its own. The fact check (`writing-reviewer`) applies when user-facing copy changed, or behavior changed in a way that makes existing wording wrong. The copy edit (`copy-editor`) applies when the string list in step 5 is not empty. A follow-up review or `--no-copy-edit` skips the copy edit; record it as NOT APPLICABLE with that reason. A new standalone review of a change whose edits were already applied runs the copy edit again; the copy editor keeps a string unchanged when it cannot improve it.
 - `dx`: applies when a public surface changed: a library's public symbols or extension points, an HTTP or RPC endpoint or its schema, a command-line command, flag, or output, or developer documentation for any of them.
 - `ux`: applies when the change touches a screen, navigation path, state, or action on the way to a persona task, including backend changes that alter what a screen shows or allows. Needs at least one `user` persona in `review.personas` (a persona without `kind` is a `user`). One `ux-flow-reviewer` covers every `user` persona; it reads code and never launches the app.
 - `ui-qa` and `ux-persona-reviewer` exercise the running app and are never dispatched here. They run separately under the screen checks in `reference/config.md` or when the user calls them directly.
@@ -50,7 +51,7 @@ In path mode, every selected reviewer whose area the path contains applies.
 
 ## 5. Run the reviewers in parallel
 
-Launch every applicable reviewer **at the same time, in one message**. In Claude Code, use the agent `groundwork:<agent>` from the table in `reference/config.md`. In Codex, spawn a fresh subagent per reviewer and tell it to read and follow `agents/<agent>.md` under the plugin root. Keep the current model settings. Do not give a reviewer another reviewer's conclusions. If delegation is unavailable, report that limitation instead of claiming independent reviews ran. A key listed in `review.external` runs on its external runner instead (below), launched in the same message.
+Launch every applicable reviewer **at the same time, in one message**. In Claude Code, use the agent `groundwork:<agent>` from the table in `reference/config.md`. In Codex, spawn a fresh subagent per reviewer and tell it to read and follow `agents/<agent>.md` under the plugin root. Keep the current model settings. Do not give a reviewer another reviewer's conclusions. If delegation is unavailable, report that limitation instead of claiming independent reviews ran. A key listed in `review.external` runs on its external runner instead (below), launched in the same message. For `writing`, only the copy edit moves; the fact check stays on the current agent.
 
 ### Code reviewers
 
@@ -88,12 +89,32 @@ Severity:
 - 🟡 Minor: worth fixing; does not block merge
 ```
 
-### External runners
+### Copy edit
 
-For a key in `review.external`, launch a driver subagent instead of the reviewer: a general-purpose agent in Claude Code, a fresh subagent in Codex. The driver picks a command-line tool and model, then relays; the external model does the review. Give the driver the `Plugin root` line, the key, its agent from `reference/config.md`, the description from `review.external`, the prompt you would give that reviewer, and these instructions:
+Before launching the copy editor, build the string list from the change yourself; the copy editor cannot infer behavior from strings alone. List every new or changed user-facing string: screen copy, labels, dialogs, errors, notifications, accessible names, names of files the product creates, and text inside them (such as sheet names and column headers). In path mode, list every user-facing string under the path. Leave out log lines, developer-only messages, and code comments. Give the copy editor this:
 
 ```
-You relay a review to an external model. Do not review the change yourself, and do not add, drop, or reword findings.
+Target: <mode> (<PR number / path / local changes against base-ref>)
+Read files: from the working tree<in PR mode add: ", which is not the PR head; the strings and notes below come from the head">
+
+Read GROUNDWORK.md, the documents it names, and the "## Review focus: writing" section. Then edit each string below as your instructions say.
+Do not modify files.
+
+Product context: <who reads this copy, the screens and sections involved, and what the change does to behavior>
+
+Strings:
+- <ID>: "<string>"
+  - Location: <file:line>
+  - Shown when: <the state that shows it>
+  - Notes: <placeholders and their values, limits, the behavior behind it>
+```
+
+### External runners
+
+For a key in `review.external`, launch a driver subagent instead of the reviewer: a general-purpose agent in Claude Code, a fresh subagent in Codex. The driver picks a command-line tool and model, then relays; the external model does the review. Give the driver the `Plugin root` line, the key, the agent that runs on the runner (`copy-editor` for `writing`, otherwise the key's agent from `reference/config.md`), the description from `review.external`, the prompt you would give that agent, and these instructions:
+
+```
+You relay a review to an external model. Do not review the change yourself, and do not add, drop, or reword its results.
 
 1. Choose the runner and model.
    - Each file in catalog/runners/ under the plugin root is a runner. Use only those; never build a command for a tool without a file there.
@@ -108,18 +129,20 @@ You relay a review to an external model. Do not review the change yourself, and 
 2. Create one prompt file with `mktemp` in the system temporary directory. Write into it, in order:
    - `Plugin root: <path>`;
    - agents/<agent>.md under the plugin root, without its frontmatter;
-   - the reviewer prompt you were given, with its "View the change" line replaced by "The change is below." and, when the runner's Commands are none, "Use only read-only git commands." replaced by "You cannot run commands.";
-   - the output of the "View the change" command and, in local mode, each untracked file in the list, or "none — review whole files";
-   - in PR mode, each added, modified, or renamed text file's content at the head (`git show <head SHA>:<path>`), and a "Read files" note that other files opened from disk show the working tree, not the PR head.
+   - the prompt you were given, with "Use only read-only git commands." replaced by "You cannot run commands." when the runner's Commands are none;
+   - when the prompt has a "View the change" line: that line replaced by "The change is below.", then the output of its command and, in local mode, each untracked file in the list, or "none — review whole files";
+   - in PR mode, for a prompt with a "View the change" line, each added, modified, or renamed text file's content at the head (`git show <head SHA>:<path>`); for any prompt, a "Read files" note that files opened from disk show the working tree, not the PR head.
 3. Run the runner's Run command with that file and model, as its Run section says. Set the timeout on your command tool itself; a `timeout` command is not available everywhere.
 4. Read the run's output where the runner's Run section says it goes (stdout or an output file). Then delete the prompt file and any output file, whatever the result.
-5. If the run failed as the runner's Failures section defines, timed out, or produced none of findings, coverage limits, or "No findings", reply only `NOT RUN: <runner> <model>: <reason>`, quoting the first error line, then the matching recovery from the Failures table, or "run the command by hand to see the full error".
-6. Otherwise reply with a first line `Runner: <runner> <model>`, then the findings and coverage limits from the output you read, changing only their layout to match the output format.
+5. If the run failed as the runner's Failures section defines, timed out, or produced nothing in the prompt's output format, reply only `NOT RUN: <runner> <model>: <reason>`, quoting the first error line, then the matching recovery from the Failures table, or "run the command by hand to see the full error".
+6. Otherwise reply with a first line `Runner: <runner> <model>`, then the results from the output you read (findings and coverage limits, or the copy editor's blocks), changing only their layout to match the output format.
 ```
 
 A `NOT RUN` reply is a coverage limit for that key, as in step 6. Report it with its recovery line. Do not run the key on the current agent instead.
 
 ## 6. Merge code findings
+
+Copy edits are not findings. Keep them apart: they are not merged, given a severity, or sent to Skeptic Review. They are accepted as given. When a copy edit and a fact-check finding name the same string, decide after Skeptic Review (step 8).
 
 - Merge findings that share a `file:line` or a root cause. Keep the highest supported severity and list every source reviewer.
 - When reviewers pull in opposite directions (for example `dx` wants a convenience API and `architecture` calls it premature), do not pick a side. Put both under **Trade-offs** with their evidence side by side.
@@ -148,12 +171,14 @@ Start with one Skeptic Review status line:
 Then, in this order:
 
 1. **Conclusion** in one or two sentences: whether anything blocks merge. Incomplete or blocked coverage cannot establish that the change is safe to merge.
-2. **Findings.** CONFIRMED findings by severity. Prefix each title with `[CONFIRMED]` and the reviewer key, such as `[CONFIRMED] [code-quality]`. A key run on an external runner also names the runner and model from the driver's `Runner:` line, such as `[CONFIRMED] [writing · copilot gemini-4-argon]`, everywhere the key appears in the report, and Coverage shows the description it was chosen from. When Skeptic Review is OFF, list first-pass 🔴/🟠 here prefixed `[UNVERIFIED]` instead, and do not treat them as confirmed.
-3. **Needs confirmation.** High-impact UNVERIFIED findings, each with one line on what could not be confirmed.
-4. **Unverified minor.** In `blocking` mode, every 🟡, prefixed `[UNVERIFIED]` and the reviewer key. These were not sent to Skeptic Review.
-5. **Trade-offs,** if any.
-6. **Nits,** if any, one line each.
-7. **Coverage.** Reviewers that were NOT APPLICABLE, failed, or blocked, with reasons.
+2. **Findings.** CONFIRMED findings by severity. Prefix each title with `[CONFIRMED]` and the reviewer key, such as `[CONFIRMED] [code-quality]`. A key run on an external runner also names the runner and model from the driver's `Runner:` line, such as `[CONFIRMED] [security · codex <model>]`, everywhere the key appears in the report, and Coverage shows the description it was chosen from. When Skeptic Review is OFF, list first-pass 🔴/🟠 here prefixed `[UNVERIFIED]` instead, and do not treat them as confirmed.
+3. **Copy edits.** One line per edited string: `<ID> <file:line> — "<original>" → "<edit>" — <reason>`. Name the runner and model when the copy edit ran externally, and mark an edit `replaced by <finding>` only when a CONFIRMED finding (or, with Skeptic Review OFF, a listed 🔴/🟠) names the same string. Then the number of strings left unchanged. These do not block merge; they are applied as given.
+4. **Missing copy.** The copy editor's missing-copy proposals, one line each with where and why. The user decides whether to add them.
+5. **Needs confirmation.** High-impact UNVERIFIED findings, each with one line on what could not be confirmed.
+6. **Unverified minor.** In `blocking` mode, every 🟡, prefixed `[UNVERIFIED]` and the reviewer key. These were not sent to Skeptic Review.
+7. **Trade-offs,** if any.
+8. **Nits,** if any, one line each.
+9. **Coverage.** Reviewers that were NOT APPLICABLE, failed, or blocked, with reasons. Report the fact check and the copy edit of `writing` separately.
 
 Leave REJECTED findings out.
 
