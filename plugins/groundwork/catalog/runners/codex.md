@@ -2,7 +2,7 @@
 
 OpenAI Codex CLI. Reaches the GPT models the signed-in account allows.
 
-Verified with: codex-cli 0.146.0, 2026-11-01.
+Verified with: codex-cli 0.166.0, 2026-11-03.
 
 ## Detect
 
@@ -24,10 +24,11 @@ From the repository root, with a timeout of at least 10 minutes:
 
 ```bash
 codex exec -s read-only --ignore-user-config --ephemeral -m <model id> -o <output file> \
-  "Read <prompt file> and follow it. Reply only in the output format it gives, plus any coverage limits."
+  "Read <prompt file> and follow it. Reply only in the output format it gives, plus any coverage limits." < /dev/null
 ```
 
 - Output: the `-o` file, created with `mktemp`. Delete it after reading.
+- Stdin: `< /dev/null` is required. Without a terminal, `codex exec` prints "Reading additional input from stdin..." and waits for stdin to close, so the run hangs until the timeout.
 - Commands: read-only. The `read-only` sandbox blocks file writes at the operating-system level, so the model may run read-only commands such as `git log` and `git show`. Never use `workspace-write`, `danger-full-access`, or `--add-dir`, which makes a directory writable.
 - `--ignore-user-config` keeps the user's MCP servers, default model, and other personal settings out of the run.
 - Files it can read: any path the user can read, including the plugin root.
@@ -39,6 +40,7 @@ codex exec -s read-only --ignore-user-config --ephemeral -m <model id> -o <outpu
 | `codex` not found | Install the Codex CLI, or remove the key from `review.external` |
 | Signed out or not authorized | Run `codex login` |
 | `model_not_found` or "not supported" | Pick a model printed by the filter command under Models |
+| Hangs after "Reading additional input from stdin..." | Add `< /dev/null` to the Run command |
 | Rate limit or timeout | Retry later |
 | Network or sandbox error | Run the review where the CLI can reach OpenAI, for example with network allowed for this command |
 
