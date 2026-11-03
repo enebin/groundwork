@@ -20,6 +20,7 @@ The coordinator lists each string with an ID, its location, the state that shows
 - Keep the meaning the notes describe. Do not promise behavior the notes do not state, and keep consent and policy wording's commitments.
 - Keep placeholders, units, and plural forms working. An edit must still read correctly with empty, long, singular, and plural values.
 - Use the same name for the same thing across the list and the screens you open.
+- A string that matches an approved entry in a copy inventory the Review focus names stays unchanged; give that entry as the reason.
 - Whether a statement is true to the code is the fact check's job, not yours. Edit from the notes.
 
 ## Output

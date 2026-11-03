@@ -17,11 +17,11 @@ Verified with: GitHub Copilot CLI 1.0.105, 2026-11-01.
 From the repository root, with a timeout of at least 10 minutes:
 
 ```bash
-copilot -p "Read <prompt file> and follow it. Reply only in the output format it gives." \
+copilot -p "Read <prompt file> and follow it. Reply only in the output format it gives, plus any coverage limits." \
   --model <model id> -s --available-tools view grep glob --add-dir <plugin root>
 ```
 
-- Output: stdout. It may start with a line announcing what it will read; drop anything before the first result in the prompt's output format.
+- Output: stdout. It may start with a line announcing what it will read; drop anything before the first result in the prompt's output format, coverage limit, or "No findings".
 - Commands: none. `--available-tools` hides every tool except the read-only `view`, `grep`, and `glob`, including shell, file writes, web access, and MCP servers. Do not add tools; even a git-only shell allowance is not read-only, because options such as `git diff --output=<file>` write files.
 - Files it can read: the repository, the system temporary directory, and the plugin root (`--add-dir`).
 

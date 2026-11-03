@@ -24,7 +24,7 @@ From the repository root, with a timeout of at least 10 minutes:
 
 ```bash
 codex exec -s read-only --ignore-user-config --ephemeral -m <model id> -o <output file> \
-  "Read <prompt file> and follow it. Reply only in the output format it gives."
+  "Read <prompt file> and follow it. Reply only in the output format it gives, plus any coverage limits."
 ```
 
 - Output: the `-o` file, created with `mktemp`. Delete it after reading.
