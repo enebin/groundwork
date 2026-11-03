@@ -55,6 +55,14 @@
         {"section": "New features", "kind": "auto", "text": "Onboarding's issue tracker step explains why keeping issue records helps."},
         {"section": "Bug fixes", "kind": "auto", "text": "The banner shown when onboarding finishes renders correctly."}
       ]
+    },
+    {
+      "version": "0.3.3",
+      "items": [
+        {"section": "New features", "kind": "auto", "text": "The writing review now edits copy instead of only judging it. One pass checks changed copy against what the product actually does, and another rewrites each changed string against your writing rules with a one-line reason, plus up to three pieces of missing copy. The step workflow applies the rewrites, `review-and-fix` lists them with its other fixes, and missing copy waits for you. With `review.external.writing` set, only the rewrite runs on the external model."},
+        {"section": "New features", "kind": "auto", "text": "`update` runs faster: it sorts the changes in each release with a local scan instead of downloading and reading every release note. It needs `python3`."},
+        {"section": "Bug fixes", "kind": "auto", "text": "Reviews run on the Codex CLI no longer hang until the timeout with newer Codex CLI versions, which wait for input when no terminal is attached."}
+      ]
     }
   ]
 }
