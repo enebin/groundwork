@@ -139,7 +139,7 @@ Commit `GROUNDWORK.md` and the docs onboarding writes. Teammates only need to in
 ## What runs behind a request
 
 - **Tests are part of implementation**, not an option. Onboarding finds your build and test commands and writes the [implementation rules](plugins/groundwork/reference/implementation.md) into `AGENTS.md`.
-- **Reviewers** for architecture, code quality, security, writing, and developer experience run in parallel on each change. Confirmed findings go to a `fixer` agent in a fresh context, so your conversation receives only a short summary.
+- **Reviewers** for architecture, code quality, security, writing, and developer experience run in parallel on each change. Confirmed findings go to a `fixer` agent in a fresh context, so your conversation receives only a short summary. The writing review also rewrites each changed string; those copy edits are applied without a confirmation step, and suggested missing copy waits for you.
 - **Screen checks** test whether each user persona can finish its tasks, from the code or on the running app, and check the rendered UI against requirements. See [screen checks](plugins/groundwork/catalog/screen-checks.md) and how the [UX checks compare](plugins/groundwork/reference/ux-checks.md). In a [benchmark](bench/ux/flow-reviewer/README.md), the code-based UX review found 36 of 39 seeded defects at about a tenth of the app-based review's cost.
 - **Thoroughness** is controlled by a single preset—`eco`, `normal` (default), or `sport`—that sets verification depth, review rounds, and screen-check scope together. Say "use sport mode for this one" to change it for a single request.
 

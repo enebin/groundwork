@@ -113,11 +113,13 @@ Optional. Skills read only the section that applies to them.
 | `architecture` | `architecture-reviewer` | Layers, coupling, boundaries, the chosen architecture bundle |
 | `code-quality` | `code-quality-reviewer` | Correctness, readability, cost, tests |
 | `security` | `security-reviewer` | Authorization, data isolation, personal data, untrusted input |
-| `writing` | `writing-reviewer` | User-facing copy, terminology, accuracy against behavior |
+| `writing` | `writing-reviewer`, `copy-editor` | Fact check: copy against actual behavior, terminology, dynamic text. Copy edit: a rewrite of each changed string against the writing standard |
 | `dx` | `dx-reviewer` | Developer experience of a library API, HTTP or RPC API, or command-line tool, traced through `developer` personas' tasks |
 | `ux` | `ux-flow-reviewer` | Whether each `user` persona can finish its tasks in the app, traced through the code |
 
 All of these read code. Every key except `ux` runs on every change when listed in `review.reviewers`. `ux` is never listed there, except in a legacy file without a `ux` mapping (see Screen checks compatibility): it runs in a review when a present `ux` mapping is `ux.bundle: continuous` with `ux.method: code`, and `/groundwork:review --only ux` runs it on request. The agents that exercise the running app, `ui-qa` and `ux-persona-reviewer`, are not reviewer keys: they run according to the screen checks below, or when the user calls `/groundwork:ui-qa` or `/groundwork:ux-review` directly.
+
+`writing` runs two agents. `writing-reviewer` reports fact-check findings, which follow the severity scale and Skeptic Review like any other key's. `copy-editor` gets a list of the changed strings from the review skill and returns an edit (or "unchanged") and a reason for each, plus up to three pieces of missing copy. Its edits are not findings: they have no severity, skip Skeptic Review, and are applied as given, by the `step` skill's fixer in round 1 or by `review-and-fix`. A fact-check finding on the same string wins. Missing copy waits for the user.
 
 The `fixer` agent is not a reviewer either: the `step` skill hands it each round's confirmed findings, so fixes and their test runs stay out of the step's own context.
 
@@ -125,11 +127,11 @@ In Claude Code the agents are registered as `groundwork:<agent>`. In Codex, spaw
 
 ### External runners
 
-`review.external` is optional. Absent, every reviewer runs on the agent running the review. Each entry maps a reviewer key to a plain-words description of the model to use, such as `"latest high-end Gemini"`, `"codex, the strongest GPT"`, or an exact model id. Only listed keys move; the rest stay on the current agent. It does not change which keys run (`review.reviewers`, the `ux` mapping, or `--only`), so an entry for a key that does not run has no effect.
+`review.external` is optional. Absent, every reviewer runs on the agent running the review. Each entry maps a reviewer key to a plain-words description of the model to use, such as `"latest high-end Gemini"`, `"codex, the strongest GPT"`, or an exact model id. Only listed keys move; the rest stay on the current agent. For `writing`, only the copy edit moves; the fact check reads handlers and server code, so it stays on the current agent. It does not change which keys run (`review.reviewers`, the `ux` mapping, or `--only`), so an entry for a key that does not run has no effect.
 
 At each review, the driver checks which runners in `catalog/runners/` are installed, reads their model lists, and picks the runner and model that fit the description. Only runners with a catalog file are ever used, because each file records a command whose read-only limits were checked: the external model never writes files and has no web or MCP tools. The pick can change when a runner's model list changes; the report names the runner and model each time, and an exact id keeps it fixed.
 
-Its findings go through Skeptic Review and the report like any other reviewer's. When nothing installed fits, or the runner is missing, signed out, rate-limited, or returns nothing, that key is reported as not run with a recovery line; it never falls back to the current agent. A runner that cannot run commands (Commands: none in its file) cannot read git history, so reviewers that use it, such as `code-quality`, `security`, and `ux`, see less context there than on the current agent. Only `writing` has been tried on an external runner so far.
+Its findings go through Skeptic Review and the report like any other reviewer's; copy edits go to the report's Copy edits section. When nothing installed fits, or the runner is missing, signed out, rate-limited, or returns nothing, that key is reported as not run with a recovery line; it never falls back to the current agent. A runner that cannot run commands (Commands: none in its file) cannot read git history, so reviewers that use it, such as `code-quality`, `security`, and `ux`, see less context there than on the current agent. Only the `writing` copy edit has been tried on an external runner so far.
 
 `mode` does not change the external model or its reasoning effort.
 
