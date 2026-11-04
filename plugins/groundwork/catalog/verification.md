@@ -14,7 +14,7 @@ The rules below say *when* to verify. The commands that do it live in `verificat
 
 | Id | Kind | One line |
 |---|---|---|
-| `evidence` | base | Tests for state, targeted then full runs, screenshots, zero warnings, report what did not run |
+| `evidence` | base | Tests for state, added or changed tests during edits, one full run before review, screenshots, zero warnings |
 | `ci-gate` | base | `evidence` plus: done only after the PR's CI passes |
 | `test-first` | base | `evidence` plus: watch a test fail before implementing |
 | `basic` | base | Build and tests pass; report what did not run |
@@ -25,7 +25,7 @@ The rules below say *when* to verify. The commands that do it live in `verificat
 
 ## evidence
 
-Summary: Every claim of "done" comes with evidence: tests for anything that holds state, targeted runs while fixing and one full run before finishing, screenshots for UI, zero compiler warnings, and an honest list of what could not run.
+Summary: Every claim of "done" comes with evidence: tests for anything that holds state, added or changed tests while implementing and fixing, one full run before the first review, screenshots for UI, zero compiler warnings, and an honest list of what could not run.
 
 Pros:
 - State bugs are caught by tests that name the input and the expected transition, not by manual poking.
@@ -38,7 +38,7 @@ Cons:
 - Provenance (commit + dirty state) must be recorded for every UI run, or the result cannot be reused.
 - Zero warnings can force cleanup of warnings the change did not cause, the first time it is enforced.
 
-Token cost: Medium — writing state tests, targeted runs while fixing, one full run, and inspecting screenshots.
+Token cost: Medium — writing state tests, running added or changed tests while fixing, one full run before review, and inspecting screenshots.
 
 Recommended when: almost always. This is the default base bundle.
 
@@ -130,7 +130,7 @@ Recommended when: prototypes, scripts, and repositories with no test suite yet. 
 ```markdown
 ### Verification
 
-- Before declaring work done, run every command in `verification.commands`. All must pass.
+- Before the first review, run every command in `verification.commands`. All must pass. After review fixes, run only tests added or changed by those fixes.
 - If any command could not run, say which one and why in the work result. Report it as unverified. Never report it as passed.
 ```
 
