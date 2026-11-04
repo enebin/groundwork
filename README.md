@@ -71,6 +71,8 @@ Push it and open a PR.
 
 groundwork rebases, verifies again, pushes, and opens the PR. With auto-merge on, it also waits for CI, merges, and cleans up the branch.
 
+In eco and normal modes, implementation and review fixes run only the tests they add or change. The complete verification suite runs once immediately before the first review, so finishing the step does not repeat the same full run. Sport mode keeps running the complete suite in every review round.
+
 A job too large for one PR is split into steps first; once you approve the plan, each step runs the same way.
 
 ### Where it stops for you

@@ -20,7 +20,7 @@ Read `GROUNDWORK.md` at the repository root, `docs.rules`, and `skills/step/SKIL
 
 ## Verify
 
-Run the verification the fixes affect, as step 4 item 1 says, in the mode the assignment names. Open the screenshots of every changed screen yourself and check the screen renders as the task requires. Update the UI coverage ledger for screens you changed.
+In eco and normal, run only tests added or changed by the fixes, as step 4 item 1 says. In sport, run the complete verification suite. Open the screenshots of every changed screen yourself and check the screen renders as the task requires. Update the UI coverage ledger for screens you changed.
 
 If verification fails, fix the cause and run it again. Verification failures are part of your job, not a reason to stop. Stop and report only when a check is blocked (for example no simulator) or keeps failing for a reason outside the findings.
 

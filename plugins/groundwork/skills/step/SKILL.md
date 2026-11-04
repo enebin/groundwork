@@ -54,6 +54,7 @@ Skip this section if `--implemented` is given; the caller has already done it.
 
 - Follow the issue's "Implementation notes" first. If they say another procedure or skill does the implementation, use it.
 - Write the tests `docs.rules` requires together with the code.
+- In eco and normal, run only the tests added or changed by the implementation. Sport runs the full suite in the loop below.
 - `tdd-loop` bundle, or `test-first` in `verification.base`: work red → green → refactor. Write the failing test first and run it. Before writing any implementation, `comment` a `### Red` log with the command and the failing test name. Then make it pass, then refactor with the tests green.
 - Design step: write no code. Change only `docs.architecture`, its sub-documents, or the design note.
 
@@ -63,10 +64,11 @@ The mode is `--mode` if given, otherwise `mode` in `GROUNDWORK.md`. It sets the 
 
 Repeat for round `r = 1` up to the mode's limit:
 
-1. **Verify.** Run the `verification.commands` the change affects. Verification failures do not count as a round. A design step skips this. From round 2, the fixer has already verified its fixes; use its report and do not run them again.
-   - When the change touches `verification.ui_paths`, run only the UI tests that cover the changed screens with `verification.ui_tests.targeted`. The full suite runs once in step 5.
-   - `sport` runs the full suite every round.
-   - Each changed screen needs a UI test that attaches a screenshot. Write or extend those tests with the code, then open the attached screenshots yourself and check that the screen renders as the task requires: nothing missing, overlapping, or clipped. Keep rendered QA out of this verification round; run it after final verification only when the screen checks require it (`reference/config.md`).
+1. **Verify.** Verification failures do not count as a round. A design step skips this. From round 2, the fixer has already verified its fixes; use its report and do not run them again.
+   - In eco and normal round 1, run every `verification.commands` entry once immediately before the first review. When the change touches `verification.ui_paths`, run `verification.ui_tests.full` once. Record these complete results in the round log.
+   - In sport, run every `verification.commands` entry and the full UI suite in every round.
+   - During implementation and after review fixes in eco and normal, run only tests added or changed by that work. For changed screens, use `verification.ui_tests.targeted` and open their screenshots.
+   - Each changed screen needs a UI test that attaches a screenshot. Write or extend those tests with the code, then open the attached screenshots yourself and check that the screen renders as the task requires: nothing missing, overlapping, or clipped. Keep rendered QA out of this verification round; run it after the review loop only when the screen checks require it (`reference/config.md`).
    - Update the UI coverage ledger (`verification.ui_coverage`) for every screen you changed: a row per check, the test that covers it, or for a check no test can make, the reason in "Why QA must look" and Last verified `stale`.
      A check may go there only as the "Why QA must look" rule in `reference/implementation.md` allows. Write the test instead whenever that rule says one can be written.
    - In round 2 or later, skip UI tests when the fixes since the last pass touch nothing under `verification.ui_paths`. Log them as `not rerun — no UI change since round <r>`.
@@ -96,7 +98,9 @@ If the last allowed round ends with confirmed 🔴/🟠 still open, stop and ask
 
 ## 5. Finish
 
-1. Run every `verification.commands` entry before completion. If the step changed anything under `verification.ui_paths`, run `verification.ui_tests.full` once (reuse current-build results). A failure sends you back to step 4 and counts as a verification failure, not a round. For a non-design step, then run the after-implementation gate from Screen checks in `reference/config.md` when a check on the running app resolves to continuous, passing the effective mode and the complete change scope. Do this even if code review had no findings. A FAIL or BLOCKED prevents completion; follow the QA repair/recheck limit before continuing below.
+1. Do not repeat the complete verification at finish. For a non-design step, do both:
+   - Confirm that round 1 recorded every `verification.commands` entry and the required full UI suite as passing, and that tests added or changed for every later edit passed.
+   - Run the after-implementation gate from Screen checks in `reference/config.md` when a check on the running app resolves to continuous, passing the effective mode and the complete change scope. Run it even if code review had no findings. A FAIL or BLOCKED prevents completion; follow the QA repair/recheck limit before continuing below.
 2. Design step: show the user the document and the review result, and stop until they approve it. Their requested changes go back to step 4.
 3. Tick the satisfied "Done when" boxes in the issue body with `update_body`.
 4. If the step has a parent and produced a decision that later steps need, append it to the parent's "Decisions" with `update_body`. Structural decisions go into `docs.architecture` or its sub-documents instead.
