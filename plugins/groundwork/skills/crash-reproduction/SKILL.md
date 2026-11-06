@@ -7,22 +7,22 @@ description: Reconstruct the environment of a reported software crash, analyze t
 
 Find a realistic path from a user action to the reported crash. Keep facts, hypotheses, and experimental changes separate. A reproduction is valid only when it reaches the same failure through actions and states the product can naturally encounter.
 
-Read `reference/config.md` under the plugin root (two directories above this skill), the repository's `GROUNDWORK.md`, and its rules. Talk in `language.conversation`; write saved files in `language.artifacts`. This skill investigates and reports; it does not fix the crash. When the user wants a fix afterward, hand the report to `step`.
+Read `reference/config.md` under the plugin root (two directories above this skill), the repository's `GROUNDWORK.md`, and its rules. Talk in `language.conversation`; write saved files in `language.artifacts`. This skill investigates and reports; it does not fix the crash. When the user wants a fix afterward, hand the report to the implementation skill of the configured `workflow.bundle`, such as `step` for `step-loop` or `review-and-fix` for `quick`.
 
 ## 1. Match the reported environment
 
-Collect the available crash log, incident context, source revision, and build artifacts. Reconstruct as much of the following as the evidence supports:
+Collect the available crash log, incident context, source revision, and build artifacts. If the user gave no crash log, stack trace, incident report, or suspect code path, ask for one with the client's question tool instead of searching the repository for crashes. Reconstruct as much of the following as the evidence supports:
 
 - app and SDK versions, commit or release revision, build configuration, and compiler/toolchain
-- device or hardware model, OS version, architecture, and locale when relevant
+- device or hardware model, OS or runtime version, architecture, and locale when relevant
 - dependency versions, feature flags, server/environment, account state, persisted data, and permissions
 - the user action sequence, navigation state, foreground/background state, network conditions, and relevant timing
 
-Symbolicate the crash before drawing source-level conclusions. Verify that binary UUIDs match the dSYM or equivalent symbols. If symbols, the exact revision, or another important input is missing, label the gap explicitly. Do not silently substitute the current environment and call it equivalent.
+Symbolicate the crash before drawing source-level conclusions. Verify that the symbols match the crashed build, such as binary UUIDs against a dSYM, or a source map or R8/ProGuard mapping against the release. If symbols, the exact revision, or another important input is missing, label the gap explicitly. Do not silently substitute the current environment and call it equivalent.
 
-A latent crash found by reading code has no log to symbolicate. Mark the crash log `MISSING`, and target the oldest supported OS and the shipped revision that contains the suspect code.
+A latent crash found by reading code has no log to symbolicate. Mark the crash log `MISSING`. Choose the OS or runtime version from what the suspect code depends on, and mark that choice `ASSUMED` with the reason. Use the oldest shipped revision that contains the suspect code, or the newest revision when it has not shipped.
 
-Prefer an isolated branch, worktree, simulator, or disposable test state when changing revisions or configuration. Do not overwrite the user's current work. Never expose secrets from logs or configuration in the report.
+Prefer an isolated worktree, simulator, or disposable test state when changing revisions or configuration. Put a worktree under `.groundwork/worktrees/` of the main checkout (`git rev-parse --path-format=absolute --git-common-dir | xargs dirname`), and name any new branch with `branches.work_prefix`. Do not overwrite the user's current work. Never expose secrets from logs or configuration in the report.
 
 End this stage with a short environment table or list using these labels:
 
@@ -59,15 +59,13 @@ For example, prefer "`ConversationViewModel.messageTask` completed after `Conver
 
 ## 3. Attempt a faithful reproduction
 
-First try the reported environment and natural user flow without diagnostic behavior changes. Repeat enough times to observe whether the failure is deterministic or intermittent, and record attempts and outcomes. If about 10 attempts produce no crash, stop widening timing. First confirm with logs that each required precondition actually held, such as screen state, data shape, and scroll position. A missing precondition is a more common cause than a window that is too short.
-
-When the suspected failure window is too short to observe reliably, widen time without inventing a new state:
+First try the reported environment and natural user flow without diagnostic behavior changes. Repeat enough times to observe whether the failure is deterministic or intermittent, and record attempts and outcomes. When the suspected failure window is too short to observe reliably, widen time without inventing a new state. If about 10 attempts at a given setting produce no crash, do not widen further until logs confirm that each required precondition actually held, such as screen state, data shape, and scroll position. A missing precondition is a more common cause than a window that is too short.
 
 - Prefer controllable real-world conditions such as network throttling, animation controls, background/foreground transitions, or debugger scheduling when they preserve the suspected sequence.
 - A local diagnostic delay may be inserted at the boundary under investigation. For example, if the suspected window is between hiding a typing indicator and showing a message, preserve those two events and increase only the interval between them from milliseconds to a visible `N` seconds.
 - Try a small set of explicit delay values and compare against an unchanged control run. Record the exact location and duration of every delay.
 - Confirm with logs or signposts that the delayed run still produces the hypothesized events once each, in the original order, with only the gap widened. A delay that misses the real event path or re-triggers itself makes both runs fail to crash for the wrong reason.
-- Keep diagnostic timing changes local and clearly identified. Do not ship them or commit them to a working branch. Before removing them, save the diagnostic patch, probe logs, and crash reports in a fresh `.groundwork/notes/crash-YYYYMMDD-HHMMSS/` so the reproduction can be repeated. Create a self-ignoring `.gitignore` containing `*` inside `.groundwork/notes/` if absent. Remove only changes made by this investigation, and only when doing so cannot overwrite unrelated work.
+- Keep diagnostic timing changes local and clearly identified. Do not ship them or commit them to a working branch. Before removing them, save the diagnostic patch, probe logs, and crash reports in a fresh `.groundwork/notes/crash-YYYYMMDD-HHMMSS/` of the main checkout, not of a worktree that may be removed, so the reproduction can be repeated. Create a self-ignoring `.gitignore` containing `*` inside `.groundwork/notes/` if absent. Remove only changes made by this investigation, and only when doing so cannot overwrite unrelated work.
 
 Instrumentation may observe state through logs, breakpoints, signposts, thread diagnostics, or sanitizers. It must not manufacture the failure.
 
@@ -86,7 +84,7 @@ Select the strongest evidence-backed mechanism, then read only its reference. Re
 
 ### Invalid reproduction methods
 
-Do not add `fatalError`, forced unwraps, out-of-bounds access, invalid casts, deliberate use-after-free, or similar code whose purpose is to crash. Do not directly call otherwise unreachable internals, fabricate impossible callbacks or events (a value a real external system can send is not impossible; see the external-input reference), corrupt state, bypass product validation, or perform actions a real user or real system event cannot cause.
+Do not add `fatalError`, forced unwraps, deliberate throws, out-of-bounds access, invalid casts, deliberate use-after-free, or similar code whose purpose is to crash. Do not directly call otherwise unreachable internals, fabricate impossible callbacks or events (a value a real external system can send is not impossible; see the external-input reference), corrupt state, bypass product validation, or perform actions a real user or real system event cannot cause.
 
 A unit test, extracted-code reproducer, or sanitizer run may call internal code directly when each call matches a path the product can reach. Show that path in the report.
 
@@ -103,5 +101,6 @@ Return a concise report with:
 5. Verdict: `REPRODUCED`, `PARTIALLY REPRODUCED`, or `NOT REPRODUCED`
 6. The smallest next experiment if uncertainty remains
 7. The absolute path of the saved diagnostic files, when any were saved
+8. Every diagnostic change still in the user's working tree, with its file, line, and why it was not removed. Ask the user to remove it before handing off a fix.
 
 `REPRODUCED` means the realistic path matches the reported failure mechanism. `PARTIALLY REPRODUCED` means a related failure or state was reached but important evidence differs. This includes the same mechanism hit only in isolation, such as a unit test or extracted code; say "isolated" in the verdict. `NOT REPRODUCED` is a valid result; report the evidence gap instead of forcing a crash or claiming a fix.
