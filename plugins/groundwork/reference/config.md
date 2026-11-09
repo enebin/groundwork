@@ -43,6 +43,7 @@ workflow:
   bundle: step-loop                      # step-loop | design-first | quick | tdd-loop | review-only (flight: removed; onboarding migrates it)
   autoland: false                        # merge automatically once CI passes (not for quick / review-only)
   worktree: true                         # true = step works in .groundwork/worktrees/<branch> (step-loop, design-first, tdd-loop)
+  confirm_issue: false                   # optional, absent means false; true = step shows a standalone issue and asks before filing it in a non-local tracker
 
 branches:
   strategy: develop-release              # develop-release | main-only
