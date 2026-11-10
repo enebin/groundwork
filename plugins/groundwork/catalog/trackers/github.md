@@ -69,6 +69,14 @@ gh issue create R --title "<title>" --body-file <file> --project "$TITLE" [--lab
 4. If a label does not exist, the create fails. Create the label with `gh label create "<label>" R`, tell the user, and retry.
 5. If `parent` is given, `link` the new issue to it.
 
+### list(label)
+
+```bash
+gh issue list R --state open --label "<label>" --limit 200 --json number,title
+```
+
+A label that does not exist yet matches no issues.
+
 ### link(child, parent)
 
 The sub-issues API takes the child's numeric **id**, not its issue number.

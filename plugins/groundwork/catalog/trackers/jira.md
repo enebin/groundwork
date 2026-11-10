@@ -71,6 +71,10 @@ State mapping by status **category**: To Do is `todo`, In Progress is `in_progre
 
 Pass labels through `additional_fields: {"labels": [...]}`, with spaces replaced by `-`. Use the exact issue type names from `getJiraProjectIssueTypesMetadata`; sites rename them (for example "Subtask" vs "Sub-task"). Return the key it gives back.
 
+### list(label)
+
+`searchJiraIssuesUsingJql` with `project = <project> AND labels = "<label>" AND statusCategory != Done`, the label's spaces replaced by `-` as in `create`.
+
 ### link(child, parent)
 
 - `child` mode: `editJiraIssue` on the child with `fields: {"parent": {"key": "<parent>"}}`.

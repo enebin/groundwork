@@ -221,6 +221,7 @@ Skills never call a tracker directly. They name an operation and follow `catalog
 |---|---|
 | `read(id)` | Title, body, state, parent, children, and comments of one issue |
 | `create(title, body, parent?, labels?)` | Create an issue; returns its id |
+| `list(label)` | Id and title of every open issue that has the label |
 | `link(child, parent)` | Make an existing issue a child of another |
 | `comment(id, body)` | Append a comment |
 | `update_body(id, body)` | Replace the body (used to tick checkboxes) |
@@ -229,6 +230,16 @@ Skills never call a tracker directly. They name an operation and follow `catalog
 | `closes(id)` | The line to put in a PR body so merging the PR closes the issue, or how to close it after merge when the tracker has no such syntax |
 
 Issue ids are written as the tracker shows them: `#12` for GitHub, `ABC-12` for Linear and Jira, `L-12` for local.
+
+### Labels
+
+A skill that creates an issue adds the labels that will help someone find it later. Add a label only when the request or plan states or clearly implies it, and prefer a label the tracker already has over a new one. These labels have a fixed meaning because skills read them, so always use them by these exact names, even when the tracker has a similar label:
+
+- `needs planning`: work the user moved out of scope while planning.
+- `pre release`: must be done before the next release is cut, for example updating a migration guide.
+- `post release`: must be done right after a release ships, for example announcing it or removing a flag the release made obsolete.
+
+`release` lists the open `pre release` issues as a pre-release check and the open `post release` issues after it opens the release PR.
 
 ## Paths
 

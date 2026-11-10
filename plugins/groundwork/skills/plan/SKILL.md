@@ -43,9 +43,11 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 3. Preview and get approval
 
-Show the user the parent issue and every step: title, goal, scope (in / out), done criteria, dependencies. List the needs-planning issues too, with title and start condition. Explain the split in one or two sentences. **Create nothing before the user approves.** Apply requested changes and show the preview again.
+Show the user the parent issue and every step: title, goal, scope (in / out), done criteria, dependencies. List the needs-planning issues too, with title and start condition. Show each issue's labels. Explain the split in one or two sentences. **Create nothing before the user approves.** Apply requested changes and show the preview again.
 
 ## 4. Create the issues
+
+Pass labels to every `create` below as "Labels" in `reference/config.md` says, for example `pre release` on a step that must land before the next release.
 
 1. `create` the parent issue, unless one was given.
 2. `create` each sub-issue in step order with the parent, titled `<Parent short name>: <step>`. Do not number titles; the parent's Steps list holds the order, so adding or dropping a step does not rename the others.
