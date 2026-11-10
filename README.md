@@ -73,7 +73,7 @@ groundwork rebases, verifies again, pushes, and opens the PR. With auto-merge on
 
 In eco and normal modes, implementation and review fixes run only the tests they add or change. The complete verification suite runs once immediately before the first review, so finishing the step does not repeat the same full run. Sport mode keeps running the complete suite in every review round.
 
-A job too large for one PR is split into steps first; once you approve the plan, each step runs the same way.
+A job too large for one PR is split into steps first. After you approve the plan, run `complete-subissues` with the parent issue. It runs each step the same way, then merges its PR before starting the next. When two or more steps change screens, it runs the full UI suite at checkpoints on the merged code instead of before each review, so a PR can merge before that suite runs. Each checkpoint failure becomes a new sub-issue.
 
 ### Where it stops for you
 
@@ -81,8 +81,8 @@ groundwork never decides these on its own:
 
 - **Plan approval:** when a large job is split into multiple steps.
 - **Design approval:** before implementation in the `design-first` workflow.
-- **Pushing and opening a PR:** waits until you explicitly ask.
-- **Merging:** waits for you, unless auto-merge is on.
+- **Pushing and opening a PR:** waits until you explicitly ask. Running `complete-subissues` counts as asking for each step it completes.
+- **Merging:** waits for you, unless auto-merge is on or you ran `complete-subissues`, which merges each step it completes.
 - **Releasing:** starts only when you ask, and scheduled release prep waits for your approval before publishing.
 
 ## What you can ask for
@@ -92,7 +92,7 @@ These are examples; any wording that means the same works.
 | You say | What runs |
 |---|---|
 | "Add dark mode." / "Fix the crash on the settings screen." | `step`: issue → implement → test → review → fix |
-| "This is big. Split it into issues." | `plan`, then `step` for each part |
+| "This is big. Split it into issues." | `plan`, then `complete-subissues` to run every part |
 | "Push it and open a PR." | `takeoff`, then `autoland` if auto-merge is on |
 | "The PR is merged. Clean up." | `landing` |
 | "Review my changes." | `review` |
@@ -176,6 +176,7 @@ Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setu
 | `addons` | Browse optional features and continue their setup or one-off use |
 | `plan` | Break a large task into a parent issue and smaller step issues |
 | `step` | Run a single step: implement, then loop through verify → review → fix until no confirmed 🔴/🟠 issues remain |
+| `complete-subissues` | Run every open step of a parent issue in order: `step`, PR, merge, cleanup |
 | `takeoff` | Rebase, push, and open the PR for a finished step |
 | `landing`, `rejoin` | Clean up after a merge, or move a branch out of its worktree |
 | `release`, `autoland` | Cut a release, and merge once CI passes |
