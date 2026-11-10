@@ -1,10 +1,12 @@
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
 
-HOOK = Path(__file__).resolve().parents[1] / "plugins/groundwork/hooks/require-e2e-stage.py"
+PLUGIN = Path(__file__).resolve().parents[1] / "plugins/groundwork"
+HOOK = PLUGIN / "hooks/require-e2e-stage.py"
 FULL = "npx playwright test"
 TARGETED = "npx playwright test --grep"
 GROUNDWORK_MD = f"""---
@@ -33,6 +35,22 @@ class RequireE2EStageTests(unittest.TestCase):
         payload = {"tool_name": "Bash", "cwd": str(self.repo), "tool_input": {"command": command}}
         return subprocess.run(
             ["python3", str(HOOK)], input=json.dumps(payload), capture_output=True, text=True
+        )
+
+    def run_registered_hook(self, command, groundwork_md=GROUNDWORK_MD):
+        (self.repo / "GROUNDWORK.md").write_text(groundwork_md)
+        subdir = self.repo / "app"
+        subdir.mkdir(exist_ok=True)
+        hooks = json.loads((PLUGIN / "hooks/hooks.json").read_text())
+        shell = hooks["hooks"]["PreToolUse"][0]["hooks"][0]["command"]
+        payload = {"tool_name": "Bash", "cwd": str(subdir), "tool_input": {"command": command}}
+        return subprocess.run(
+            ["sh", "-c", shell],
+            cwd=subdir,
+            env={**os.environ, "CLAUDE_PLUGIN_ROOT": str(PLUGIN)},
+            input=json.dumps(payload),
+            capture_output=True,
+            text=True,
         )
 
     def test_given_full_ui_suite_without_stage_when_run_then_it_is_blocked_with_the_stages(self):
@@ -85,6 +103,42 @@ class RequireE2EStageTests(unittest.TestCase):
         unset = "---\nverification:\n  addons: [e2e-stage]\n  ui_tests:\n    targeted: null\n    full: null\n---\n"
 
         result = self.run_hook(FULL, groundwork_md=unset)
+
+        self.assertEqual(result.returncode, 0)
+
+    def test_given_a_block_scalar_full_command_when_it_runs_without_stage_then_it_is_blocked(self):
+        block_scalar = GROUNDWORK_MD.replace(f'    full: "{FULL}"\n', f"    full: |\n      {FULL}\n")
+
+        unstaged = self.run_hook(FULL, groundwork_md=block_scalar)
+        piped = self.run_hook("git log --oneline | head -3", groundwork_md=block_scalar)
+
+        self.assertEqual(unstaged.returncode, 2)
+        self.assertEqual(piped.returncode, 0)
+
+    def test_given_text_that_only_mentions_the_command_when_run_then_it_passes(self):
+        for command in (
+            f'git commit -m "Run {FULL} in CI"',
+            f'gh pr create --body "Verified: {FULL} passed"',
+            f'grep -rn "{FULL}" README.md',
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(self.run_hook(command).returncode, 0)
+
+    def test_given_the_stage_on_another_command_when_the_suite_runs_then_it_is_blocked(self):
+        result = self.run_hook(f"E2E_STAGE=review npm run build && {FULL}")
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn(f"`{FULL}`", result.stderr)
+
+    def test_given_the_registered_hook_from_a_subdirectory_when_the_add_on_is_on_then_it_blocks(self):
+        result = self.run_registered_hook(FULL)
+
+        self.assertEqual(result.returncode, 2)
+
+    def test_given_the_registered_hook_when_the_add_on_is_off_then_it_passes(self):
+        off = GROUNDWORK_MD.replace("[isolated-e2e, e2e-stage]", "[isolated-e2e]")
+
+        result = self.run_registered_hook(FULL, groundwork_md=off)
 
         self.assertEqual(result.returncode, 0)
 

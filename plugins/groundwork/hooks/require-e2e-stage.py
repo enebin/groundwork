@@ -6,14 +6,14 @@ import sys
 from pathlib import Path
 
 STAGES = ("review", "checkpoint", "release", "screenshot")
-STAGE_PATTERN = re.compile(r"(?:^|[\s;&|(])E2E_STAGE=(%s)(?![\w-])" % "|".join(STAGES))
+COMMAND_START = r"(?:^|[;&|(\n])\s*((?:[A-Za-z_]\w*=\S*\s+)*)"
 
-BLOCK_MESSAGE = """The e2e-stage add-on is on, and this command runs a UI test command from verification.ui_tests in GROUNDWORK.md. Put the current stage in front of it, such as `E2E_STAGE=screenshot <command>`.
+BLOCK_MESSAGE = """The e2e-stage add-on in GROUNDWORK.md requires a stage in front of `{ui}`, such as `E2E_STAGE=screenshot {ui}`. Valid stages, case-sensitive:
 - screenshot: the targeted tests for screens you changed, during implementation or fixes
 - review: the full suite once before the first review (every round in sport), UI tests during rendered QA, or re-verification after a rebase
 - checkpoint: a run on the integration branch after several merges
 - release: pre-release checks
-When no stage fits, do not run the suite. Reuse an earlier result from the same build instead."""
+When no stage fits, do not run the suite. Reuse an earlier result from the same build instead. To turn this check off, remove e2e-stage from verification.addons."""
 
 
 def repo_root(cwd):
@@ -57,14 +57,28 @@ def stage_addon_on(lines):
 
 def ui_test_commands(lines):
     commands = []
-    for line in block(block(lines, "verification"), "ui_tests"):
+    ui_tests = block(block(lines, "verification"), "ui_tests")
+    for index, line in enumerate(ui_tests):
         match = re.match(r"\s*(targeted|full):\s*(.*)$", line)
         if not match:
             continue
-        prefix = match.group(2).strip().strip("\"'").split("{test}")[0].strip()
+        value = match.group(2).strip()
+        if value[:1] in ("|", ">"):
+            value = " ".join(block(ui_tests[index:], match.group(1))[1:])
+        prefix = value.strip("\"'").split("{test}")[0].strip()
         if prefix and prefix != "null" and not prefix.startswith("<"):
             commands.append(" ".join(prefix.split()))
     return commands
+
+
+def unstaged_ui_command(command, ui_commands):
+    for ui in ui_commands:
+        pattern = COMMAND_START + r"\s+".join(map(re.escape, ui.split())) + r"(?![\w-])"
+        for match in re.finditer(pattern, command):
+            stages = re.findall(r"E2E_STAGE=(\S*)", match.group(1))
+            if not any(stage in STAGES for stage in stages):
+                return ui
+    return None
 
 
 def main():
@@ -80,12 +94,10 @@ def main():
     lines = frontmatter(groundwork.read_text())
     if not stage_addon_on(lines):
         return 0
-    flat = " ".join(command.split())
-    if not any(ui in flat for ui in ui_test_commands(lines)):
+    ui = unstaged_ui_command(command, ui_test_commands(lines))
+    if ui is None:
         return 0
-    if STAGE_PATTERN.search(command):
-        return 0
-    print(BLOCK_MESSAGE, file=sys.stderr)
+    print(BLOCK_MESSAGE.format(ui=ui), file=sys.stderr)
     return 2
 
 

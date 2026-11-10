@@ -242,7 +242,7 @@ Pros:
 Cons:
 - Every UI test command needs the prefix; a forgotten one is blocked once and retried.
 - The hook checks the label, not the truth: an agent can still name a wrong stage.
-- Runs one extra hook process for each shell command while it is on.
+- Every shell command passes through a quick check of `GROUNDWORK.md`, even with the add-on off; the full check runs only while it is on.
 
 Token cost: Low — one prefix per UI test command, and one retry when it is forgotten.
 
