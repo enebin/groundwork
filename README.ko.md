@@ -103,6 +103,7 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | "이번 주 정리해 줘." | `weekly-summary` |
 | "오늘은 여기까지. 다음에 이어서 할 수 있게 남겨 줘." | `handoff` |
 | "이 로그에 있는 크래시 재현해 줘." | `crash-reproduction` |
+| "어제 에이전트 작업이 효율적이었는지 점검해 줘." | `work-audit` |
 
 정확하게 부르고 싶을 때는 `/groundwork:step`처럼 스킬 이름을 직접 입력해도 됩니다.
 
@@ -161,6 +162,7 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | `ux-journey` | 처음 온 사용자가 실제 앱에서 전체 여정을 끝까지 해 보고 막힌 곳을 알려 줍니다 |
 | `release-prep` | 정해진 주기로 릴리스를 준비하고 검증한 뒤 최종 승인을 받습니다 |
 | `crash-reproduction` | 크래시가 난 환경을 맞추고 크래시 지점을 찾은 뒤 실제 사용자가 할 수 있는 동작으로 재현해 봅니다 |
+| `work-audit` | 정한 기간(기본 24시간)의 에이전트 세션에서 멈춘 일, 낭비한 실행, 토큰 과소비, 반복 실수를 찾아 각각 해결법을 붙입니다 |
 
 Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 자세한 내용은 [Slack 연결 안내](plugins/groundwork/skills/slack-report/references/setup.md)를 참고하세요. 자동 보고를 켜면 두 클라이언트에 저장소용 턴 종료 훅을 설치합니다.
 
@@ -181,7 +183,7 @@ Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 
 | `review` | 선택한 리뷰어들을 병렬로 돌려 결과 취합 |
 | `ux-review` | 지정한 사용자 페르소나 기준으로 코드 또는 실제 앱에서 사용성 리뷰 |
 | `ui-qa` | 실제 앱을 띄워 자동 테스트가 놓치는 UI 항목 점검 |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction` | 부가기능; 위 설명 참고 |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | 부가기능; 위 설명 참고 |
 
 </details>
 

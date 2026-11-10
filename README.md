@@ -103,6 +103,7 @@ These are examples; any wording that means the same works.
 | "Summarize this week." | `weekly-summary` |
 | "I'm stopping here. Leave a note for next time." | `handoff` |
 | "Reproduce the crash in this log." | `crash-reproduction` |
+| "How efficient was yesterday's agent work?" | `work-audit` |
 
 You can still type a skill by name, such as `/groundwork:step`, when you want to be exact.
 
@@ -161,6 +162,7 @@ Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse 
 | `ux-journey` | Has a first-time user walk a whole journey on the running app and reports where they get stuck |
 | `release-prep` | Prepares and verifies releases on a schedule, then asks for final approval |
 | `crash-reproduction` | Matches a reported crash's environment, finds the crash point, and tries to reproduce it the way a real user could |
+| `work-audit` | Audits agent sessions over a time range for stalls, wasted runs, token overuse, and repeated mistakes, with a fix for each |
 
 Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setup](plugins/groundwork/skills/slack-report/references/setup.md). Turning on automatic Slack reports installs repository-local Stop hooks for both clients.
 
@@ -181,7 +183,7 @@ Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setu
 | `review` | Run the selected reviewers in parallel and combine their findings |
 | `ux-review` | Usability review from chosen user personas, from the code or on the app |
 | `ui-qa` | Launch the app to check UI behavior automated tests can't cover |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction` | Optional add-ons; see above |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | Optional add-ons; see above |
 
 </details>
 

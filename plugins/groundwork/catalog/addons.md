@@ -13,6 +13,7 @@ Use this table as the single menu source. Translate names and descriptions into 
 | `ux-journey` | Journey usability test | Have a first-time user walk a whole journey, such as landing page → sign-up → organization setup, on the running app, and report where they hesitate, get lost, or give up. First use explores the project and proposes journeys for you to confirm. | Before a launch or release, or after changing the landing page, sign-up, or onboarding. Can also gate every release. |
 | `release-prep` | Scheduled release preparation | Prepare and verify a release on a chosen cadence, recommend a version from the diff, and request final publication approval. | Keep releases moving without repeating the preparation checklist yourself. |
 | `crash-reproduction` | Crash reproduction | Match the reported crash environment, trace the crash point to exact types and functions, and try to reproduce it through actions a real user or system can take. Reports a verdict of reproduced, partially reproduced, or not reproduced. | A crash log, stack trace, or incident report needs a cause before anyone writes a fix. |
+| `work-audit` | Work audit | Read the Claude Code and Codex sessions in this repository over a time range, by default the last 24 hours, and report stalls, wasted test runs, token overuse, and repeated mistakes, each with a concrete fix. Can run every morning on this machine. | Agents work unattended overnight and you want to know whether that time and those tokens were well spent. |
 
 ## Menu behavior
 
