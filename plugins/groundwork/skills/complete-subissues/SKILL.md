@@ -25,7 +25,7 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 1. Require one parent issue id. Pass `--mode` on to every skill below that takes it.
 2. `read` the parent with its comments and sub-issues. If it has no sub-issues, stop: it is not a parent. Point the user to `/groundwork:step <id>`.
-3. Snapshot the sub-issue ids in the parent's "Steps" order, or tracker order when it has none. Done and cancelled sub-issues are already resolved. The remaining open ones are the run's targets.
+3. Snapshot the sub-issue ids in the parent's "Steps" order, or tracker order when it has none. A sub-issue is already resolved when it is cancelled, or done with its PR merged or a note that no merge is needed. Every other sub-issue is a target. `step` marks an issue done before its PR merges, so a done sub-issue with an open or missing PR is a target too: resume it at takeoff (3.4) or merge (§4) instead of running `step` again. Running this skill again with the same parent id is how a stopped run resumes.
 4. Choose the UI mode. Read each target and judge whether it will likely change a screen: a path under `verification.ui_paths`, a UI test, or an API shape a screen reads. Use **checkpoint mode** when 2 or more targets likely change screens, or when the user asks. Otherwise each step runs its full UI suite as `/groundwork:step` requires. If a target turns out to change a screen and that brings the count to 2, switch to checkpoint mode from that target onward.
 5. `comment` a first progress note on the parent: the targets in order, the already-resolved sub-issues, the UI mode, and in checkpoint mode the checkpoint plan with reasons.
 
@@ -35,8 +35,8 @@ Work one at a time, because later steps may depend on earlier merges.
 
 - Re-read the parent and its sub-issues before each one.
 - If a sub-issue was linked after the snapshot, ask whether to add it. Do not expand the run silently.
-- Choose the first open target whose "Depends on" items are resolved. A dependency is resolved only when its PR is merged, or its issue says no merge is needed.
-- If no open target can run, stop and name the dependency cycle or outside dependency. Do not skip ahead.
+- Choose the first unresolved target whose "Depends on" items are resolved. A dependency is resolved only when its PR is merged, or its issue says no merge is needed.
+- If no unresolved target can run, stop and name the dependency cycle or outside dependency. Do not skip ahead.
 - A target cancelled during the run counts as resolved; report it and do not implement it.
 
 ## 3. Complete one sub-issue
@@ -69,7 +69,7 @@ Checkpoint mode only. A checkpoint runs `verification.ui_tests.full` on merged c
 
 ## 6. Finish
 
-Re-read the parent and every snapshotted sub-issue. Finish only when every target is done or cancelled, no merge is pending, and in checkpoint mode the last checkpoint has reported. Do not close the parent unless the user asked.
+Re-read the parent and every snapshotted sub-issue. Finish only when every target is resolved as Prepare item 3 defines it, no merge is pending, and in checkpoint mode the last checkpoint has reported. Do not close the parent unless the user asked.
 
 Report:
 

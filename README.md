@@ -73,7 +73,7 @@ groundwork rebases, verifies again, pushes, and opens the PR. With auto-merge on
 
 In eco and normal modes, implementation and review fixes run only the tests they add or change. The complete verification suite runs once immediately before the first review, so finishing the step does not repeat the same full run. Sport mode keeps running the complete suite in every review round.
 
-A job too large for one PR is split into steps first. Once you approve the plan, `complete-subissues` runs each step the same way, then merges its PR before starting the next.
+A job too large for one PR is split into steps first. After you approve the plan, run `complete-subissues` with the parent issue. It runs each step the same way, then merges its PR before starting the next. When two or more steps change screens, it runs the full UI suite at checkpoints on the merged code instead of before each review, so a PR can merge before that suite runs. Each checkpoint failure becomes a new sub-issue.
 
 ### Where it stops for you
 
@@ -81,7 +81,7 @@ groundwork never decides these on its own:
 
 - **Plan approval:** when a large job is split into multiple steps.
 - **Design approval:** before implementation in the `design-first` workflow.
-- **Pushing and opening a PR:** waits until you explicitly ask.
+- **Pushing and opening a PR:** waits until you explicitly ask. Running `complete-subissues` counts as asking for each step it completes.
 - **Merging:** waits for you, unless auto-merge is on or you ran `complete-subissues`, which merges each step it completes.
 - **Releasing:** starts only when you ask, and scheduled release prep waits for your approval before publishing.
 

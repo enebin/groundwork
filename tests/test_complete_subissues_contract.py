@@ -45,5 +45,12 @@ class CompleteSubissuesContractTests(unittest.TestCase):
         self.assertIn("only `/groundwork:complete-subissues` passes it", step)
 
 
+    def test_given_done_sub_issue_with_unmerged_pr_when_run_resumes_then_it_stays_a_target(self):
+        driver = self.read("plugins/groundwork/skills/complete-subissues/SKILL.md")
+
+        self.assertIn("done with its PR merged or a note that no merge is needed", driver)
+        self.assertIn("a done sub-issue with an open or missing PR is a target too", driver)
+        self.assertNotIn("Done and cancelled sub-issues are already resolved", driver)
+
 if __name__ == "__main__":
     unittest.main()
