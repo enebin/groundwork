@@ -21,6 +21,7 @@ The rules below say *when* to verify. The commands that do it live in `verificat
 | `design-fidelity` | add-on | Read values from the design source; never eyeball |
 | `api-contract` | add-on | Documented public API, checked surface, compiling examples, deprecation path |
 | `isolated-e2e` | add-on | Each concurrent agent gets its own test DB and ports |
+| `e2e-stage` | add-on | UI test commands run only with a named stage in front |
 | `visual-regression` | add-on | Baseline screenshots compared on every change |
 
 ## evidence
@@ -228,6 +229,36 @@ Recommended when: the app has a database and E2E or browser tests, and you run r
 - Use synthetic data only. No real personal data, real accounts, live third-party services, or remote APIs.
 - Do not stop another session's servers or share its mutable test data.
 - If safe isolation cannot be set up, report the affected checks as blocked, with the reason. Do not share mutable state to get a result.
+```
+
+## e2e-stage (add-on)
+
+Summary: Every `verification.ui_tests` command starts with the stage it runs for, such as `E2E_STAGE=review`. The plugin's hook blocks a UI test command without one, so a slow suite runs only when a stage calls for it.
+
+Pros:
+- Stops reflexive full-suite runs that add minutes without new evidence.
+- Each run says why it happened, which makes extra runs easy to spot in a log.
+
+Cons:
+- Every UI test command needs the prefix; a forgotten one is blocked once and retried.
+- The hook checks the label, not the truth: an agent can still name a wrong stage.
+- Every shell command passes through a quick check of `GROUNDWORK.md`, even with the add-on off; the full check runs only while it is on.
+
+Token cost: Low — one prefix per UI test command, and one retry when it is forgotten.
+
+Recommended when: the UI suite takes minutes and agents have been rerunning it without a reason.
+
+### Rules to write
+
+```markdown
+### End-to-end stages
+
+- Put the stage in front of every `verification.ui_tests` command, such as `E2E_STAGE=screenshot <command>`. The plugin's hook blocks these commands without one.
+- `screenshot`: the targeted tests for screens you changed, during implementation or fixes.
+- `review`: the full suite once before the first review (every round in sport), UI tests during rendered QA, and re-verification after a rebase.
+- `checkpoint`: a run on the integration branch after several merges, covering what they changed.
+- `release`: pre-release checks.
+- When no stage fits, do not run the suite. Reuse an earlier result from the same build instead.
 ```
 
 ## visual-regression (add-on)
