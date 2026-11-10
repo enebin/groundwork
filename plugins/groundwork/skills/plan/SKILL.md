@@ -54,6 +54,7 @@ Pass labels to every `create` below as "Labels" in `reference/config.md` says, f
 3. `link` each sub-issue to the parent if `create` did not already do it.
 4. `create` each needs-planning issue with the label `needs planning` and no parent. Do not `link` it: sub-issues are the steps that finish the parent, so a parked item would keep the parent open forever. Point back with `Split from <parent id>` in its body.
 5. Report the parent link, the sub-issue ids in order, and the needs-planning issue ids.
+6. When a parent was created or given, end the report with the command that implements it: `/groundwork:complete-subissues <parent id>`, which runs each sub-issue through `step`, `takeoff`, and merge in order. To run one step at a time instead, use `/groundwork:step <sub-issue id>`. A single issue with no parent goes to `/groundwork:step <id>`.
 
 ### Parent issue body
 

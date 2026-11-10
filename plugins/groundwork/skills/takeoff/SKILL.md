@@ -17,7 +17,7 @@ Every tracker action below is an operation from `reference/config.md` "Tracker o
 
 This skill invokes other skills as `/groundwork:<name>`. In Codex, invoke one by reading and following `skills/<name>/SKILL.md` under the plugin root.
 
-Run only when the user asked in so many words to push or open a PR, or when `autoland` hands over after such a request. A vague request ("ship it", "upload this", "wrap it up") is not enough; ask first.
+Run only when the user asked in so many words to push or open a PR, when `autoland` hands over after such a request, or when `complete-subissues` invokes it; the user's explicit `complete-subissues` invocation is that request. A vague request ("ship it", "upload this", "wrap it up") is not enough; ask first.
 
 In plan mode, do not refuse. Inspect with read-only tools, write the concrete plan (rebase target, push command, PR title and body), and ask for approval. After approval, carry it out as planned.
 
@@ -60,7 +60,7 @@ Split `--mode <eco|normal|sport>` out of the arguments. Validate the mode and re
      ```
 
 9. **Report** the PR URL and the manual checks.
-10. **Next.** If `workflow.autoland` is true and this run was not started by `autoland`, continue with `/groundwork:autoland <ISSUE>`. Otherwise stop here and tell the user that `/groundwork:landing <ISSUE>` cleans up after the merge.
+10. **Next.** If this run was started by `complete-subissues`, stop here and return to it; it checks the PR and merges itself. Otherwise, if `workflow.autoland` is true and this run was not started by `autoland`, continue with `/groundwork:autoland <ISSUE>`. Otherwise stop here and tell the user that `/groundwork:landing <ISSUE>` cleans up after the merge.
 
 ## Rules
 

@@ -1,6 +1,6 @@
 ---
 name: "step"
-description: Runs one step sub-issue, or a standalone issue, to completion. Implements it, then repeats verify → review → fix until the review leaves no confirmed 🔴/🟠, logging each round on the issue. Use for "run step <id>", "continue <id>", a change request that has no issue yet ("fix X", "add Y"), which it files as a standalone issue first, a request that only asks to file an issue, which it files without implementing, or when another skill hands over an implemented step.
+description: Runs one step sub-issue, or a standalone issue, to completion. Implements it, then repeats verify → review → fix until the review leaves no confirmed 🔴/🟠, logging each round on the issue. Use for "run step <id>", "continue <id>", a change request that has no issue yet ("fix X", "add Y"), which it files as a standalone issue first, a request that only asks to file an issue, which it files without implementing, or when another skill hands over an implemented step. A parent issue goes to `complete-subissues` after the user agrees.
 allowed-tools: Bash, Read, Edit, Write, Grep, Glob, Skill, Agent, AskUserQuestion
 argument-hint: <issue id | request> [--implemented] [--mode eco|normal|sport]
 ---
@@ -27,8 +27,9 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 1. Load context
 
-- If the argument is not an issue id in the tracker's form, it is a request. File it as one standalone issue: `create` it with no parent, using the "Sub-issue body" from `skills/plan/SKILL.md` filled from the request, with labels as "Labels" in `reference/config.md` says. Create it without asking, unless `workflow.confirm_issue` is `true` and the tracker is not `local`; then show it and ask before creating. If the request only asks to file an issue, such as a reminder for something to do after the next release, report its id and labels and stop without implementing it; the `plan` hand-off below does not apply to it. Hand the request to `/groundwork:plan` instead when it clearly needs more than one PR, when `workflow.bundle` is `design-first` (its design step and approval come first), when any `verification.commands` entry has `verified: false`, or when the repository has no commits; `plan` adds the design or scaffold step those cases need. After a `plan` hand-off, continue with the first step sub-issue it created; otherwise continue with the new standalone id. When the argument is only a number, ask which issue is meant instead of filing it.
+- If the argument is not an issue id in the tracker's form, it is a request. File it as one standalone issue: `create` it with no parent, using the "Sub-issue body" from `skills/plan/SKILL.md` filled from the request, with labels as "Labels" in `reference/config.md` says. Create it without asking, unless `workflow.confirm_issue` is `true` and the tracker is not `local`; then show it and ask before creating. If the request only asks to file an issue, such as a reminder for something to do after the next release, report its id and labels and stop without implementing it; the `plan` hand-off below does not apply to it. Hand the request to `/groundwork:plan` instead when it clearly needs more than one PR, when `workflow.bundle` is `design-first` (its design step and approval come first), when any `verification.commands` entry has `verified: false`, or when the repository has no commits; `plan` adds the design or scaffold step those cases need. After a `plan` hand-off that created a parent issue, treat that parent as below; when it created one issue with no parent, continue with it. Otherwise continue with the new standalone id. When the argument is only a number, ask which issue is meant instead of filing it.
 - `read` the issue with its comments, then `read` the parent issue it belongs to, if it has one.
+- If the issue has sub-issues, it is a parent, not a step. Ask whether to run `/groundwork:complete-subissues <id>`, which implements, merges, and cleans up every open sub-issue in order. On yes, invoke it; that answer is its authorization, and this skill stops. On no, ask which sub-issue to run instead.
 - Read `docs.rules`, `docs.architecture` (when set) and the documents it links that are in scope, and the code in scope.
 - If a step listed in "Depends on" is still open and its branch is not available, stop and say so.
 - Earlier round comments on the issue tell you where the last session stopped. Continue from there.
@@ -62,11 +63,13 @@ Skip this section if `--implemented` is given; the caller has already done it.
 
 The mode is `--mode` if given, otherwise `mode` in `GROUNDWORK.md`. It sets the round limit and what reruns; see Modes in `reference/config.md`. Log the mode in round 1.
 
+`--ui-checkpoint` is not a user option: only `/groundwork:complete-subissues` passes it, for the checkpoint-mode exception in `docs.rules`. If the run was not started by `complete-subissues`, ignore the flag and run the full UI suite as usual.
+
 Repeat for round `r = 1` up to the mode's limit:
 
 1. **Verify.** Verification failures do not count as a round. A design step skips this. From round 2, the fixer has already verified its fixes; use its report and do not run them again.
-   - In eco and normal round 1, run every `verification.commands` entry once immediately before the first review. When the change touches `verification.ui_paths`, run `verification.ui_tests.full` once. Record these complete results in the round log.
-   - In sport, run every `verification.commands` entry and the full UI suite in every round.
+   - In eco and normal round 1, run every `verification.commands` entry once immediately before the first review. When the change touches `verification.ui_paths`, run `verification.ui_tests.full` once, unless `--ui-checkpoint` is given: then a later checkpoint run by `/groundwork:complete-subissues` covers it, so log `Full UI suite: deferred to checkpoint`. Record these complete results in the round log.
+   - In sport, run every `verification.commands` entry and the full UI suite in every round, except the full UI suite under `--ui-checkpoint`.
    - During implementation and after review fixes in eco and normal, run only tests added or changed by that work. For changed screens, use `verification.ui_tests.targeted` and open their screenshots.
    - Each changed screen needs a UI test that attaches a screenshot. Write or extend those tests with the code, then open the attached screenshots yourself and check that the screen renders as the task requires: nothing missing, overlapping, or clipped. Keep rendered QA out of this verification round; run it after the review loop only when the screen checks require it (`reference/config.md`).
    - Update the UI coverage ledger (`verification.ui_coverage`) for every screen you changed: a row per check, the test that covers it, or for a check no test can make, the reason in "Why QA must look" and Last verified `stale`.
@@ -99,7 +102,7 @@ If the last allowed round ends with confirmed 🔴/🟠 still open, stop and ask
 ## 5. Finish
 
 1. Do not repeat the complete verification at finish. For a non-design step, do both:
-   - Confirm that round 1 recorded every `verification.commands` entry and the required full UI suite as passing, and that tests added or changed for every later edit passed.
+   - Confirm that round 1 recorded every `verification.commands` entry and the required full UI suite as passing (or deferred to checkpoint under `--ui-checkpoint`), and that tests added or changed for every later edit passed.
    - Run the after-implementation gate from Screen checks in `reference/config.md` when a check on the running app resolves to continuous, passing the effective mode and the complete change scope. Run it even if code review had no findings. A FAIL or BLOCKED prevents completion; follow the QA repair/recheck limit before continuing below.
 2. Design step: show the user the document and the review result, and stop until they approve it. Their requested changes go back to step 4.
 3. Tick the satisfied "Done when" boxes in the issue body with `update_body`.

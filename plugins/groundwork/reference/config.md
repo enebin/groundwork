@@ -161,6 +161,8 @@ Its findings go through Skeptic Review and the report like any other reviewer's;
 | UI tests | added or changed tests while implementing and fixing; full suite once before the first review | added or changed tests while implementing and fixing; full suite once before the first review | full suite every round |
 | Screen checks for one change, when triggered | only screens the change may affect; QA only on the running app | only screens and user tasks the change may affect | everything: every uncovered screen and every user-persona task |
 
+The one exception to the UI tests row: while `complete-subissues` runs a parent's sub-issues in checkpoint mode, each step's full UI suite moves to a checkpoint that runs it on the merged code, in any mode; targeted UI tests and screenshot inspection still run in every step.
+
 In every mode, each changed screen needs a UI test that attaches a screenshot, and the agent that changed the screen opens those screenshots before declaring done: the step itself while implementing, the `fixer` agent for review fixes. Eco and normal do not repeat a still-valid full result at completion; edits made after that result are proved by the tests added or changed for those edits. In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
 
 ### Default implementation policy
