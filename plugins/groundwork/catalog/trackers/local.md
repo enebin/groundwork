@@ -102,7 +102,7 @@ until (set -C; : > "$DIR/L-$n.md") 2>/dev/null; do n=$((n + 1)); done
 ```
 
 4. Write `n` to `$DIR/.last-id` if it is larger than the number there.
-5. Write the frontmatter (`state: todo`, `parent` or `null`, `labels` or `[]`, `created` as UTC now), the body, a blank line, and `## Log`.
+5. Write the frontmatter (`state: todo`, `parent` or `null`, `labels` as a one-line list with each label in double quotes or `[]`, `created` as UTC now), the body, a blank line, and `## Log`.
 6. Return `L-<n>`.
 
 ### list(label)
@@ -110,7 +110,7 @@ until (set -C; : > "$DIR/L-$n.md") 2>/dev/null; do n=$((n + 1)); done
 Every file in `$DIR` whose `labels` include the label and whose `state` is `todo` or `in_progress`.
 
 ```bash
-grep -l '^labels:.*"<label>"' "$DIR"/L-*.md | xargs grep -lE '^state: (todo|in_progress)$'
+grep -l '^labels:.*"<label>"' "$DIR"/L-*.md 2>/dev/null | xargs grep -lE '^state: (todo|in_progress)$'
 ```
 
 ### link(child, parent)

@@ -47,12 +47,13 @@ Show the user the parent issue and every step: title, goal, scope (in / out), do
 
 ## 4. Create the issues
 
+Pass labels to every `create` below as "Labels" in `reference/config.md` says, for example `pre release` on a step that must land before the next release.
+
 1. `create` the parent issue, unless one was given.
 2. `create` each sub-issue in step order with the parent, titled `<Parent short name>: <step>`. Do not number titles; the parent's Steps list holds the order, so adding or dropping a step does not rename the others.
 3. `link` each sub-issue to the parent if `create` did not already do it.
 4. `create` each needs-planning issue with the label `needs planning` and no parent. Do not `link` it: sub-issues are the steps that finish the parent, so a parked item would keep the parent open forever. Point back with `Split from <parent id>` in its body.
-5. Add labels to each `create` as "Labels" in `reference/config.md` says, for example `pre release` on a step that must land before the next release.
-6. Report the parent link, the sub-issue ids in order, and the needs-planning issue ids.
+5. Report the parent link, the sub-issue ids in order, and the needs-planning issue ids.
 
 ### Parent issue body
 

@@ -233,7 +233,7 @@ Issue ids are written as the tracker shows them: `#12` for GitHub, `ABC-12` for 
 
 ### Labels
 
-A skill that creates an issue adds the labels that will help someone find it later. Add a label only when the request or plan states or clearly implies it, and prefer a label the tracker already has over a new one. These labels have a fixed meaning because skills read them:
+A skill that creates an issue adds the labels that will help someone find it later. Add a label only when the request or plan states or clearly implies it, and prefer a label the tracker already has over a new one. These labels have a fixed meaning because skills read them, so always use them by these exact names, even when the tracker has a similar label:
 
 - `needs planning`: work the user moved out of scope while planning.
 - `pre release`: must be done before the next release is cut, for example updating a migration guide.
