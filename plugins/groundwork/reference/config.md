@@ -54,7 +54,7 @@ branches:
 
 verification:
   base: evidence                         # automatic implementation policy; legacy values: evidence | ci-gate | test-first | basic
-  addons: []                             # design-fidelity | api-contract | isolated-e2e | visual-regression
+  addons: []                             # design-fidelity | api-contract | isolated-e2e | e2e-stage | visual-regression
   commands:
     - name: Build
       run: "<command>"

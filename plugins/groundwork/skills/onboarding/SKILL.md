@@ -162,6 +162,7 @@ Verification commands:
 - Existing repository: detect build and test commands from CI, rules, and manifests, and show their sources in the final preview. Mark a command `verified: true` only after it runs successfully; otherwise keep false and explain why.
 - Empty repository: propose the stack's usual build/test commands as `verified: false`. For a command naming a device or runtime, use one actually available on this machine, preferring the newest installed runtime. The first scaffold step must make these commands pass.
 - Detect `verification.ui_paths`, targeted/full UI commands, and applicable add-ons. Retain existing settings on re-runs. Missing required commands remain an explicit scaffold task, not evidence of a pass.
+- When a full UI command is detected, ask whether to turn on `e2e-stage` (off by default) and explain its pros and cons from `catalog/verification.md`. Retain its existing setting on re-runs.
 - If design-fidelity applies, collect a readable design source even when QA is manual. Keep it disabled if the source is unavailable and mark exact design matching unverified. Never silently remove a previously required design check; report the missing source as blocked and show it in the final preview.
 - Preserve legacy `verification.base` values and supplemental rules on re-runs. The default implementation block is written regardless of that value. Explain this rule upgrade in the preview.
 
