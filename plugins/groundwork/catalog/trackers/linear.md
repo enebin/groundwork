@@ -53,6 +53,10 @@ State mapping by the status **type**: `backlog` or `unstarted` is `todo`, `start
 
 If a label does not exist in the team, say so and create the issue without it, unless the user asks you to create the label.
 
+### list(label)
+
+`list_issues` with `team`, `label`, and `project` when set. Keep the issues whose status type is not `completed` or `canceled`.
+
 ### link(child, parent)
 
 `update_issue` on the child with the parent's id. If the child already has another parent, stop and ask.

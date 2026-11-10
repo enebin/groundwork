@@ -105,6 +105,14 @@ until (set -C; : > "$DIR/L-$n.md") 2>/dev/null; do n=$((n + 1)); done
 5. Write the frontmatter (`state: todo`, `parent` or `null`, `labels` or `[]`, `created` as UTC now), the body, a blank line, and `## Log`.
 6. Return `L-<n>`.
 
+### list(label)
+
+Every file in `$DIR` whose `labels` include the label and whose `state` is `todo` or `in_progress`.
+
+```bash
+grep -l '^labels:.*"<label>"' "$DIR"/L-*.md | xargs grep -lE '^state: (todo|in_progress)$'
+```
+
 ### link(child, parent)
 
 Set `parent: <parent>` in the child's frontmatter. If the child already has a different parent, stop and ask.
