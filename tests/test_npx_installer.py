@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import subprocess
@@ -22,6 +23,13 @@ PLUGIN_LIST = {
     },
 }
 LIST_ARGS = {"claude": "plugin list --json", "codex": "plugin list -m groundwork --json"}
+
+
+class PackageVersionTest(unittest.TestCase):
+    def test_package_version_matches_plugin(self):
+        package = json.loads((ROOT / "package.json").read_text())["version"]
+        plugin = json.loads((ROOT / "plugins/groundwork/.claude-plugin/plugin.json").read_text())["version"]
+        self.assertEqual(package, plugin)
 
 
 @unittest.skipUnless(NODE, "node is not installed")
