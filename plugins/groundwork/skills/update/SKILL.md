@@ -21,7 +21,7 @@ Run `python3 <plugin root>/skills/update/scan.py <repository root>`. It reads `C
 
 Also stop and ask the user to update the plugin when `schema` is newer than `reference/config.md` knows. If the script cannot run (no `python3`), say why and stop; name `/groundwork:onboarding` as the way forward, which migrates the whole file.
 
-Then check for a newer release with one request: `curl -fsS --max-time 5 https://raw.githubusercontent.com/enebin/groundwork/main/plugins/groundwork/.claude-plugin/plugin.json`. When its `version` is newer than `installed`, say so and tell the user to update the plugin first: in Claude Code, `claude plugin update groundwork@groundwork` and a restart; in Codex, update it the way it was installed and start a new session. Offer to continue up to the installed version. When the request fails, continue without it.
+Then check for a newer release with one request: `curl -fsS --max-time 5 https://raw.githubusercontent.com/enebin/groundwork/main/plugins/groundwork/.claude-plugin/plugin.json`. When its `version` is newer than `installed`, say so and tell the user to update the plugin first: `npx @enebin/groundwork@latest update`, then a Claude Code restart or a new Codex session. Without Node.js, `claude plugin update groundwork@groundwork` in Claude Code, or `codex plugin marketplace upgrade groundwork` then `codex plugin add groundwork@groundwork` in Codex. Offer to continue up to the installed version. When the request fails, continue without it.
 
 ## 2. Read the groups
 

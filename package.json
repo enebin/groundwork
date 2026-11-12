@@ -1,0 +1,30 @@
+{
+  "name": "@enebin/groundwork",
+  "version": "0.1.0",
+  "description": "Install and update the groundwork plugin for Claude Code and Codex.",
+  "license": "MIT",
+  "author": "Kai Lee",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enebin/groundwork.git"
+  },
+  "homepage": "https://github.com/enebin/groundwork#readme",
+  "bin": {
+    "groundwork": "bin/groundwork.js"
+  },
+  "files": [
+    "bin/"
+  ],
+  "engines": {
+    "node": ">=18.3"
+  },
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "codex",
+    "codex-plugin"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

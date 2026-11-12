@@ -27,11 +27,24 @@ There are no commands to learn. You can run every skill in plain words, in any l
 
 ## Install
 
-Claude Code:
+```bash
+npx @enebin/groundwork@latest
+```
+
+This finds Claude Code (`claude`) and Codex (`codex`) on your machine and adds the groundwork plugin to each one with its own plugin commands. Add `--target claude` or `--target codex` to set up only one. It needs Node.js 18.3 or later. Restart Claude Code, or start a new Codex session, to load the plugin.
+
+To install without npx, in Claude Code:
 
 ```
 /plugin marketplace add enebin/groundwork
 /plugin install groundwork@groundwork
+```
+
+For Codex, in a terminal:
+
+```bash
+codex plugin marketplace add enebin/groundwork
+codex plugin add groundwork@groundwork
 ```
 
 Then, in the repository you want to set up, say:
@@ -42,7 +55,7 @@ Set up groundwork for this repo.
 
 Onboarding asks eight questions, recommends an answer for each, and saves your choices to `GROUNDWORK.md`. Every other skill reads that file.
 
-In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code. Then say "update groundwork" in each set-up repository; this step needs `python3`.
+In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `npx @enebin/groundwork@latest update`, then restart Claude Code or start a new Codex session. Then say "update groundwork" in each set-up repository; this step needs `python3`.
 
 Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you. Without it, reviews show `SkepticReview: OFF`.
 
