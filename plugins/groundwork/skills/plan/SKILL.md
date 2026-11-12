@@ -43,15 +43,18 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 3. Preview and get approval
 
-Show the user the parent issue and every step: title, goal, scope (in / out), done criteria, dependencies. List the needs-planning issues too, with title and start condition. Explain the split in one or two sentences. **Create nothing before the user approves.** Apply requested changes and show the preview again.
+Show the user the parent issue and every step: title, goal, scope (in / out), done criteria, dependencies. List the needs-planning issues too, with title and start condition. Show each issue's labels. Explain the split in one or two sentences. **Create nothing before the user approves.** Apply requested changes and show the preview again.
 
 ## 4. Create the issues
+
+Pass labels to every `create` below as "Labels" in `reference/config.md` says, for example `pre release` on a step that must land before the next release.
 
 1. `create` the parent issue, unless one was given.
 2. `create` each sub-issue in step order with the parent, titled `<Parent short name>: <step>`. Do not number titles; the parent's Steps list holds the order, so adding or dropping a step does not rename the others.
 3. `link` each sub-issue to the parent if `create` did not already do it.
 4. `create` each needs-planning issue with the label `needs planning` and no parent. Do not `link` it: sub-issues are the steps that finish the parent, so a parked item would keep the parent open forever. Point back with `Split from <parent id>` in its body.
 5. Report the parent link, the sub-issue ids in order, and the needs-planning issue ids.
+6. When a parent was created or given, end the report with the command that implements it: `/groundwork:complete-subissues <parent id>`, which runs each sub-issue through `step`, `takeoff`, and merge in order. To run one step at a time instead, use `/groundwork:step <sub-issue id>`. A single issue with no parent goes to `/groundwork:step <id>`.
 
 ### Parent issue body
 

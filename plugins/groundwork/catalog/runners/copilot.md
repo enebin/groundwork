@@ -2,7 +2,7 @@
 
 GitHub Copilot CLI. Reaches models from several vendors (Claude, GPT, Gemini, Grok, and others) through one GitHub sign-in.
 
-Verified with: GitHub Copilot CLI 1.0.105, 2026-11-01.
+Verified with: GitHub Copilot CLI 1.0.109, 2026-11-12.
 
 ## Detect
 

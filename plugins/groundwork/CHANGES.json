@@ -63,6 +63,18 @@
         {"section": "New features", "kind": "auto", "text": "`update` runs faster: it sorts the changes in each release with a local scan instead of downloading and reading every release note. It needs `python3`."},
         {"section": "Bug fixes", "kind": "auto", "text": "Reviews run on the Codex CLI no longer hang until the timeout with newer Codex CLI versions, which wait for input when no terminal is attached."}
       ]
+    },
+    {
+      "version": "0.4.0",
+      "items": [
+        {"section": "New features", "kind": "auto", "text": "`/groundwork:complete-subissues <parent>` finishes every open sub-issue of a planned parent issue, one at a time: it implements, verifies, reviews, opens a PR, merges, and cleans up each one. `plan` ends its report with this command, and `step` offers it when you give it a parent issue."},
+        {"section": "New features", "kind": "attach", "addons": ["crash-reproduction"], "text": "Crash reproduction (add-on): give it a crash log, stack trace, or incident report. It matches the reported environment, traces the crash to exact types and functions, and tries to reproduce it only through actions a real user or system can take. It ends with a verdict: reproduced, partially reproduced, or not reproduced."},
+        {"section": "New features", "kind": "attach", "addons": ["work-audit"], "text": "Work audit (add-on): checks how agent work in Claude Code and Codex ran in the repository over a time range. It reports stalls, wasted test and build runs, token overuse, rule violations, and repeated mistakes, each with a concrete fix. It can post its report to Slack and run on a schedule on your machine."},
+        {"section": "New features", "kind": "attach", "key": "verification.addons", "text": "`e2e-stage` verification add-on: when it is on, every UI test run must start with `E2E_STAGE=review`, `checkpoint`, `release`, or `screenshot`, so each full-suite run says why it happened. A hook blocks a run without a stage and says how to fix it or turn the add-on off. Onboarding offers it, off by default, when it finds a full UI test command. Not yet tested in Codex."},
+        {"section": "New features", "kind": "auto", "text": "`plan` and `step` add fitting labels to the issues they create, reusing labels your tracker already has. Label an issue `pre release` and `release` flags it as a pre-release check; label it `post release` and `release` lists it as a checklist after opening the release PR. When you only ask `step` to file an issue, such as a reminder for after the release, it files it and stops."},
+        {"section": "New features", "kind": "attach", "key": "workflow.confirm_issue", "text": "`step` now files a standalone issue without asking, so a request like \"fix X\" runs without a pause. Set `workflow.confirm_issue: true` in `GROUNDWORK.md` to see the issue and confirm before it is filed."},
+        {"section": "New features", "kind": "auto", "text": "Steps run faster: the full verification suite runs once before the first review, and implementation and fix rounds run only the tests they added or changed. Sport mode still runs the full suite every round."}
+      ]
     }
   ]
 }

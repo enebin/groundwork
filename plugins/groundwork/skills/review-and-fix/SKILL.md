@@ -32,6 +32,8 @@ If `docs.rules` and this skill disagree, follow `docs.rules`.
 
 ## 2. Review
 
+Resolve the effective overall mode from `--mode` or `mode`. In eco and normal, run every `verification.commands` entry and the full required UI suite once immediately before this first review. In sport, run the complete suite before every review round. Inspect the required UI screenshots and record the results. Do not continue until these checks pass.
+
 Invoke `/groundwork:review` in local mode. It reviews the branch's commits, the uncommitted changes, and untracked files against the integration branch. This skill is an explicit request for a review, so it runs whatever `review.trigger` says.
 
 From the report, keep:
@@ -65,11 +67,11 @@ For each item, read the file and the code around the finding, then fix it in the
 
 ## 5. Verify
 
-Resolve the effective overall mode from `--mode` or `mode` and follow Modes in `reference/config.md`. Verify the complete implementation, including a no-findings path: run affected tests while fixing and every `verification.commands` entry before completion. For changed `verification.ui_paths`, run affected UI tests and inspect their screenshots; run the full UI suite at finish, and in sport each round. Reuse only results matching the current build. Update the coverage ledger. Do not move on until required checks pass; fix failures at the root cause.
+Follow Modes in `reference/config.md`. In eco and normal, run only tests added or changed by review fixes, including targeted UI tests and their screenshots. Do not repeat the complete suite at finish. In sport, run every `verification.commands` entry and the full UI suite before each review round. Reuse only results matching the current build. Update the coverage ledger. Do not move on until required checks pass; fix failures at the root cause.
 
 If `review.trigger` is `per-round`, review again (step 2) with `--no-copy-edit`, since this run already applied the copy edits, and repeat until nothing at or above the threshold remains. Stop after the round limit of the mode (`--mode` or `mode`; see Modes in `reference/config.md`), or as soon as a round fixes nothing, and ask the user how to proceed.
 
-After the final verification and review fixes, apply the after-implementation gate from Screen checks in `reference/config.md` when a check on the running app resolves to continuous. Pass the effective mode and the complete implementation diff, not just review fixes. Run this even with no review findings. FAIL or BLOCKED prevents completion and commit/push; follow the QA repair/recheck limit. If no review fixes or QA ledger edits were made, report the result and stop without committing or pushing. Otherwise include the verified ledger edits with the fixes.
+After the review fixes and their added or changed tests, apply the after-implementation gate from Screen checks in `reference/config.md` when a check on the running app resolves to continuous. Pass the effective mode and the complete implementation diff, not just review fixes. Run this even with no review findings. FAIL or BLOCKED prevents completion and commit/push; follow the QA repair/recheck limit. If no review fixes or QA ledger edits were made, report the result and stop without committing or pushing. Otherwise include the verified ledger edits with the fixes.
 
 ## 6. Commit and push
 

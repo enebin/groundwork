@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.3.3" src="https://img.shields.io/badge/version-0.3.3-6E6C66">
+  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-6E6C66">
 </p>
 
 <p align="center"><b>设置一次，之后只需说出要做什么。</b></p>
@@ -71,7 +71,7 @@ onboarding 会问八个问题，每个问题都给出推荐答案，并把你的
 
 groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自动合并，它还会等 CI 通过后合并，并清理分支。
 
-一个 PR 装不下的大任务会先拆成多个步骤。你批准计划后，每个步骤都按上面的方式进行。
+一个 PR 装不下的大任务会先拆成多个步骤。批准计划后，用父 issue 运行 `complete-subissues`。它按上面的方式逐个进行每个步骤，合并其 PR 后再开始下一个。当两个或更多步骤会改动界面时，完整 UI 测试不在每次审查前运行，而是在合并后的代码上按检查点运行，因此 PR 可能先于这些测试合并。检查点发现的每个失败都会成为新的子 issue。
 
 ### 由你决定的地方
 
@@ -79,8 +79,8 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 
 - **批准计划**：大任务拆分为多个步骤时，先由你确认计划。
 - **批准设计文档**：采用 `design-first` 工作流时，实现前先由你批准设计文档。
-- **推送和创建 PR**：始终等你明确提出后才执行。
-- **合并**：除非开启了自动合并，否则不会擅自合并。
+- **推送和创建 PR**：始终等你明确提出后才执行。运行 `complete-subissues` 即视为对它完成的每个步骤提出了请求。
+- **合并**：除非开启了自动合并，否则不会擅自合并。运行 `complete-subissues` 时，它会合并每个完成的步骤。
 - **发布**：仅在你提出时启动；定期发布准备也会在发布前等你最终确认。
 
 ## 这样说就行
@@ -90,7 +90,7 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | 你说 | 运行的技能 |
 |---|---|
 | "加上深色模式。" / "修复设置页面的崩溃。" | `step`：issue → 实现 → 测试 → 审查 → 修复 |
-| "这个太大了，拆成几个 issue。" | `plan`，然后每个部分运行 `step` |
+| "这个太大了，拆成几个 issue。" | `plan`，然后用 `complete-subissues` 运行所有部分 |
 | "推送并创建 PR。" | `takeoff`，开启自动合并时再运行 `autoland` |
 | "PR 已经合并了，清理一下。" | `landing` |
 | "审查一下我的改动。" | `review` |
@@ -100,6 +100,8 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | "每周五准备一次发布。" | `release-prep` |
 | "总结一下这周。" | `weekly-summary` |
 | "今天先到这里，留个记录方便下次继续。" | `handoff` |
+| "复现这份日志里的崩溃。" | `crash-reproduction` |
+| "检查一下昨天代理的工作效率。" | `work-audit` |
 
 想精确调用时，也可以直接输入技能名，例如 `/groundwork:step`。
 
@@ -157,6 +159,8 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | `release-notes` | 把一段提交范围整理成面向用户的发布说明 |
 | `ux-journey` | 让首次使用的用户在运行中的应用上走完整个流程，并报告卡住的地方 |
 | `release-prep` | 按固定周期准备并验证发布，然后请求最终批准 |
+| `crash-reproduction` | 还原崩溃发生时的环境，找到崩溃点，并用真实用户能做的操作尝试复现 |
+| `work-audit` | 审查一段时间内（默认 24 小时）的代理会话，找出卡住的工作、浪费的运行、过度的 token 消耗和重复的错误，并为每项给出修复办法 |
 
 Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slack 设置说明](plugins/groundwork/skills/slack-report/references/setup.md)。开启自动报告后，会为两个客户端安装仓库级的 Stop 钩子。
 
@@ -170,6 +174,7 @@ Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slac
 | `addons` | 浏览附加功能，继续设置或单次使用 |
 | `plan` | 把大任务拆成一个父 issue 和多个步骤 issue |
 | `step` | 运行一个步骤：实现后反复进行验证 → 审查 → 修复，直到没有确认的 🔴/🟠 问题 |
+| `complete-subissues` | 按顺序运行父 issue 下所有未完成的步骤：`step`、PR、合并、清理 |
 | `takeoff` | 对完成的步骤执行 rebase、推送并创建 PR |
 | `landing`、`rejoin` | 合并后清理，或把分支移出 worktree |
 | `release`、`autoland` | 创建发布，CI 通过后合并 |
@@ -177,7 +182,7 @@ Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slac
 | `review` | 并行运行选定的审查器并汇总结果 |
 | `ux-review` | 以选定的用户角色视角，基于代码或应用进行可用性审查 |
 | `ui-qa` | 启动应用，检查自动化测试覆盖不到的界面行为 |
-| `slack-report`、`handoff`、`weekly-summary`、`release-notes`、`release-prep`、`ux-journey` | 附加功能；见上文 |
+| `slack-report`、`handoff`、`weekly-summary`、`release-notes`、`release-prep`、`ux-journey`、`crash-reproduction`、`work-audit` | 附加功能；见上文 |
 
 </details>
 

@@ -14,9 +14,9 @@ Onboarding shows these bundles as one choice and writes the id to `workflow.bund
 
 ## step-loop
 
-Summary: Split a job into sub-issues with `plan`, then run each one with `step`: implement, then verify → review → fix until no confirmed 🔴/🟠 remains, logging every round on the issue.
+Summary: Split a job into sub-issues with `plan`, then run each one with `step`: implement, run the complete verification once, then review → fix-specific tests until no confirmed 🔴/🟠 remains, logging every round on the issue.
 
-Skills: `plan` → `step` (per sub-issue) → `takeoff` when the user asks for a push. `step` calls `review`, then applies the screen checks after final verification. `step` also runs a standalone issue that has no parent. After the merge, `landing` cleans up; `autoland` merges and cleans up by itself when it is on.
+Skills: `plan` → `step` (per sub-issue) → `takeoff` when the user asks for a push. In eco and normal, `step` runs the complete verification once before its first review, then runs only tests added or changed by review fixes. It applies screen checks after the review loop. `step` also runs a standalone issue that has no parent. After the merge, `landing` cleans up; `autoland` merges and cleans up by itself when it is on.
 
 Fits:
 - Jobs that take several PRs and several sessions.

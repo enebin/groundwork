@@ -43,6 +43,7 @@ workflow:
   bundle: step-loop                      # step-loop | design-first | quick | tdd-loop | review-only (flight: removed; onboarding migrates it)
   autoland: false                        # merge automatically once CI passes (not for quick / review-only)
   worktree: true                         # true = step works in .groundwork/worktrees/<branch> (step-loop, design-first, tdd-loop)
+  confirm_issue: false                   # optional, absent means false; true = step shows a standalone issue and asks before filing it in a non-local tracker
 
 branches:
   strategy: develop-release              # develop-release | main-only
@@ -53,7 +54,7 @@ branches:
 
 verification:
   base: evidence                         # automatic implementation policy; legacy values: evidence | ci-gate | test-first | basic
-  addons: []                             # design-fidelity | api-contract | isolated-e2e | visual-regression
+  addons: []                             # design-fidelity | api-contract | isolated-e2e | e2e-stage | visual-regression
   commands:
     - name: Build
       run: "<command>"
@@ -156,10 +157,13 @@ Its findings go through Skeptic Review and the report like any other reviewer's;
 | Review rounds, at most | 1 | 3 | 3 |
 | Who reviews again from round 2 | — (fixes are checked by verification only) | reviewers that raised a confirmed 🔴/🟠 | every reviewer |
 | What round 2+ reviews | — | only the fixes since the last review | the whole change |
-| UI tests | changed screens; full suite at finish | changed screens; full suite at finish | full suite every round |
+| Code tests | added or changed tests while implementing and fixing; every verification command once before the first review | added or changed tests while implementing and fixing; every verification command once before the first review | every verification command in every round |
+| UI tests | added or changed tests while implementing and fixing; full suite once before the first review | added or changed tests while implementing and fixing; full suite once before the first review | full suite every round |
 | Screen checks for one change, when triggered | only screens the change may affect; QA only on the running app | only screens and user tasks the change may affect | everything: every uncovered screen and every user-persona task |
 
-In every mode, each changed screen needs a UI test that attaches a screenshot, and the agent that changed the screen opens those screenshots before declaring done: the step itself while implementing, the `fixer` agent for review fixes. In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
+The one exception to the UI tests row: while `complete-subissues` runs a parent's sub-issues in checkpoint mode, each step's full UI suite moves to a checkpoint that runs it on the merged code, in any mode; targeted UI tests and screenshot inspection still run in every step.
+
+In every mode, each changed screen needs a UI test that attaches a screenshot, and the agent that changed the screen opens those screenshots before declaring done: the step itself while implementing, the `fixer` agent for review fixes. Eco and normal do not repeat a still-valid full result at completion; edits made after that result are proved by the tests added or changed for those edits. In `eco`, a 🔴/🟠 left after round 1's fixes are verified is reported to the user rather than reviewed again.
 
 ### Default implementation policy
 
@@ -183,7 +187,7 @@ When the entire `ux` mapping is absent, the file keeps its old UX triggers until
 
 Onboarding writes both mappings and migrates the old UX triggers. `ux` in `review.reviewers` becomes `ux.bundle: continuous` with `ux.method: code`. Otherwise, a QA bundle of release or continuous with at least one `user` persona becomes the same bundle with `ux.method: app`. Otherwise it becomes manual with `code`. When both old triggers were on, one `ux.method` cannot keep both: say by name which on-app check stops (before release, and after implementation for continuous), and let the user pick the method in step 7. Onboarding then removes `ux` from `review.reviewers`, preserves `review.release_qa` as a mirror of `qa.bundle` (false for manual, true otherwise), and explains the migration in the final preview. No schema bump is needed for these additive keys.
 
-**After implementation:** only continuous runs automatically. Code-based UX runs as the `ux` reviewer in every review round, so its findings follow the review's Skeptic and fix rules. Checks on the running app run once after the final verification and code-review fixes, before completion; quick runs them in review-and-fix even when code review has no findings. When `qa.bundle` is continuous, use `/groundwork:ui-qa <changed screens> --mode <effective-mode>`. When `ux.bundle` is continuous and `ux.method` is app, use `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks, except in eco. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
+**After implementation:** only continuous runs automatically. Code-based UX runs as the `ux` reviewer in every review round, so its findings follow the review's Skeptic and fix rules. Checks on the running app run once after the code-review fixes and their added or changed tests, before completion; quick runs them in review-and-fix even when code review has no findings. When `qa.bundle` is continuous, use `/groundwork:ui-qa <changed screens> --mode <effective-mode>`. When `ux.bundle` is continuous and `ux.method` is app, use `/groundwork:ux-review --mode <effective-mode>` for affected end-user tasks, except in eco. In sport use `--full` for both. Derive affected flows from the complete change, including non-UI code that changes user-visible behavior; do not decide solely from `ui_paths`. Record NOT APPLICABLE with a reason if no uncovered check or user task is affected. Do not turn an empty changed-screen list into an accidental full check. For review-only there is no implementation trigger; run only on request or before release. A mode never turns manual or release into continuous.
 
 **Before release:** when `qa.bundle` is release or continuous, run `/groundwork:ui-qa --full --mode <effective-mode>`. When `ux.bundle` is release or continuous and at least one user persona exists, run `/groundwork:ux-review --full --mode <effective-mode>` with the configured method. When `ux.journey` is release, run `/groundwork:ux-journey --full --mode <effective-mode>`; with no `## Journey:` section it reports BLOCKED with the recovery, rather than the gate being skipped. Explicit `--full` keeps all uncovered checks and all user tasks in scope in every mode; eco does not remove this release gate. Use the exact release candidate (the integration head for develop-release, production head for main-only). The release skill runs the gate before creating a release branch or PR. For main-only, the workflow creating a version tag must run this gate before tagging, since the release-branch skill is not applicable. Manual shows the uncovered ledger rows as the human checklist.
 
@@ -219,6 +223,7 @@ Skills never call a tracker directly. They name an operation and follow `catalog
 |---|---|
 | `read(id)` | Title, body, state, parent, children, and comments of one issue |
 | `create(title, body, parent?, labels?)` | Create an issue; returns its id |
+| `list(label)` | Id and title of every open issue that has the label |
 | `link(child, parent)` | Make an existing issue a child of another |
 | `comment(id, body)` | Append a comment |
 | `update_body(id, body)` | Replace the body (used to tick checkboxes) |
@@ -227,6 +232,16 @@ Skills never call a tracker directly. They name an operation and follow `catalog
 | `closes(id)` | The line to put in a PR body so merging the PR closes the issue, or how to close it after merge when the tracker has no such syntax |
 
 Issue ids are written as the tracker shows them: `#12` for GitHub, `ABC-12` for Linear and Jira, `L-12` for local.
+
+### Labels
+
+A skill that creates an issue adds the labels that will help someone find it later. Add a label only when the request or plan states or clearly implies it, and prefer a label the tracker already has over a new one. These labels have a fixed meaning because skills read them, so always use them by these exact names, even when the tracker has a similar label:
+
+- `needs planning`: work the user moved out of scope while planning.
+- `pre release`: must be done before the next release is cut, for example updating a migration guide.
+- `post release`: must be done right after a release ships, for example announcing it or removing a flag the release made obsolete.
+
+`release` lists the open `pre release` issues as a pre-release check and the open `post release` issues after it opens the release PR.
 
 ## Paths
 

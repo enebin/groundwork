@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.3.3" src="https://img.shields.io/badge/version-0.3.3-6E6C66">
+  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-6E6C66">
 </p>
 
 <p align="center"><b>한 번 세팅하고 그다음엔 만들 것만 말하세요.</b></p>
@@ -71,7 +71,9 @@ Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 
 
 groundwork가 rebase하고 다시 검증하고 push한 뒤 PR을 엽니다. 자동 머지를 켜 두었다면 CI 통과를 기다렸다가 머지하고 브랜치 정리까지 합니다.
 
-PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다. 계획을 승인하면 각 단계를 위와 같은 방식으로 진행합니다.
+eco와 normal 모드에서는 구현하거나 리뷰 지적을 고칠 때 새로 추가하거나 수정한 테스트만 실행합니다. 전체 검증은 첫 리뷰 직전에 한 번 실행하므로 작업을 끝낼 때 같은 전체 검증을 반복하지 않습니다. sport 모드는 기존처럼 리뷰 라운드마다 전체 검증을 실행합니다.
+
+PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다. 계획을 승인한 뒤 상위 이슈로 `complete-subissues`를 실행하세요. 각 단계를 위와 같은 방식으로 진행하고 그 PR을 머지한 뒤 다음 단계로 넘어갑니다. 화면을 바꾸는 단계가 둘 이상이면 전체 UI 테스트를 리뷰 전마다 돌리지 않습니다. 대신 머지된 코드에서 체크포인트로 돌리므로 그 테스트보다 PR 머지가 먼저일 수 있습니다. 체크포인트에서 나온 실패는 새 하위 이슈가 됩니다.
 
 ### 사람이 결정하는 지점
 
@@ -79,8 +81,8 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 
 - **계획 승인:** 큰 작업을 여러 단계로 나눴을 때 먼저 계획을 확인받습니다.
 - **설계 문서 승인:** `design-first` 워크플로우에서는 구현에 들어가기 전에 설계 문서를 승인받습니다.
-- **push와 PR 생성:** 직접 요청할 때까지 기다립니다.
-- **머지:** 자동 머지를 켜 두지 않았다면 알아서 머지하지 않습니다.
+- **push와 PR 생성:** 직접 요청할 때까지 기다립니다. `complete-subissues`를 실행하면 끝낸 단계마다 요청한 것으로 봅니다.
+- **머지:** 자동 머지를 켜 두지 않았다면 알아서 머지하지 않습니다. 단, `complete-subissues`를 실행하면 끝낸 단계를 하나씩 머지합니다.
 - **릴리스:** 요청할 때만 시작하며 정기 릴리스 준비도 배포 전에 최종 승인을 받습니다.
 
 ## 이렇게 말하면 됩니다
@@ -90,7 +92,7 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | 이렇게 말하면 | 실행되는 스킬 |
 |---|---|
 | "다크 모드 추가해 줘." / "설정 화면에서 앱 죽는 거 고쳐 줘." | `step`: 이슈 → 구현 → 테스트 → 리뷰 → 수정 |
-| "이거 크니까 이슈로 쪼개 줘." | `plan`, 이어서 단계마다 `step` |
+| "이거 크니까 이슈로 쪼개 줘." | `plan`, 이어서 `complete-subissues`로 모든 단계 진행 |
 | "푸시하고 PR 올려 줘." | `takeoff`, 자동 머지가 켜져 있으면 `autoland` |
 | "PR 머지됐어. 정리해 줘." | `landing` |
 | "내가 바꾼 코드 리뷰해 줘." | `review` |
@@ -100,6 +102,8 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | "매주 금요일마다 릴리스 준비해 줘." | `release-prep` |
 | "이번 주 정리해 줘." | `weekly-summary` |
 | "오늘은 여기까지. 다음에 이어서 할 수 있게 남겨 줘." | `handoff` |
+| "이 로그에 있는 크래시 재현해 줘." | `crash-reproduction` |
+| "어제 에이전트 작업이 효율적이었는지 점검해 줘." | `work-audit` |
 
 정확하게 부르고 싶을 때는 `/groundwork:step`처럼 스킬 이름을 직접 입력해도 됩니다.
 
@@ -157,6 +161,8 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | `release-notes` | 커밋 범위를 사용자용 릴리스 노트로 정리합니다 |
 | `ux-journey` | 처음 온 사용자가 실제 앱에서 전체 여정을 끝까지 해 보고 막힌 곳을 알려 줍니다 |
 | `release-prep` | 정해진 주기로 릴리스를 준비하고 검증한 뒤 최종 승인을 받습니다 |
+| `crash-reproduction` | 크래시가 난 환경을 맞추고 크래시 지점을 찾은 뒤 실제 사용자가 할 수 있는 동작으로 재현해 봅니다 |
+| `work-audit` | 정한 기간(기본 24시간)의 에이전트 세션에서 멈춘 일, 낭비한 실행, 토큰 과소비, 반복 실수를 찾아 각각 해결법을 붙입니다 |
 
 Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 자세한 내용은 [Slack 연결 안내](plugins/groundwork/skills/slack-report/references/setup.md)를 참고하세요. 자동 보고를 켜면 두 클라이언트에 저장소용 턴 종료 훅을 설치합니다.
 
@@ -170,6 +176,7 @@ Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 
 | `addons` | 부가기능 목록을 보고 설정이나 일회성 사용으로 이어가기 |
 | `plan` | 큰 작업을 상위 이슈 하나와 세부 단계 이슈들로 쪼개기 |
 | `step` | 단계 하나 실행: 구현 후 확인된 🔴/🟠 이슈가 남지 않을 때까지 검증 → 리뷰 → 수정 반복 |
+| `complete-subissues` | 상위 이슈의 열린 단계를 순서대로 모두 실행: `step`, PR, 머지, 정리 |
 | `takeoff` | 끝난 단계를 rebase하고 push한 뒤 PR 열기 |
 | `landing`, `rejoin` | 머지 후 정리, 또는 브랜치를 worktree 밖으로 옮기기 |
 | `release`, `autoland` | 릴리스 생성, CI 통과 시 머지 |
@@ -177,7 +184,7 @@ Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 
 | `review` | 선택한 리뷰어들을 병렬로 돌려 결과 취합 |
 | `ux-review` | 지정한 사용자 페르소나 기준으로 코드 또는 실제 앱에서 사용성 리뷰 |
 | `ui-qa` | 실제 앱을 띄워 자동 테스트가 놓치는 UI 항목 점검 |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey` | 부가기능; 위 설명 참고 |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | 부가기능; 위 설명 참고 |
 
 </details>
 

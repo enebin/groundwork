@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.3.3" src="https://img.shields.io/badge/version-0.3.3-6E6C66">
+  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-6E6C66">
 </p>
 
 <p align="center"><b>Set it up once. Then just say what to build.</b></p>
@@ -71,7 +71,9 @@ Push it and open a PR.
 
 groundwork rebases, verifies again, pushes, and opens the PR. With auto-merge on, it also waits for CI, merges, and cleans up the branch.
 
-A job too large for one PR is split into steps first; once you approve the plan, each step runs the same way.
+In eco and normal modes, implementation and review fixes run only the tests they add or change. The complete verification suite runs once immediately before the first review, so finishing the step does not repeat the same full run. Sport mode keeps running the complete suite in every review round.
+
+A job too large for one PR is split into steps first. After you approve the plan, run `complete-subissues` with the parent issue. It runs each step the same way, then merges its PR before starting the next. When two or more steps change screens, it runs the full UI suite at checkpoints on the merged code instead of before each review, so a PR can merge before that suite runs. Each checkpoint failure becomes a new sub-issue.
 
 ### Where it stops for you
 
@@ -79,8 +81,8 @@ groundwork never decides these on its own:
 
 - **Plan approval:** when a large job is split into multiple steps.
 - **Design approval:** before implementation in the `design-first` workflow.
-- **Pushing and opening a PR:** waits until you explicitly ask.
-- **Merging:** waits for you, unless auto-merge is on.
+- **Pushing and opening a PR:** waits until you explicitly ask. Running `complete-subissues` counts as asking for each step it completes.
+- **Merging:** waits for you, unless auto-merge is on or you ran `complete-subissues`, which merges each step it completes.
 - **Releasing:** starts only when you ask, and scheduled release prep waits for your approval before publishing.
 
 ## What you can ask for
@@ -90,7 +92,7 @@ These are examples; any wording that means the same works.
 | You say | What runs |
 |---|---|
 | "Add dark mode." / "Fix the crash on the settings screen." | `step`: issue → implement → test → review → fix |
-| "This is big. Split it into issues." | `plan`, then `step` for each part |
+| "This is big. Split it into issues." | `plan`, then `complete-subissues` to run every part |
 | "Push it and open a PR." | `takeoff`, then `autoland` if auto-merge is on |
 | "The PR is merged. Clean up." | `landing` |
 | "Review my changes." | `review` |
@@ -100,6 +102,8 @@ These are examples; any wording that means the same works.
 | "Prepare a release every Friday." | `release-prep` |
 | "Summarize this week." | `weekly-summary` |
 | "I'm stopping here. Leave a note for next time." | `handoff` |
+| "Reproduce the crash in this log." | `crash-reproduction` |
+| "How efficient was yesterday's agent work?" | `work-audit` |
 
 You can still type a skill by name, such as `/groundwork:step`, when you want to be exact.
 
@@ -157,6 +161,8 @@ Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse 
 | `release-notes` | Turns a range of commits into user-facing release notes |
 | `ux-journey` | Has a first-time user walk a whole journey on the running app and reports where they get stuck |
 | `release-prep` | Prepares and verifies releases on a schedule, then asks for final approval |
+| `crash-reproduction` | Matches a reported crash's environment, finds the crash point, and tries to reproduce it the way a real user could |
+| `work-audit` | Audits agent sessions over a time range for stalls, wasted runs, token overuse, and repeated mistakes, with a fix for each |
 
 Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setup](plugins/groundwork/skills/slack-report/references/setup.md). Turning on automatic Slack reports installs repository-local Stop hooks for both clients.
 
@@ -170,6 +176,7 @@ Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setu
 | `addons` | Browse optional features and continue their setup or one-off use |
 | `plan` | Break a large task into a parent issue and smaller step issues |
 | `step` | Run a single step: implement, then loop through verify → review → fix until no confirmed 🔴/🟠 issues remain |
+| `complete-subissues` | Run every open step of a parent issue in order: `step`, PR, merge, cleanup |
 | `takeoff` | Rebase, push, and open the PR for a finished step |
 | `landing`, `rejoin` | Clean up after a merge, or move a branch out of its worktree |
 | `release`, `autoland` | Cut a release, and merge once CI passes |
@@ -177,7 +184,7 @@ Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setu
 | `review` | Run the selected reviewers in parallel and combine their findings |
 | `ux-review` | Usability review from chosen user personas, from the code or on the app |
 | `ui-qa` | Launch the app to check UI behavior automated tests can't cover |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey` | Optional add-ons; see above |
+| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | Optional add-ons; see above |
 
 </details>
 

@@ -17,7 +17,7 @@ Every tracker action below is an operation from `reference/config.md` "Tracker o
 
 This skill invokes other skills as `/groundwork:<name>`. In Codex, invoke one by reading and following `skills/<name>/SKILL.md` under the plugin root.
 
-Run only when the user asked in so many words to push or open a PR, or when `autoland` hands over after such a request. A vague request ("ship it", "upload this", "wrap it up") is not enough; ask first.
+Run only when the user asked in so many words to push or open a PR, when `autoland` hands over after such a request, or when `complete-subissues` invokes it; the user's explicit `complete-subissues` invocation is that request. A vague request ("ship it", "upload this", "wrap it up") is not enough; ask first.
 
 In plan mode, do not refuse. Inspect with read-only tools, write the concrete plan (rebase target, push command, PR title and body), and ask for approval. After approval, carry it out as planned.
 
@@ -33,7 +33,7 @@ Split `--mode <eco|normal|sport>` out of the arguments. Validate the mode and re
 2. **Find the branch.** `<branch>` is `branch_name(<ISSUE>)`. If `git worktree list --porcelain` shows it checked out in a worktree, `cd` there. Otherwise it must be the current branch of the main checkout; if it is not, tell the user and stop.
 3. **Clean tree.** If `git status` shows uncommitted changes, tell the user and stop.
 4. **Rebase.** `git fetch origin <branches.integration> && git rebase origin/<branches.integration>`. On a conflict, do not resolve it. Leave the rebase in progress, tell the user which files conflict and that they can finish with `git rebase --continue` or back out with `git rebase --abort`, and stop.
-5. **Re-verify.** If the rebase brought in new commits, run the `verification.commands` the change affects again. Recheck affected UI tests and screenshots, and invalidate any earlier rendered QA whose checked behavior changed. For continuous checks on the running app, rerun the affected after-implementation gate from Screen checks in `reference/config.md` on the rebased candidate with the effective mode before pushing. On FAIL or BLOCKED, stop and report. If QA updates the ledger, include it in a local commit under the existing workflow permissions before pushing; do not leave a dirty candidate.
+5. **Re-verify.** If the rebase brought in new commits, eco and normal run the tests affected by the incoming commits; sport runs every `verification.commands` entry. Recheck affected UI tests and screenshots, and invalidate any earlier rendered QA whose checked behavior changed. For continuous checks on the running app, rerun the affected after-implementation gate from Screen checks in `reference/config.md` on the rebased candidate with the effective mode before pushing. On FAIL or BLOCKED, stop and report. If QA updates the ledger, include it in a local commit under the existing workflow permissions before pushing; do not leave a dirty candidate.
 6. **Push.**
    - First push: `git push -u origin <branch>`.
    - The branch already exists on the remote and the rebase rewrote its history: ask the user, then `git push --force-with-lease origin <branch>`. Never plain `--force`.
@@ -60,7 +60,7 @@ Split `--mode <eco|normal|sport>` out of the arguments. Validate the mode and re
      ```
 
 9. **Report** the PR URL and the manual checks.
-10. **Next.** If `workflow.autoland` is true and this run was not started by `autoland`, continue with `/groundwork:autoland <ISSUE>`. Otherwise stop here and tell the user that `/groundwork:landing <ISSUE>` cleans up after the merge.
+10. **Next.** If this run was started by `complete-subissues`, stop here and return to it; it checks the PR and merges itself. Otherwise, if `workflow.autoland` is true and this run was not started by `autoland`, continue with `/groundwork:autoland <ISSUE>`. Otherwise stop here and tell the user that `/groundwork:landing <ISSUE>` cleans up after the merge.
 
 ## Rules
 
