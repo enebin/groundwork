@@ -15,11 +15,11 @@ This skill writes nothing until the user approves the final preview. Plan mode: 
 Run `python3 <plugin root>/skills/update/scan.py <repository root>`. It reads `CHANGES.json` at the plugin root, which lists every release's items with what each one concerns, and needs no network. It prints one JSON report:
 
 - `installed`, `latest_known` (the newest release in `CHANGES.json`), `set_up_with` (`plugin_version` in `GROUNDWORK.md`; null when the file predates the key, and then every release is checked), `target` (the installed version, or the latest release in `CHANGES.json` when the installed build is newer, such as one from `develop`), and `schema`.
-- `status`: `not-set-up` (no `GROUNDWORK.md`: tell the user to run `/groundwork:onboarding` and stop), `plugin-older-than-setup` (stop and ask the user to update the plugin), `up-to-date` (say so and stop), or `ok`.
+- `status`: `not-set-up` (no `GROUNDWORK.md`: tell the user to run `/groundwork:onboarding` and stop), `plugin-older-than-setup` (stop and ask the user to update the plugin with `npx @enebin/groundwork@latest update`; the commands without Node.js are below), `up-to-date` (say so and stop), or `ok`.
 - `items`: each release item after `set_up_with`, up to `target`, oldest first, with its version, section, group, `text` (the release-note line), and the `key` or `addons` it concerns.
 - `blocks`: each managed block in `docs.rules` and `docs.architecture`, with its status.
 
-Also stop and ask the user to update the plugin when `schema` is newer than `reference/config.md` knows. If the script cannot run (no `python3`), say why and stop; name `/groundwork:onboarding` as the way forward, which migrates the whole file.
+Also stop and ask the user to update the plugin with `npx @enebin/groundwork@latest update` when `schema` is newer than `reference/config.md` knows. If the script cannot run (no `python3`), say why and stop; name `/groundwork:onboarding` as the way forward, which migrates the whole file.
 
 Then check for a newer release with one request: `curl -fsS --max-time 5 https://raw.githubusercontent.com/enebin/groundwork/main/plugins/groundwork/.claude-plugin/plugin.json`. When its `version` is newer than `installed`, say so and tell the user to update the plugin first: `npx @enebin/groundwork@latest update`, then a Claude Code restart or a new Codex session. Without Node.js, `claude plugin update groundwork@groundwork` in Claude Code, or `codex plugin marketplace upgrade groundwork` then `codex plugin add groundwork@groundwork` in Codex. Offer to continue up to the installed version. When the request fails, continue without it.
 
