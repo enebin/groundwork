@@ -27,11 +27,24 @@
 
 ## 설치
 
-Claude Code:
+```bash
+npx @enebin/groundwork@latest
+```
+
+컴퓨터에 설치된 Claude Code(`claude`)와 Codex(`codex`)를 찾아 각 도구의 플러그인 명령으로 groundwork를 추가합니다. 한 도구에만 설치하려면 `--target claude`나 `--target codex`를 붙입니다. Node.js 18.3 이상이 필요합니다. 설치한 뒤 Claude Code를 재시작하거나 Codex 세션을 새로 열면 플러그인이 로드됩니다.
+
+npx 없이 설치하려면 Claude Code에서 다음을 실행합니다.
 
 ```
 /plugin marketplace add enebin/groundwork
 /plugin install groundwork@groundwork
+```
+
+Codex는 터미널에서 다음을 실행합니다.
+
+```bash
+codex plugin marketplace add enebin/groundwork
+codex plugin add groundwork@groundwork
 ```
 
 세팅할 레포에서 이렇게 말하면 됩니다.
@@ -42,7 +55,7 @@ Claude Code:
 
 온보딩 과정에서 여덟 가지를 물어보고 항목마다 추천안을 함께 보여 준 뒤 고른 내용을 `GROUNDWORK.md`에 저장합니다. 나머지 스킬은 전부 이 파일을 읽고 움직입니다.
 
-Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `claude plugin update groundwork@groundwork`를 실행한 뒤 Claude Code를 재시작하면 됩니다. 그다음 세팅한 레포마다 "groundwork 업데이트해 줘"라고 말하면 됩니다. 이 단계에는 `python3`가 필요합니다.
+Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `npx @enebin/groundwork@latest update`를 실행한 뒤 Claude Code를 재시작하거나 Codex 세션을 새로 열면 됩니다. 그다음 세팅한 레포마다 "groundwork 업데이트해 줘"라고 말하면 됩니다. 이 단계에는 `python3`가 필요합니다.
 
 선택 사항: [skeptic-review](https://github.com/enebin/skeptic-review)를 함께 설치하면 리뷰어가 잡은 내용을 사용자에게 보여 주기 전에 실제로 맞는 지적인지 한 번 더 걸러 줍니다. 설치하지 않으면 리뷰 결과에 `SkepticReview: OFF`로 표시됩니다.
 

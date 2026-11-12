@@ -27,11 +27,24 @@
 
 ## 安装
 
-Claude Code：
+```bash
+npx @enebin/groundwork@latest
+```
+
+它会找到你电脑上的 Claude Code（`claude`）和 Codex（`codex`），并用各自的插件命令添加 groundwork。只想装到其中一个时，加上 `--target claude` 或 `--target codex`。需要 Node.js 18.3 或更高版本。安装后重启 Claude Code，或新开一个 Codex 会话，即可加载插件。
+
+不用 npx 安装时，在 Claude Code 中运行：
 
 ```
 /plugin marketplace add enebin/groundwork
 /plugin install groundwork@groundwork
+```
+
+Codex 请在终端中运行：
+
+```bash
+codex plugin marketplace add enebin/groundwork
+codex plugin add groundwork@groundwork
 ```
 
 然后在要设置的仓库里说：
@@ -42,7 +55,7 @@ Claude Code：
 
 onboarding 会问八个问题，每个问题都给出推荐答案，并把你的选择保存到 `GROUNDWORK.md`。其他所有技能都会读取这个文件。
 
-在 Claude Code 中，groundwork 每天最多检查一次 GitHub 上的新版本，每个新版本只提醒一次。更新时运行 `claude plugin update groundwork@groundwork`，然后重启 Claude Code。
+在 Claude Code 中，groundwork 每天最多检查一次 GitHub 上的新版本，每个新版本只提醒一次。更新时运行 `npx @enebin/groundwork@latest update`，然后重启 Claude Code 或新开一个 Codex 会话。
 
 可选：安装 [skeptic-review](https://github.com/enebin/skeptic-review)，在审查结果交给你之前再核实一遍。未安装时，审查结果会显示 `SkepticReview: OFF`。
 

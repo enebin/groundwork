@@ -34,6 +34,8 @@
 4. **Back-merge.** Fetch, then merge `origin/main` into `develop` with a merge commit titled `Merge release <version> into develop`, and push `develop`. The version line in `plugins/groundwork/.claude-plugin/plugin.json` usually conflicts; take the released version. After the merge, `git merge-base --is-ancestor origin/main develop` must succeed and the five version fields on `develop` must equal the released version. `git diff origin/main develop` is empty only when nothing else merged into `develop` after the release branch was cut.
 5. **Clean up.** Leave the `release/<version>` branch as is; earlier releases kept theirs.
 
+The npm package `@enebin/groundwork` (`package.json`, `bin/`) only runs each client's own plugin commands, so users get the new plugin version without a new npm publish. Its version is separate from the five plugin version fields. Bump it and run `npm publish` only when `bin/` or `package.json` changed; the maintainer publishes it.
+
 ## Runner catalog
 
 Each file in `plugins/groundwork/catalog/runners/` lets reviews run on one command-line tool. Its `Verified with:` line names the tool version and date its read-only limits were last checked. Treat the files as stale whenever the tools change.
