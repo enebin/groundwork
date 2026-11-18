@@ -21,6 +21,8 @@ Without this feature, report threads are one-way: people can reply, but no agent
 4. The relay reacts 👀 to the reply so people can see it was delivered.
 5. The owner answers in the thread with `post.py --answer`, and closes the thread with `post.py --close` when the work finishes.
 
+A done thread's first message starts with ✅, and its work is over. When a reply arrives there, the relay forwards nothing. It answers in the thread that the work is finished and replies there are not passed on, and asks for a new request instead.
+
 ## Rules to add
 
 When the user sets this up, add these lines inside the `discord-report` block in `docs.rules` (and `CLAUDE.md` when it carries the block):
@@ -28,6 +30,7 @@ When the user sets this up, add these lines inside the `discord-report` block in
 ```markdown
 - **Owner line.** End every waiting report with an owner line, so replies can reach you: `--owner "<worktree path> claude <$CLAUDE_CODE_SESSION_ID>"`, or `--owner "<worktree path> terminal <orca terminal handle>"` in an Orca terminal.
 - **Relay.** Only the one session started with `--channels` receives thread replies. It does not do the work. It forwards each reply to the owner in the thread's first message, with `cd <worktree path> && claude -p --resume <session id> '<reply>'` or `orca terminal send --terminal <handle> --text '<reply>' --enter`, then reacts 👀 to the reply.
+- **Done threads.** When the thread's first message starts with ✅, the work is finished. Do not forward the reply. Answer in the thread: "This work is finished, so replies here are not passed on. Please start a new request."
 ```
 
 Quote the reply safely for the shell when forwarding it. Never forward a reply to a path or session that is not in the thread's owner line.

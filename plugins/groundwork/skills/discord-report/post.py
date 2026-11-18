@@ -30,7 +30,8 @@ CHANNEL_PLUGIN_ENV_PATH = Path.home() / ".claude" / "channels" / "discord" / ".e
 MAX_MESSAGE_CHARS = 2000
 MAX_THREAD_NAME_CHARS = 100
 TEXT_CHANNEL = 0
-STARTER_LABELS = {"waiting": "⏳ Waiting", "done": "✅ Done"}
+# The emoji leads the starter, the thread name, and the first thread message, so a done thread is told apart at a glance.
+KINDS = {"waiting": ("⏳", "Waiting"), "done": ("✅", "Done")}
 
 
 class DiscordError(Exception):
@@ -215,16 +216,19 @@ def create_channel(token, guild_id, name):
 def open_report(token, settings, kind, title, body, owner):
     verify_channel(token, settings)
     channel_id, guild_id = settings["channel_id"], settings["guild_id"]
+    emoji, label = KINDS[kind]
+    # On its own line, so a body that opens with a heading or bullet still renders as Markdown.
+    prefix = f"{emoji} {label}\n"
     suffix = f"\nowner: {owner}" if owner else ""
-    chunks = split_message(body, MAX_MESSAGE_CHARS - len(suffix))
-    chunks[0] += suffix
-    starter = send(token, channel_id, f"{STARTER_LABELS[kind]}: {title}"[:MAX_MESSAGE_CHARS])
+    chunks = split_message(body, MAX_MESSAGE_CHARS - len(prefix) - len(suffix))
+    chunks[0] = prefix + chunks[0] + suffix
+    starter = send(token, channel_id, f"{emoji} {label}: {title}"[:MAX_MESSAGE_CHARS])
     try:
         thread = request(
             "POST",
             f"/channels/{channel_id}/messages/{starter['id']}/threads",
             token,
-            {"name": title[:MAX_THREAD_NAME_CHARS]},
+            {"name": f"{emoji} {title}"[:MAX_THREAD_NAME_CHARS]},
         )
     except DiscordError as error:
         sys.exit(f"{error}\nPartial delivery: starter message {starter['id']} was posted without a thread. Ask before retrying.")
@@ -256,7 +260,7 @@ def main():
     action = ap.add_mutually_exclusive_group(required=True)
     action.add_argument("--check", action="store_true")
     action.add_argument("--create-channel", action="store_true")
-    action.add_argument("--kind", choices=sorted(STARTER_LABELS))
+    action.add_argument("--kind", choices=sorted(KINDS))
     action.add_argument("--answer", action="store_true")
     action.add_argument("--close", action="store_true")
     ap.add_argument("--guild")
