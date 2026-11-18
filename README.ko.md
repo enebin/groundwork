@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-6E6C66">
+  <img alt="Version 0.5.0" src="https://img.shields.io/badge/version-0.5.0-6E6C66">
 </p>
 
 <p align="center"><b>한 번 세팅하고 그다음엔 만들 것만 말하세요.</b></p>
@@ -27,11 +27,24 @@
 
 ## 설치
 
-Claude Code:
+```bash
+npx @enebin/groundwork@latest
+```
+
+컴퓨터에 설치된 Claude Code(`claude`)와 Codex(`codex`)를 찾아 각 도구의 플러그인 명령으로 groundwork를 추가합니다. 한 도구에만 설치하려면 `--target claude`나 `--target codex`를 붙입니다. Node.js 18.3 이상이 필요합니다. 설치한 뒤 Claude Code를 재시작하거나 Codex 세션을 새로 열면 플러그인이 로드됩니다.
+
+npx 없이 설치하려면 Claude Code에서 다음을 실행합니다.
 
 ```
 /plugin marketplace add enebin/groundwork
 /plugin install groundwork@groundwork
+```
+
+Codex는 터미널에서 다음을 실행합니다.
+
+```bash
+codex plugin marketplace add enebin/groundwork
+codex plugin add groundwork@groundwork
 ```
 
 세팅할 레포에서 이렇게 말하면 됩니다.
@@ -42,7 +55,7 @@ Claude Code:
 
 온보딩 과정에서 여덟 가지를 물어보고 항목마다 추천안을 함께 보여 준 뒤 고른 내용을 `GROUNDWORK.md`에 저장합니다. 나머지 스킬은 전부 이 파일을 읽고 움직입니다.
 
-Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `claude plugin update groundwork@groundwork`를 실행한 뒤 Claude Code를 재시작하면 됩니다. 그다음 세팅한 레포마다 "groundwork 업데이트해 줘"라고 말하면 됩니다. 이 단계에는 `python3`가 필요합니다.
+Claude Code에서는 하루 최대 한 번 GitHub에서 새 버전을 확인해 새 릴리스가 나왔을 때 알려 줍니다. 업데이트할 때는 `npx @enebin/groundwork@latest update`를 실행한 뒤 Claude Code를 재시작하거나 Codex 세션을 새로 열면 됩니다. 그다음 세팅한 레포마다 "groundwork 업데이트해 줘"라고 말하면 됩니다. 이 단계에는 `python3`가 필요합니다.
 
 선택 사항: [skeptic-review](https://github.com/enebin/skeptic-review)를 함께 설치하면 리뷰어가 잡은 내용을 사용자에게 보여 주기 전에 실제로 맞는 지적인지 한 번 더 걸러 줍니다. 설치하지 않으면 리뷰 결과에 `SkepticReview: OFF`로 표시됩니다.
 
@@ -156,6 +169,7 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | 부가기능 | 하는 일 |
 |---|---|
 | `slack-report` | 작업 내용과 테스트 결과를 Slack에 보냅니다 |
+| `discord-report` | 작업이 사용자를 기다리거나 끝나면 Discord 스레드를 엽니다 |
 | `handoff` | 끝낸 일, 남은 일, 다음 시작점을 저장합니다 |
 | `weekly-summary` | 한 주의 커밋·PR·이슈를 요약합니다 |
 | `release-notes` | 커밋 범위를 사용자용 릴리스 노트로 정리합니다 |
@@ -165,6 +179,8 @@ PR 하나로 끝나지 않는 큰 작업은 먼저 여러 단계로 나눕니다
 | `work-audit` | 정한 기간(기본 24시간)의 에이전트 세션에서 멈춘 일, 낭비한 실행, 토큰 과소비, 반복 실수를 찾아 각각 해결법을 붙입니다 |
 
 Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 자세한 내용은 [Slack 연결 안내](plugins/groundwork/skills/slack-report/references/setup.md)를 참고하세요. 자동 보고를 켜면 두 클라이언트에 저장소용 턴 종료 훅을 설치합니다.
+
+Discord 봇 토큰도 Git 밖에 둡니다. Discord 채널 플러그인의 `~/.claude/channels/discord/.env`나 `~/.config/discord-report/token`에 저장합니다. 자세한 내용은 [Discord 설정](plugins/groundwork/skills/discord-report/references/setup.md)을 참고하세요. Discord 보고는 훅이 아니라 저장소 규칙으로 동작합니다.
 
 <details>
 <summary><b>전체 스킬</b></summary>
@@ -184,7 +200,7 @@ Slack 인증 정보는 Git 밖의 `~/.config/slack-report/`에 보관합니다. 
 | `review` | 선택한 리뷰어들을 병렬로 돌려 결과 취합 |
 | `ux-review` | 지정한 사용자 페르소나 기준으로 코드 또는 실제 앱에서 사용성 리뷰 |
 | `ui-qa` | 실제 앱을 띄워 자동 테스트가 놓치는 UI 항목 점검 |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | 부가기능; 위 설명 참고 |
+| `slack-report`, `discord-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | 부가기능; 위 설명 참고 |
 
 </details>
 

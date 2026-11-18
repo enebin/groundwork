@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-6E6C66">
+  <img alt="Version 0.5.0" src="https://img.shields.io/badge/version-0.5.0-6E6C66">
 </p>
 
 <p align="center"><b>设置一次，之后只需说出要做什么。</b></p>
@@ -27,11 +27,24 @@
 
 ## 安装
 
-Claude Code：
+```bash
+npx @enebin/groundwork@latest
+```
+
+它会找到你电脑上的 Claude Code（`claude`）和 Codex（`codex`），并用各自的插件命令添加 groundwork。只想装到其中一个时，加上 `--target claude` 或 `--target codex`。需要 Node.js 18.3 或更高版本。安装后重启 Claude Code，或新开一个 Codex 会话，即可加载插件。
+
+不用 npx 安装时，在 Claude Code 中运行：
 
 ```
 /plugin marketplace add enebin/groundwork
 /plugin install groundwork@groundwork
+```
+
+Codex 请在终端中运行：
+
+```bash
+codex plugin marketplace add enebin/groundwork
+codex plugin add groundwork@groundwork
 ```
 
 然后在要设置的仓库里说：
@@ -42,7 +55,7 @@ Claude Code：
 
 onboarding 会问八个问题，每个问题都给出推荐答案，并把你的选择保存到 `GROUNDWORK.md`。其他所有技能都会读取这个文件。
 
-在 Claude Code 中，groundwork 每天最多检查一次 GitHub 上的新版本，每个新版本只提醒一次。更新时运行 `claude plugin update groundwork@groundwork`，然后重启 Claude Code。
+在 Claude Code 中，groundwork 每天最多检查一次 GitHub 上的新版本，每个新版本只提醒一次。更新时运行 `npx @enebin/groundwork@latest update`，然后重启 Claude Code 或新开一个 Codex 会话。
 
 可选：安装 [skeptic-review](https://github.com/enebin/skeptic-review)，在审查结果交给你之前再核实一遍。未安装时，审查结果会显示 `SkepticReview: OFF`。
 
@@ -154,6 +167,7 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | 附加功能 | 作用 |
 |---|---|
 | `slack-report` | 把工作变更和测试结果发送到 Slack |
+| `discord-report` | 工作等待你处理或完成时，在 Discord 开一个帖子 |
 | `handoff` | 保存已完成的工作、剩余的工作和下次的起点 |
 | `weekly-summary` | 汇总一周的提交、PR 和 issue |
 | `release-notes` | 把一段提交范围整理成面向用户的发布说明 |
@@ -163,6 +177,8 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | `work-audit` | 审查一段时间内（默认 24 小时）的代理会话，找出卡住的工作、浪费的运行、过度的 token 消耗和重复的错误，并为每项给出修复办法 |
 
 Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slack 设置说明](plugins/groundwork/skills/slack-report/references/setup.md)。开启自动报告后，会为两个客户端安装仓库级的 Stop 钩子。
+
+Discord 机器人令牌同样保存在 Git 之外：Discord 频道插件的 `~/.claude/channels/discord/.env`，或 `~/.config/discord-report/token`，详见 [Discord 设置说明](plugins/groundwork/skills/discord-report/references/setup.md)。Discord 报告由仓库规则触发，不使用钩子。
 
 <details>
 <summary><b>全部技能</b></summary>
@@ -182,7 +198,7 @@ Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slac
 | `review` | 并行运行选定的审查器并汇总结果 |
 | `ux-review` | 以选定的用户角色视角，基于代码或应用进行可用性审查 |
 | `ui-qa` | 启动应用，检查自动化测试覆盖不到的界面行为 |
-| `slack-report`、`handoff`、`weekly-summary`、`release-notes`、`release-prep`、`ux-journey`、`crash-reproduction`、`work-audit` | 附加功能；见上文 |
+| `slack-report`、`discord-report`、`handoff`、`weekly-summary`、`release-notes`、`release-prep`、`ux-journey`、`crash-reproduction`、`work-audit` | 附加功能；见上文 |
 
 </details>
 

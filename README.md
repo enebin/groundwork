@@ -6,7 +6,7 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-2F6B5A"></a>
   <img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757">
   <img alt="Codex plugin" src="https://img.shields.io/badge/Codex-plugin-1F1E1B">
-  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-6E6C66">
+  <img alt="Version 0.5.0" src="https://img.shields.io/badge/version-0.5.0-6E6C66">
 </p>
 
 <p align="center"><b>Set it up once. Then just say what to build.</b></p>
@@ -27,11 +27,24 @@ There are no commands to learn. You can run every skill in plain words, in any l
 
 ## Install
 
-Claude Code:
+```bash
+npx @enebin/groundwork@latest
+```
+
+This finds Claude Code (`claude`) and Codex (`codex`) on your machine and adds the groundwork plugin to each one with its own plugin commands. Add `--target claude` or `--target codex` to set up only one. It needs Node.js 18.3 or later. Restart Claude Code, or start a new Codex session, to load the plugin.
+
+To install without npx, in Claude Code:
 
 ```
 /plugin marketplace add enebin/groundwork
 /plugin install groundwork@groundwork
+```
+
+For Codex, in a terminal:
+
+```bash
+codex plugin marketplace add enebin/groundwork
+codex plugin add groundwork@groundwork
 ```
 
 Then, in the repository you want to set up, say:
@@ -42,7 +55,7 @@ Set up groundwork for this repo.
 
 Onboarding asks eight questions, recommends an answer for each, and saves your choices to `GROUNDWORK.md`. Every other skill reads that file.
 
-In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `claude plugin update groundwork@groundwork` and restart Claude Code. Then say "update groundwork" in each set-up repository; this step needs `python3`.
+In Claude Code, groundwork checks GitHub for a new release at most once a day and tells you once per release. To update, run `npx @enebin/groundwork@latest update`, then restart Claude Code or start a new Codex session. Then say "update groundwork" in each set-up repository; this step needs `python3`.
 
 Optional: install [skeptic-review](https://github.com/enebin/skeptic-review) to double-check review findings before they reach you. Without it, reviews show `SkepticReview: OFF`.
 
@@ -156,6 +169,7 @@ Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse 
 | Add-on | What it does |
 |---|---|
 | `slack-report` | Sends work changes and test results to Slack |
+| `discord-report` | Opens a Discord thread when work waits for you or finishes |
 | `handoff` | Saves what is done, what is left, and where to start next |
 | `weekly-summary` | Summarizes a week's commits, PRs, and issues |
 | `release-notes` | Turns a range of commits into user-facing release notes |
@@ -165,6 +179,8 @@ Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse 
 | `work-audit` | Audits agent sessions over a time range for stalls, wasted runs, token overuse, and repeated mistakes, with a fix for each |
 
 Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setup](plugins/groundwork/skills/slack-report/references/setup.md). Turning on automatic Slack reports installs repository-local Stop hooks for both clients.
+
+The Discord bot token stays outside Git, in the Discord channel plugin's `~/.claude/channels/discord/.env` or in `~/.config/discord-report/token`; see [Discord setup](plugins/groundwork/skills/discord-report/references/setup.md). Discord reports use repository rules, not hooks.
 
 <details>
 <summary><b>All skills</b></summary>
@@ -184,7 +200,7 @@ Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setu
 | `review` | Run the selected reviewers in parallel and combine their findings |
 | `ux-review` | Usability review from chosen user personas, from the code or on the app |
 | `ui-qa` | Launch the app to check UI behavior automated tests can't cover |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | Optional add-ons; see above |
+| `slack-report`, `discord-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | Optional add-ons; see above |
 
 </details>
 
