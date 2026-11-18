@@ -167,6 +167,7 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | 附加功能 | 作用 |
 |---|---|
 | `slack-report` | 把工作变更和测试结果发送到 Slack |
+| `discord-report` | 工作等待你处理或完成时，在 Discord 开一个帖子 |
 | `handoff` | 保存已完成的工作、剩余的工作和下次的起点 |
 | `weekly-summary` | 汇总一周的提交、PR 和 issue |
 | `release-notes` | 把一段提交范围整理成面向用户的发布说明 |
@@ -176,6 +177,8 @@ groundwork 会 rebase、再次验证、推送并创建 PR。如果开启了自�
 | `work-audit` | 审查一段时间内（默认 24 小时）的代理会话，找出卡住的工作、浪费的运行、过度的 token 消耗和重复的错误，并为每项给出修复办法 |
 
 Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slack 设置说明](plugins/groundwork/skills/slack-report/references/setup.md)。开启自动报告后，会为两个客户端安装仓库级的 Stop 钩子。
+
+Discord 机器人令牌同样保存在 Git 之外：Discord 频道插件的 `~/.claude/channels/discord/.env`，或 `~/.config/discord-report/token`，详见 [Discord 设置说明](plugins/groundwork/skills/discord-report/references/setup.md)。Discord 报告由仓库规则触发，不使用钩子。
 
 <details>
 <summary><b>全部技能</b></summary>
@@ -195,7 +198,7 @@ Slack 凭据保存在 Git 之外的 `~/.config/slack-report/` 中，详见 [Slac
 | `review` | 并行运行选定的审查器并汇总结果 |
 | `ux-review` | 以选定的用户角色视角，基于代码或应用进行可用性审查 |
 | `ui-qa` | 启动应用，检查自动化测试覆盖不到的界面行为 |
-| `slack-report`、`handoff`、`weekly-summary`、`release-notes`、`release-prep`、`ux-journey`、`crash-reproduction`、`work-audit` | 附加功能；见上文 |
+| `slack-report`、`discord-report`、`handoff`、`weekly-summary`、`release-notes`、`release-prep`、`ux-journey`、`crash-reproduction`、`work-audit` | 附加功能；见上文 |
 
 </details>
 

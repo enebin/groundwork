@@ -169,6 +169,7 @@ Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse 
 | Add-on | What it does |
 |---|---|
 | `slack-report` | Sends work changes and test results to Slack |
+| `discord-report` | Opens a Discord thread when work waits for you or finishes |
 | `handoff` | Saves what is done, what is left, and where to start next |
 | `weekly-summary` | Summarizes a week's commits, PRs, and issues |
 | `release-notes` | Turns a range of commits into user-facing release notes |
@@ -178,6 +179,8 @@ Nothing here runs until you ask. Say "show me the groundwork add-ons" to browse 
 | `work-audit` | Audits agent sessions over a time range for stalls, wasted runs, token overuse, and repeated mistakes, with a fix for each |
 
 Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setup](plugins/groundwork/skills/slack-report/references/setup.md). Turning on automatic Slack reports installs repository-local Stop hooks for both clients.
+
+The Discord bot token stays outside Git, in the Discord channel plugin's `~/.claude/channels/discord/.env` or in `~/.config/discord-report/token`; see [Discord setup](plugins/groundwork/skills/discord-report/references/setup.md). Discord reports use repository rules, not hooks.
 
 <details>
 <summary><b>All skills</b></summary>
@@ -197,7 +200,7 @@ Slack credentials stay outside Git in `~/.config/slack-report/`; see [Slack setu
 | `review` | Run the selected reviewers in parallel and combine their findings |
 | `ux-review` | Usability review from chosen user personas, from the code or on the app |
 | `ui-qa` | Launch the app to check UI behavior automated tests can't cover |
-| `slack-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | Optional add-ons; see above |
+| `slack-report`, `discord-report`, `handoff`, `weekly-summary`, `release-notes`, `release-prep`, `ux-journey`, `crash-reproduction`, `work-audit` | Optional add-ons; see above |
 
 </details>
 
