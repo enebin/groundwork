@@ -187,7 +187,41 @@ class DiscordReportTests(unittest.TestCase):
             ("POST", f"/channels/{STARTER}/messages"),
         ])
         self.assertEqual(api.messages_to(CHANNEL), [f"⏳ Waiting: {TITLE}"])
-        self.assertEqual(api.messages_to(STARTER), ["Added saved filters.\nTests passed.\nowner: /work/tree claude abc"])
+        self.assertEqual(api.messages_to(STARTER), ["⏳ Waiting\nAdded saved filters.\nTests passed.\nowner: /work/tree claude abc"])
+
+    def test_done_report_marks_starter_thread_name_and_first_message_with_check_emoji(self):
+        # Given a configured channel
+        api = FakeDiscord(report_routes())
+        # When posting a done report
+        code, _, _ = self.run_helper(api, "--kind", "done", "--title", TITLE, "--body", str(self.body))
+        # Then the starter, the thread name, and the first thread message all start with ✅
+        self.assertEqual(code, 0)
+        self.assertEqual(api.messages_to(CHANNEL), [f"✅ Done: {TITLE}"])
+        thread_payload = next(payload for method, path, payload in api.calls if path.endswith("/threads"))
+        self.assertEqual(thread_payload, {"name": f"✅ {TITLE}"})
+        self.assertTrue(api.messages_to(STARTER)[0].startswith("✅ Done\n"))
+
+    def test_body_opening_with_heading_keeps_heading_at_line_start(self):
+        # Given a body that opens with a Markdown heading
+        self.body.write_text("# Summary\nAdded saved filters.")
+        api = FakeDiscord(report_routes())
+        # When posting a done report
+        self.run_helper(api, "--kind", "done", "--title", TITLE, "--body", str(self.body))
+        # Then the heading still starts its own line
+        self.assertEqual(api.messages_to(STARTER)[0].split("\n")[1], "# Summary")
+
+    def test_first_message_with_emoji_and_owner_stays_under_cap(self):
+        # Given a body exactly at the message cap and an owner line
+        self.body.write_text("z" * post.MAX_MESSAGE_CHARS)
+        api = FakeDiscord(report_routes())
+        # When posting a waiting report
+        code, _, _ = self.run_helper(api, "--kind", "waiting", "--title", TITLE, "--body", str(self.body), "--owner", "/work/tree claude abc")
+        # Then every message fits and the first one keeps both the emoji and the owner line
+        sent = api.messages_to(STARTER)
+        self.assertEqual(code, 0)
+        self.assertTrue(all(len(message) <= post.MAX_MESSAGE_CHARS for message in sent))
+        self.assertTrue(sent[0].startswith("⏳ Waiting\n"))
+        self.assertTrue(sent[0].endswith("\nowner: /work/tree claude abc"))
 
     def test_report_messages_never_ping(self):
         # Given a body that mentions everyone
@@ -212,7 +246,7 @@ class DiscordReportTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertGreater(len(sent), 1)
         self.assertTrue(all(len(message) <= post.MAX_MESSAGE_CHARS for message in sent))
-        self.assertEqual("\n".join(sent).split("\n"), lines)
+        self.assertEqual("\n".join(sent).removeprefix("✅ Done\n").split("\n"), lines)
 
     def test_overlong_line_is_hard_split(self):
         # Given one line longer than the cap
