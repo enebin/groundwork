@@ -75,6 +75,13 @@
         {"section": "New features", "kind": "attach", "key": "workflow.confirm_issue", "text": "`step` now files a standalone issue without asking, so a request like \"fix X\" runs without a pause. Set `workflow.confirm_issue: true` in `GROUNDWORK.md` to see the issue and confirm before it is filed."},
         {"section": "New features", "kind": "auto", "text": "Steps run faster: the full verification suite runs once before the first review, and implementation and fix rounds run only the tests they added or changed. Sport mode still runs the full suite every round."}
       ]
+    },
+    {
+      "version": "0.5.0",
+      "items": [
+        {"section": "New features", "kind": "auto", "text": "Install and update groundwork with one command: `npx @enebin/groundwork@latest` installs it in Claude Code and Codex, whichever you have, and `npx @enebin/groundwork@latest update` updates it where it is installed. `--target claude` or `--target codex` limits a run to one client. When `update` stops because the plugin is too old, it names this command and the commands to use without Node.js."},
+        {"section": "New features", "kind": "attach", "addons": ["discord-report"], "text": "Discord reports (add-on): when work stops for your decision, or a unit of work finishes, groundwork opens a thread in the repository's Discord channel. Waiting threads start with ⏳ and done threads with ✅. Setup has your bot create the channel, and repository rules decide when to report, so nothing posts at every turn end. With the optional Discord channels feature in Claude Code, your replies in a waiting thread reach the agent doing the work, and a reply in a done thread gets a note that the work is finished."}
+      ]
     }
   ]
 }
