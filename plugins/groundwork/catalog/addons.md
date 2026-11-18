@@ -7,6 +7,7 @@ Use this table as the single menu source. Translate names and descriptions into 
 | Skill | Name | What it does | When it helps |
 |---|---|---|---|
 | `slack-report` | Slack reports | Collect work changes and verification results in a repository channel. | Follow progress across several repositories from one place. |
+| `discord-report` | Discord reports | Open a thread in a repository channel when work waits for you or finishes. Optional Discord channels forward your thread replies to the agent doing the work. | Answer agents' questions and follow finished work from Discord. |
 | `handoff` | Handoff notes | Save completed work, remaining work, and the next starting point. | Resume work in a new session without reconstructing the previous conversation. |
 | `weekly-summary` | Weekly work summary | Summarize a week's commits, pull requests, and issues with evidence. | Prepare a weekly update or retrospective. |
 | `release-notes` | Release notes | Turn the changes between two revisions into user-facing notes. | Explain new features, fixes, and compatibility changes when shipping a version. |
@@ -21,10 +22,10 @@ Show a compact list under a heading equivalent to **You might also find these us
 
 Read an existing `## Add-ons` section in `GROUNDWORK.md` and the relevant settings before describing an item as configured. Mark configured items in the list, retaining their current settings until the user asks to change them. A missing section means no recorded setup, not that the skill is unavailable.
 
-Configure or run only the item the user chooses. After it finishes, offer another item or finish; do not start the next item automatically. Opening the menu alone authorizes no files, Slack posts, scheduled tasks, or releases.
+Configure or run only the item the user chooses. After it finishes, offer another item or finish; do not start the next item automatically. Opening the menu alone authorizes no files, Slack or Discord posts, scheduled tasks, or releases.
 
 ## Recording setup
 
-When the user asks to keep a setup choice, store a short Markdown table in an optional `## Add-ons` body section of `GROUNDWORK.md`, inside `<!-- groundwork:begin addons -->` and `<!-- groundwork:end addons -->`. Keep unrelated text intact. Columns: `Skill | Settings`. Link detailed settings such as `SLACK_INFO.md`, `RELEASE_PREP.md`, or the `## Journey:` sections instead of duplicating them. One-off use needs no configuration write.
+When the user asks to keep a setup choice, store a short Markdown table in an optional `## Add-ons` body section of `GROUNDWORK.md`, inside `<!-- groundwork:begin addons -->` and `<!-- groundwork:end addons -->`. Keep unrelated text intact. Columns: `Skill | Settings`. Link detailed settings such as `SLACK_INFO.md`, `DISCORD_INFO.md`, `RELEASE_PREP.md`, or the `## Journey:` sections instead of duplicating them. One-off use needs no configuration write.
 
-Record only actual setup: on-demand use, a confirmed Slack reporting mode, or a scheduler's successful response and task identity. If scheduling is unavailable, record **not scheduled**, with the recovery action; a saved desired cadence is not an active schedule. Do not put secrets in this section. These add-ons are unrelated to `verification.addons`.
+Record only actual setup: on-demand use, a confirmed Slack reporting mode, a checked Discord report channel, or a scheduler's successful response and task identity. If scheduling is unavailable, record **not scheduled**, with the recovery action; a saved desired cadence is not an active schedule. Do not put secrets in this section. These add-ons are unrelated to `verification.addons`.
